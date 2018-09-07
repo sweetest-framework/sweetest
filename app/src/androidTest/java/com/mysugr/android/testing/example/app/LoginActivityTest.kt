@@ -26,15 +26,17 @@ class LoginActivityTest {
         DependencyFramework.reset()
     }
 
+    class LoginViewModelMock : ILoginViewModel {
+        override var stateListener: StateListener = {}
+        override var state: State = LoggedOut()
+        override fun attemptLogin(email: String, password: String) {}
+        override fun logout() {}
+    }
+
     @Test
     fun stateChangeTest() {
 
-        val mock = object : ILoginViewModel {
-            override var stateListener: StateListener = {}
-            override var state: State = LoggedOut()
-            override fun attemptLogin(email: String, password: String) {}
-            override fun logout() {}
-        }
+        val mock = LoginViewModelMock()
 
         fun setState(state: State) {
             mock.state = state
