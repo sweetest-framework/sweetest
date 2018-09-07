@@ -6,7 +6,7 @@ import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
-import com.mysugr.android.testing.example.app.dependency.DependencyFramework
+import com.mysugr.android.testing.example.dependency.DependencyFramework
 import com.mysugr.android.testing.example.app.view.ILoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*

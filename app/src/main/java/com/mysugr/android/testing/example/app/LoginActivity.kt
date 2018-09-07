@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
-import com.mysugr.android.testing.example.app.dependency.DependencyFramework
+import com.mysugr.android.testing.example.dependency.DependencyFramework
 
 import com.mysugr.android.testing.example.app.view.LoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State

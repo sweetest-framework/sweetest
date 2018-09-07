@@ -1,4 +1,4 @@
-package com.mysugr.android.testing.example.app.dependency
+package com.mysugr.android.testing.example.dependency
 
 import com.mysugr.android.testing.example.app.view.ILoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel
