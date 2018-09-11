@@ -31,12 +31,12 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
     override fun attemptLogin(email: String, password: String) {
         state = State.Busy()
         thread {
-            try {
+            state = try {
                 val result = authManager.login(email, password)
                 val isNewUser = result == AuthManager.LoginResult.REGISTERED
-                state = LoggedIn(isNewUser)
+                LoggedIn(isNewUser)
             } catch (exception: AuthManager.WrongPasswordException) {
-                state = Error(passwordError = R.string.error_incorrect_password)
+                Error(passwordError = R.string.error_incorrect_password)
             }
         }
     }

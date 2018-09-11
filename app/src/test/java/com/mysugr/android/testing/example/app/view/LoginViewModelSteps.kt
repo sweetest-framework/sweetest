@@ -76,11 +76,16 @@ class LoginViewModelSteps(testContext: TestContext)
         assertTrue(last!!.isNewUser)
     }
 
-    fun thenStateIsErrorWrongPassword() {
+    fun thenStateIsError() {
+        thenStateChangeWasNotified()
+        assertTrue(recordedStateChanges.last() is LoginViewModel.State.Error)
+    }
+
+    fun thenStateIsPasswordErrorWrongPassword() {
         thenStateChangeWasNotified()
         (recordedStateChanges.last() as? LoginViewModel.State.Error)
-                ?.let { assertTrue(it.passwordError == R.string.error_incorrect_password) }
-                ?: fail()
+                ?.also { assertTrue(it.passwordError == R.string.error_incorrect_password) }
+                ?: fail("The last state is not of type Error")
     }
 
 }

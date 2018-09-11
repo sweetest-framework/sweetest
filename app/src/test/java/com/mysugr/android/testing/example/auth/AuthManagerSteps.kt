@@ -38,7 +38,7 @@ class AuthManagerSteps(testContext: TestContext)
         }
     }
 
-    fun thenLoginCalled() {
+    fun thenLoginIsCalled() {
         verify(instance).login(user.email, user.password)
     }
 
