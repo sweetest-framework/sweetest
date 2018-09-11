@@ -10,19 +10,32 @@ class AuthManager(
         private val userGateway: UserGateway,
         private val sessionStore: SessionStore) {
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String): LoginResult {
         val exists = authGateway.checkEmail(email)
-        if (exists) {
-            authGateway.login(email, password)
-            val user = userGateway.getUserData()
-            sessionStore.beginSession(user)
+        val result = if (exists) {
+            if (authGateway.login(email, password)) {
+                LoginResult.LOGGED_IN
+            } else {
+                throw WrongPasswordException()
+            }
         } else {
-            throw UserDoesNotExistException()
+            authGateway.register(email, password)
+            LoginResult.REGISTERED
         }
+        val user = userGateway.getUserData()
+        sessionStore.beginSession(user)
+        return result
     }
 
     fun logout() {
         TODO()
     }
+
+    enum class LoginResult {
+        LOGGED_IN,
+        REGISTERED
+    }
+
+    class WrongPasswordException : Exception()
 
 }

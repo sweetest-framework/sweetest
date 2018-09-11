@@ -13,7 +13,7 @@ object DependencyFramework {
     var loginViewModel: ILoginViewModel
         get() {
             if (_loginViewModel == null) {
-                _loginViewModel = LoginViewModel()
+                _loginViewModel = LoginViewModel(authManager)
             }
             return _loginViewModel!!
         }

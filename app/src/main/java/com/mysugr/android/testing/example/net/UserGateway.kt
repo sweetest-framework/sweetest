@@ -5,7 +5,7 @@ import com.mysugr.android.testing.example.user.User
 class UserGateway {
 
     fun getUserData(): User {
-        return DummyBackend.loggedInUser ?: throw Exceptions()
+        return DummyBackend.loggedInUser ?: error("Not logged in")
     }
 
 }

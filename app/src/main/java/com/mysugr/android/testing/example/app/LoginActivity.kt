@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         email.error = (state as? Error)?.emailError?.let { this.resources.getString(it) }
         password.error = (state as? Error)?.passwordError?.let { this.resources.getString(it) }
         if (state is LoggedIn) {
-            message.setText(if (state.newUser) R.string.login_new_user else
+            message.setText(if (state.isNewUser) R.string.login_new_user else
                 R.string.login_existing_user)
         } else {
             message.text = ""
@@ -64,8 +64,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showWelcomeDialog(state: LoggedIn) {
 
-        val title = if (state.newUser) "Your are now registered" else "Your are logged in"
-        val message = if (state.newUser) "Welcome to our app!" else "Welcome back!"
+        val title = if (state.isNewUser) "Your are now registered" else "Your are logged in"
+        val message = if (state.isNewUser) "Welcome to our app!" else "Welcome back!"
         AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)

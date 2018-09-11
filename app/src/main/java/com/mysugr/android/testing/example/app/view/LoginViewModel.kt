@@ -1,5 +1,12 @@
 package com.mysugr.android.testing.example.app.view
 
+import com.mysugr.android.testing.example.app.R
+import com.mysugr.android.testing.example.dependency.DependencyFramework
+import kotlin.concurrent.thread
+
+import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
+import com.mysugr.android.testing.example.auth.AuthManager
+
 typealias StateListener = (LoginViewModel.State) -> Unit
 
 interface ILoginViewModel {
@@ -9,7 +16,7 @@ interface ILoginViewModel {
     fun logout()
 }
 
-class LoginViewModel : ILoginViewModel {
+class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
 
     override lateinit var stateListener: StateListener
     private var _state: State = State.LoggedOut()
@@ -23,7 +30,15 @@ class LoginViewModel : ILoginViewModel {
 
     override fun attemptLogin(email: String, password: String) {
         state = State.Busy()
-        //TODO()
+        thread {
+            try {
+                val result = authManager.login(email, password)
+                val isNewUser = result == AuthManager.LoginResult.REGISTERED
+                state = LoggedIn(isNewUser)
+            } catch (exception: AuthManager.WrongPasswordException) {
+                state = Error(passwordError = R.string.error_incorrect_password)
+            }
+        }
     }
 
     override fun logout() {
@@ -36,7 +51,7 @@ class LoginViewModel : ILoginViewModel {
         class Busy : State(false)
         data class Error(val emailError: Int? = null, val passwordError: Int? = null) :
                 State(false)
-        data class LoggedIn(val newUser: Boolean) : State(true)
+        data class LoggedIn(val isNewUser: Boolean) : State(true)
     }
 
 }
