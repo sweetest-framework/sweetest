@@ -6,7 +6,6 @@ import com.mysugr.android.testing.example.user.UserSteps
 import com.mysugr.testing.framework.base.*
 import com.mysugr.testing.framework.context.TestContext
 
-import org.junit.Assert.*
 import org.mockito.Mockito.*
 
 class BackendGatewaySteps(testContext: TestContext)
@@ -22,7 +21,15 @@ class BackendGatewaySteps(testContext: TestContext)
 
     private fun setUp() {
         `when`(instance.checkEmail(anyString())).then { user.exists }
-        `when`(instance.login(anyString(), anyString())).then { user.authToken }
+        `when`(instance.login(anyString(), anyString())).then {
+            val email = it.arguments[0] as String
+            val password = it.arguments[1] as String
+            if (email == UserSteps.EMAIL && password == UserSteps.PASSWORD) {
+                user.authToken
+            } else {
+                throw UsernameOrPasswordWrongException()
+            }
+        }
         `when`(instance.register(anyString(), anyString())).then { user.authToken }
         `when`(instance.getUserData()).then { User(user.email) }
     }
@@ -31,7 +38,7 @@ class BackendGatewaySteps(testContext: TestContext)
         verify(instance).checkEmail(user.email)
     }
 
-    fun thenLoggedIn() {
+    fun thenLoggingIn() {
         verify(instance).login(user.email, user.password)
     }
 
@@ -41,6 +48,14 @@ class BackendGatewaySteps(testContext: TestContext)
 
     fun thenCorrectAuthTokenIsSet() {
         verify(instance).authToken = user.authToken
+    }
+
+    fun thenAuthTokenIsReset() {
+        verify(instance).authToken = null
+    }
+
+    fun thenNoAuthTokenIsSet() {
+        verify(instance, never()).authToken = anyString()
     }
 
 }

@@ -31,7 +31,7 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
         state = State.Busy()
         thread {
             state = try {
-                val result = authManager.login(email, password)
+                val result = authManager.loginOrRegister(email, password)
                 val isNewUser = result == AuthManager.LoginResult.REGISTERED
                 LoggedIn(isNewUser)
             } catch (exception: AuthManager.WrongPasswordException) {

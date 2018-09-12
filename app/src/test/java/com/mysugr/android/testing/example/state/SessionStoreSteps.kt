@@ -6,7 +6,6 @@ import com.mysugr.android.testing.example.user.UserSteps
 import com.mysugr.testing.framework.base.*
 import com.mysugr.testing.framework.context.TestContext
 
-import org.junit.Assert.*
 import org.mockito.Mockito.*
 
 class SessionStoreSteps(testContext: TestContext)
@@ -27,6 +26,14 @@ class SessionStoreSteps(testContext: TestContext)
     fun thenSessionIsStarted() {
         val expected = User(user.email)
         verify(instance).beginSession(expected)
+    }
+
+    fun thenSessionIsNotStarted() {
+        verify(instance, never()).beginSession(any() ?: User("dummy"))
+    }
+
+    fun thenSessionEnded() {
+        verify(instance).endSession()
     }
 
 }

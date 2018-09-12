@@ -25,7 +25,7 @@ class AuthManagerSteps(testContext: TestContext)
     }
 
     private fun stubLogin() {
-        `when`(instance.login(anyString(), anyString())).then {
+        `when`(instance.loginOrRegister(anyString(), anyString())).then {
             if (user.correctPassword) {
                 if (user.exists) {
                     AuthManager.LoginResult.LOGGED_IN
@@ -38,8 +38,16 @@ class AuthManagerSteps(testContext: TestContext)
         }
     }
 
-    fun thenLoginIsCalled() {
-        verify(instance).login(user.email, user.password)
+    fun whenLoggingInOrRegistering() {
+        instance.loginOrRegister(user.email, user.password)
+    }
+
+    fun whenLoggingOut() {
+        instance.logout()
+    }
+
+    fun thenLoginOrRegisterIsCalled() {
+        verify(instance).loginOrRegister(user.email, user.password)
     }
 
 }

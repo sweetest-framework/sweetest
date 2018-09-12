@@ -7,7 +7,7 @@ class AuthManager(
         private val backendGateway: BackendGateway,
         private val sessionStore: SessionStore) {
 
-    fun login(email: String, password: String): LoginResult {
+    fun loginOrRegister(email: String, password: String): LoginResult {
         val exists = backendGateway.checkEmail(email)
         val result = if (exists) {
             try {
@@ -33,6 +33,7 @@ class AuthManager(
 
     fun logout() {
         sessionStore.endSession()
+        authToken = null
     }
 
     enum class LoginResult {

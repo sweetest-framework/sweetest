@@ -24,7 +24,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
             whenLoggingIn()
             whenWaitForState(LoggedIn::class.java)
         }
-        authManager.thenLoginIsCalled()
+        authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsLoggedIn()
     }
 
@@ -35,7 +35,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
             whenLoggingIn()
             whenWaitForState(LoggedIn::class.java)
         }
-        authManager.thenLoginIsCalled()
+        authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsLoggedInWithNewUser()
     }
 
@@ -46,7 +46,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
             whenLoggingIn()
             whenWaitForState(Error::class.java)
         }
-        authManager.thenLoginIsCalled()
+        authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsPasswordErrorWrongPassword()
     }
 
