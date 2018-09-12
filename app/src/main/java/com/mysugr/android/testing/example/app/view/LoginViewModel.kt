@@ -18,13 +18,11 @@ interface ILoginViewModel {
 class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
 
     override lateinit var stateListener: StateListener
-    private var _state: State = State.LoggedOut()
 
-    override var state: State
-        get() = _state
+    override var state: State = LoggedOut()
         private set(value) {
-            _state = value
-            stateListener(_state)
+            field = value
+            stateListener(value)
         }
 
     override fun loginOrRegister(email: String, password: String) {
