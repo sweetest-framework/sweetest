@@ -3,8 +3,7 @@ package com.mysugr.android.testing.example.dependency
 import com.mysugr.android.testing.example.app.view.ILoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
-import com.mysugr.android.testing.example.net.AuthGateway
-import com.mysugr.android.testing.example.net.UserGateway
+import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.state.SessionStore
 
 object DependencyFramework {
@@ -25,7 +24,7 @@ object DependencyFramework {
     var authManager: AuthManager
         get() {
             if (_authManager == null) {
-                _authManager = AuthManager(authGateway, userGateway, sessionStore)
+                _authManager = AuthManager(backendGateway, sessionStore)
             }
             return _authManager!!
         }
@@ -33,28 +32,16 @@ object DependencyFramework {
             _authManager = value
         }
 
-    private var _authGateway: AuthGateway? = null
-    var authGateway: AuthGateway
+    private var _backendGateway: BackendGateway? = null
+    var backendGateway: BackendGateway
         get() {
-            if (_authGateway == null) {
-                _authGateway = AuthGateway()
+            if (_backendGateway == null) {
+                _backendGateway = BackendGateway()
             }
-            return _authGateway!!
+            return _backendGateway!!
         }
         set(value) {
-            _authGateway = value
-        }
-
-    private var _userGateway: UserGateway? = null
-    var userGateway: UserGateway
-        get() {
-            if (_userGateway == null) {
-                _userGateway = UserGateway()
-            }
-            return _userGateway!!
-        }
-        set(value) {
-            _userGateway = value
+            _backendGateway = value
         }
 
     private var _sessionStore: SessionStore? = null
@@ -72,7 +59,6 @@ object DependencyFramework {
     fun reset() {
         _loginViewModel = null
         _authManager = null
-        _userGateway = null
         _sessionStore = null
     }
 

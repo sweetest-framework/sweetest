@@ -4,33 +4,31 @@ import com.mysugr.android.testing.example.net.*
 import com.mysugr.android.testing.example.state.SessionStore
 
 class AuthManager(
-        private val authGateway: AuthGateway,
-        private val userGateway: UserGateway,
+        private val backendGateway: BackendGateway,
         private val sessionStore: SessionStore) {
 
     fun login(email: String, password: String): LoginResult {
-        val exists = authGateway.checkEmail(email)
+        val exists = backendGateway.checkEmail(email)
         val result = if (exists) {
             try {
-                gatewayAuthToken = authGateway.login(email, password)
+                authToken = backendGateway.login(email, password)
             } catch (exception: UsernameOrPasswordWrongException) {
                 throw WrongPasswordException()
             }
             LoginResult.LOGGED_IN
         } else {
-            gatewayAuthToken = authGateway.register(email, password)
+            authToken = backendGateway.register(email, password)
             LoginResult.REGISTERED
         }
-        val user = userGateway.getUserData()
+        val user = backendGateway.getUserData()
         sessionStore.beginSession(user)
         return result
     }
 
-    private var gatewayAuthToken: AuthToken? = null
+    private var authToken: AuthToken? = null
         set(value) {
             field = value
-            authGateway.authToken = value
-            userGateway.authToken = value
+            backendGateway.authToken = value
         }
 
     fun logout() {

@@ -26,7 +26,7 @@ class LoginViewModelSteps(testContext: TestContext)
     }
 
     fun whenLoggingIn() {
-        instance.attemptLogin(user.email, user.password)
+        instance.loginOrRegister(user.email, user.password)
     }
 
     fun <R> whenWaitForState(ofType: Class<R>): R {

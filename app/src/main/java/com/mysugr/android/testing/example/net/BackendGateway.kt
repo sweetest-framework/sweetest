@@ -1,11 +1,16 @@
 package com.mysugr.android.testing.example.net
 
+import com.mysugr.android.testing.example.user.User
 import java.util.*
 
+typealias AuthToken = String
+
 /**
- * Simulates backend access
+ * Simulates access to dummy backend
  */
-class AuthGateway : BaseGateway() {
+class BackendGateway {
+
+    var authToken: AuthToken? = null
 
     fun checkEmail(email: String): Boolean {
         Thread.sleep(1000L)
@@ -21,23 +26,22 @@ class AuthGateway : BaseGateway() {
             return loginInternal(remoteUser)
         }
     }
-    private fun loginInternal(remoteUser: DummyBackend.RemoteUser): AuthToken {
-        DummyBackend.loggedInUser = remoteUser.toUser()
+
+    private fun loginInternal(remoteUser: DummyBackend.User): AuthToken {
+        DummyBackend.loggedInUser = remoteUser
         return UUID.randomUUID().toString()
     }
 
     fun register(email: String, password: String): AuthToken {
         Thread.sleep(1000L)
         check(!DummyBackend.userExists(email)) { "Can't register already existing user" }
-        val remoteUser = DummyBackend.RemoteUser(email, password)
+        val remoteUser = DummyBackend.User(email, password)
         DummyBackend.addUser(remoteUser)
         return loginInternal(remoteUser)
     }
 
-    fun logout() {
-        Thread.sleep(1000L)
-        check(DummyBackend.loggedInUser != null) { "Already logged out" }
-        DummyBackend.loggedInUser = null
+    fun getUserData(): User {
+        return DummyBackend.loggedInUser?.toLocalUser() ?: throw NotLoggedInException()
     }
 
 }
