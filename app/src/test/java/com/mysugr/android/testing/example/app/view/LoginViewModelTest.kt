@@ -12,7 +12,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
             .requireReal<LoginViewModel>()
-            .onSetUp { sut.givenStateListener() }
+            .onSetUp { sut.givenStateListenerConnected() }
 
     private val sut by steps<LoginViewModelSteps>()
     private val authManager by steps<AuthManagerSteps>()

@@ -16,7 +16,7 @@ class LoginViewModelSteps(testContext: TestContext)
     private val recordedStateChanges = mutableListOf<LoginViewModel.State>()
     private val stateChangeSync = Object()
 
-    fun givenStateListener() {
+    fun givenStateListenerConnected() {
         instance.stateListener = {
             recordedStateChanges.add(it)
             synchronized(stateChangeSync) {
@@ -33,7 +33,7 @@ class LoginViewModelSteps(testContext: TestContext)
 
         var resultState: R? = null
         val startedAtMillis = System.currentTimeMillis()
-        val maxTimeMillis = 1000L
+        val maxTimeMillis = 999999L // TODO
 
         fun checkLastState(): Boolean {
             val last = recordedStateChanges.last()
