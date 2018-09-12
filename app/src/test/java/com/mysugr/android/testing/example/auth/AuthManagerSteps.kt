@@ -13,27 +13,23 @@ class AuthManagerSteps(testContext: TestContext)
     : BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure()= super.configure()
-            .onSetUp(this::setUpMock)
+            .onSetUp(this::setUp)
 
     private val instance by dependency<AuthManager>()
     private val user by steps<UserSteps>()
 
-    private fun setUpMock() {
+    private fun setUp() {
         if (instance.isMock) {
-            stubLogin()
-        }
-    }
-
-    private fun stubLogin() {
-        `when`(instance.loginOrRegister(anyString(), anyString())).then {
-            if (user.correctPassword) {
-                if (user.exists) {
-                    AuthManager.LoginResult.LOGGED_IN
+            `when`(instance.loginOrRegister(anyString(), anyString())).then {
+                if (user.correctPassword) {
+                    if (user.exists) {
+                        AuthManager.LoginResult.LOGGED_IN
+                    } else {
+                        AuthManager.LoginResult.REGISTERED
+                    }
                 } else {
-                    AuthManager.LoginResult.REGISTERED
+                    throw AuthManager.WrongPasswordException()
                 }
-            } else {
-                throw AuthManager.WrongPasswordException()
             }
         }
     }
