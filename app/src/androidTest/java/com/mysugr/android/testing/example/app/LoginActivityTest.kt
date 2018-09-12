@@ -29,7 +29,7 @@ class LoginActivityTest {
     class LoginViewModelMock : ILoginViewModel {
         override var stateListener: StateListener = {}
         override var state: State = LoggedOut()
-        override fun attemptLogin(email: String, password: String) {}
+        override fun loginOrRegister(email: String, password: String) {}
         override fun logout() {}
     }
 

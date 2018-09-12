@@ -1,8 +1,6 @@
 package com.mysugr.android.testing.example.auth
 
-import com.mysugr.android.testing.example.net.AuthGateway
-import com.mysugr.android.testing.example.net.UserDoesNotExistException
-import com.mysugr.android.testing.example.net.UserGateway
+import com.mysugr.android.testing.example.net.*
 import com.mysugr.android.testing.example.state.SessionStore
 
 class AuthManager(
@@ -13,13 +11,14 @@ class AuthManager(
     fun login(email: String, password: String): LoginResult {
         val exists = authGateway.checkEmail(email)
         val result = if (exists) {
-            if (authGateway.login(email, password)) {
-                LoginResult.LOGGED_IN
-            } else {
+            try {
+                gatewayAuthToken = authGateway.login(email, password)
+            } catch (exception: UsernameOrPasswordWrongException) {
                 throw WrongPasswordException()
             }
+            LoginResult.LOGGED_IN
         } else {
-            authGateway.register(email, password)
+            gatewayAuthToken = authGateway.register(email, password)
             LoginResult.REGISTERED
         }
         val user = userGateway.getUserData()
@@ -27,8 +26,15 @@ class AuthManager(
         return result
     }
 
+    private var gatewayAuthToken: AuthToken? = null
+        set(value) {
+            field = value
+            authGateway.authToken = value
+            userGateway.authToken = value
+        }
+
     fun logout() {
-        TODO()
+        sessionStore.endSession()
     }
 
     enum class LoginResult {

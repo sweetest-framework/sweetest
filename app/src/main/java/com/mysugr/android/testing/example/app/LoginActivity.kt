@@ -32,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun wireViewModel() {
         sign_in_button.setOnClickListener {
-            viewModel.attemptLogin(email.text.toString(), password.text.toString())
+            viewModel.loginOrRegister(email.text.toString(), password.text.toString())
         }
         logout_button.setOnClickListener {
             viewModel.logout()

@@ -2,7 +2,7 @@ package com.mysugr.android.testing.example.net
 
 import com.mysugr.android.testing.example.user.User
 
-class UserGateway {
+class UserGateway : BaseGateway() {
 
     fun getUserData(): User {
         return DummyBackend.loggedInUser ?: error("Not logged in")

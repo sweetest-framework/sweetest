@@ -1,7 +1,6 @@
 package com.mysugr.android.testing.example.app.view
 
 import com.mysugr.android.testing.example.app.R
-import com.mysugr.android.testing.example.dependency.DependencyFramework
 import kotlin.concurrent.thread
 
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
@@ -12,7 +11,7 @@ typealias StateListener = (LoginViewModel.State) -> Unit
 interface ILoginViewModel {
     var stateListener: StateListener
     val state: LoginViewModel.State
-    fun attemptLogin(email: String, password: String)
+    fun loginOrRegister(email: String, password: String)
     fun logout()
 }
 
@@ -28,7 +27,7 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
             stateListener(_state)
         }
 
-    override fun attemptLogin(email: String, password: String) {
+    override fun loginOrRegister(email: String, password: String) {
         state = State.Busy()
         thread {
             state = try {
