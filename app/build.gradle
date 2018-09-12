@@ -38,6 +38,7 @@ dependencies {
     testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation 'junit:junit:4.12'
 
+    androidTestImplementation 'org.mockito:mockito-android:2.18.3'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
