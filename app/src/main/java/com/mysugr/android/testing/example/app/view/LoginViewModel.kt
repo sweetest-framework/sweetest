@@ -28,6 +28,17 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
         }
 
     override fun loginOrRegister(email: String, password: String) {
+
+        if (!validateEmail(email)) {
+            state = Error(emailError = R.string.error_invalid_email)
+            return
+        }
+
+        if (!validatePassword(password)) {
+            state = Error(passwordError = R. string.error_invalid_password)
+            return
+        }
+
         state = State.Busy()
         thread {
             state = try {
@@ -38,6 +49,15 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
                 Error(passwordError = R.string.error_incorrect_password)
             }
         }
+
+    }
+
+    private fun validatePassword(password: String): Boolean {
+        return password.length >= 6
+    }
+
+    private fun validateEmail(email: String): Boolean {
+        return Regex("^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})\$").matches(email)
     }
 
     override fun logout() {
