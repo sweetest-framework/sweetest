@@ -13,15 +13,10 @@ class SessionStoreSteps(testContext: TestContext)
 
     override fun configure() = super.configure()
             .requireMock<SessionStore>()
-            .onSetUp(this::setUp)
 
     private val user by steps<UserSteps>()
 
     val instance by dependency<SessionStore>()
-
-    private fun setUp() {
-
-    }
 
     fun thenSessionIsStarted() {
         val expected = User(user.email)

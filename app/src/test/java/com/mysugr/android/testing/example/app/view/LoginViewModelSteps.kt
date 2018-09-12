@@ -33,7 +33,7 @@ class LoginViewModelSteps(testContext: TestContext)
 
         var resultState: R? = null
         val startedAtMillis = System.currentTimeMillis()
-        val maxTimeMillis = 1000L // TODO
+        val maxTimeMillis = 1000L
 
         fun checkLastState(): Boolean {
             val last = recordedStateChanges.last()

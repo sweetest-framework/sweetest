@@ -18,13 +18,11 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     private val user by steps<UserSteps>()
     private val loginViewModel by steps<LoginViewModelSteps>()
-    private val authManager by steps<AuthManagerSteps>()
     private val sessionStore by steps<SessionStoreSteps>()
     private val backendGateway by steps<BackendGatewaySteps>()
 
     @Test
     fun `Log in as an existing user`() {
-
         loginViewModel {
             givenStateListenerConnected()
             whenLoggingIn()
@@ -36,12 +34,10 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
             thenLoggingIn()
             thenCorrectAuthTokenIsSet()
         }
-
     }
 
     @Test
     fun `Log in as a new user`() {
-
         user.exists = false
         loginViewModel {
             givenStateListenerConnected()
@@ -54,7 +50,6 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
             thenRegistered()
             thenCorrectAuthTokenIsSet()
         }
-
     }
 
 }

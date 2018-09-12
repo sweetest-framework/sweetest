@@ -42,7 +42,7 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
 
     override fun logout() {
         state = State.LoggedOut()
-        TODO()
+        authManager.logout()
     }
 
     sealed class State(val loggedIn: Boolean) {
