@@ -66,7 +66,6 @@ class LoginActivityTest {
                 .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
         setState(LoggedIn(true))
-        onView(withId(android.R.id.button1)).perform(click())
         onView(withId(R.id.logout_button)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
     }
