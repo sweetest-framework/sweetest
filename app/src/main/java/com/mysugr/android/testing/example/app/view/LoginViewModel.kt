@@ -8,24 +8,17 @@ import com.mysugr.android.testing.example.auth.AuthManager
 
 typealias StateListener = (LoginViewModel.State) -> Unit
 
-interface ILoginViewModel { // TODO not needed any more
-    var stateListener: StateListener
-    val state: LoginViewModel.State
-    fun loginOrRegister(email: String, password: String)
-    fun logout()
-}
+class LoginViewModel(private val authManager: AuthManager) {
 
-class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
+    lateinit var stateListener: StateListener
 
-    override lateinit var stateListener: StateListener
-
-    override var state: State = LoggedOut()
+    var state: State = LoggedOut()
         private set(value) {
             field = value
             stateListener(value)
         }
 
-    override fun loginOrRegister(email: String, password: String) {
+    fun loginOrRegister(email: String, password: String) {
 
         if (!validateEmail(email)) {
             state = Error(emailError = R.string.error_invalid_email)
@@ -58,7 +51,7 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
         return Regex("^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})\$").matches(email)
     }
 
-    override fun logout() {
+    fun logout() {
         authManager.logout()
         state = State.LoggedOut()
     }

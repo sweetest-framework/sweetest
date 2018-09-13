@@ -8,7 +8,7 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import com.mysugr.android.testing.example.dependency.DependencyFramework
-import com.mysugr.android.testing.example.app.view.ILoginViewModel
+import com.mysugr.android.testing.example.app.view.LoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
 import com.mysugr.android.testing.example.app.view.StateListener
@@ -24,7 +24,7 @@ class LoginActivityTest {
     @get:Rule
     var activityTestRule = ActivityTestRule(LoginActivity::class.java, true, false)
 
-    private lateinit var loginViewModel: ILoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
     private lateinit var stateListener: StateListener
 
     private var state: State = LoggedOut()
@@ -36,7 +36,7 @@ class LoginActivityTest {
     @Before
     fun before() {
 
-        loginViewModel = mock(ILoginViewModel::class.java)
+        loginViewModel = mock(LoginViewModel::class.java)
 
         DependencyFramework.loginViewModel = loginViewModel
 

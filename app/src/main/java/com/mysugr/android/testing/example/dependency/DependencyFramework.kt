@@ -1,6 +1,5 @@
 package com.mysugr.android.testing.example.dependency
 
-import com.mysugr.android.testing.example.app.view.ILoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGateway
@@ -10,8 +9,8 @@ import com.mysugr.android.testing.example.state.SessionStore
 
 object DependencyFramework {
 
-    private var _loginViewModel: ILoginViewModel? = null
-    var loginViewModel: ILoginViewModel
+    private var _loginViewModel: LoginViewModel? = null
+    var loginViewModel: LoginViewModel
         get() {
             if (_loginViewModel == null) {
                 _loginViewModel = LoginViewModel(authManager)
