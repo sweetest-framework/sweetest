@@ -5,19 +5,24 @@ import java.util.*
 
 typealias AuthToken = String
 
+interface BackendGateway {
+    fun checkEmail(email: String): Boolean
+    fun login(email: String, password: String): AuthToken
+    fun register(email: String, password: String): AuthToken
+    fun getUserData(authToken: AuthToken): User
+}
+
 /**
  * Simulates access to dummy backend
  */
-class BackendGateway {
+class DummyBackendGateway : BackendGateway {
 
-    var authToken: AuthToken? = null
-
-    fun checkEmail(email: String): Boolean {
+    override fun checkEmail(email: String): Boolean {
         Thread.sleep(1000L)
         return DummyBackend.userExists(email)
     }
 
-    fun login(email: String, password: String): AuthToken {
+    override fun login(email: String, password: String): AuthToken {
         Thread.sleep(1000L)
         val remoteUser = DummyBackend.getUser(email)
         if (remoteUser == null || remoteUser.password != password) {
@@ -32,7 +37,7 @@ class BackendGateway {
         return UUID.randomUUID().toString()
     }
 
-    fun register(email: String, password: String): AuthToken {
+    override fun register(email: String, password: String): AuthToken {
         Thread.sleep(1000L)
         check(!DummyBackend.userExists(email)) { "Can't register already existing user" }
         val remoteUser = DummyBackend.User(email, password)
@@ -40,7 +45,7 @@ class BackendGateway {
         return loginInternal(remoteUser)
     }
 
-    fun getUserData(): User {
+    override fun getUserData(authToken: AuthToken): User {
         return DummyBackend.loggedInUser?.toLocalUser() ?: throw NotLoggedInException()
     }
 

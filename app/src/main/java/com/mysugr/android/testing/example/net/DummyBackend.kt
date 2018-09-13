@@ -4,7 +4,7 @@ import com.mysugr.android.testing.example.user.User
 
 object DummyBackend {
 
-    var loggedInUser: User? = null
+    var loggedInUser: User? = null // TODO move to gateway
 
     private val existingUsers = mutableListOf(
             User("test1@test.com", "secure1"),

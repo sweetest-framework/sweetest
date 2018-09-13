@@ -20,14 +20,14 @@ class SessionStoreSteps(testContext: TestContext)
 
     fun thenSessionIsStarted() {
         val expected = User(user.email)
-        verify(instance).beginSession(expected)
+        verify(instance).beginSession(user.authToken, expected)
     }
 
     fun thenSessionIsNotStarted() {
-        verify(instance, never()).beginSession(any() ?: User("dummy"))
+        verify(instance, never()).beginSession(any() ?: "", any() ?: User("dummy"))
     }
 
-    fun thenSessionEnded() {
+    fun thenSessionIsEnded() {
         verify(instance).endSession()
     }
 

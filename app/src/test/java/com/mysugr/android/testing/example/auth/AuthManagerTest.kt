@@ -25,7 +25,6 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
         backendGateway {
             thenEmailIsChecked()
             thenLoggingIn()
-            thenCorrectAuthTokenIsSet()
         }
     }
 
@@ -39,7 +38,6 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
             backendGateway {
                 thenEmailIsChecked()
                 thenLoggingIn()
-                thenNoAuthTokenIsSet()
             }
         }
     }
@@ -52,15 +50,13 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
         backendGateway {
             thenEmailIsChecked()
             thenRegistered()
-            thenCorrectAuthTokenIsSet()
         }
     }
 
     @Test
     fun `Logging out`() {
         sut.whenLoggingOut()
-        backendGateway.thenAuthTokenIsReset()
-        sessionStore.thenSessionEnded()
+        sessionStore.thenSessionIsEnded()
     }
     
 }

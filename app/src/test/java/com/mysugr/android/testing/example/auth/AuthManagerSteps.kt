@@ -23,9 +23,9 @@ class AuthManagerSteps(testContext: TestContext)
             `when`(instance.loginOrRegister(anyString(), anyString())).then {
                 if (user.correctPassword) {
                     if (user.exists) {
-                        AuthManager.LoginResult.LOGGED_IN
+                        AuthManager.LoginOrRegisterResult.LOGGED_IN
                     } else {
-                        AuthManager.LoginResult.REGISTERED
+                        AuthManager.LoginOrRegisterResult.REGISTERED
                     }
                 } else {
                     throw AuthManager.WrongPasswordException()

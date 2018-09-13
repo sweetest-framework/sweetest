@@ -4,6 +4,7 @@ import com.mysugr.android.testing.example.app.view.ILoginViewModel
 import com.mysugr.android.testing.example.app.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGateway
+import com.mysugr.android.testing.example.net.DummyBackendGateway
 import com.mysugr.android.testing.example.state.SessionStore
 
 object DependencyFramework {
@@ -36,7 +37,7 @@ object DependencyFramework {
     var backendGateway: BackendGateway
         get() {
             if (_backendGateway == null) {
-                _backendGateway = BackendGateway()
+                _backendGateway = DummyBackendGateway()
             }
             return _backendGateway!!
         }

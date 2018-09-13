@@ -7,36 +7,31 @@ class AuthManager(
         private val backendGateway: BackendGateway,
         private val sessionStore: SessionStore) {
 
-    fun loginOrRegister(email: String, password: String): LoginResult {
+    fun loginOrRegister(email: String, password: String): LoginOrRegisterResult {
         val exists = backendGateway.checkEmail(email)
-        val result = if (exists) {
+        val authToken: AuthToken
+        val result: LoginOrRegisterResult
+        if (exists) {
             try {
                 authToken = backendGateway.login(email, password)
             } catch (exception: UsernameOrPasswordWrongException) {
                 throw WrongPasswordException()
             }
-            LoginResult.LOGGED_IN
+            result = LoginOrRegisterResult.LOGGED_IN
         } else {
             authToken = backendGateway.register(email, password)
-            LoginResult.REGISTERED
+            result = LoginOrRegisterResult.REGISTERED
         }
-        val user = backendGateway.getUserData()
-        sessionStore.beginSession(user)
+        val user = backendGateway.getUserData(authToken)
+        sessionStore.beginSession(authToken, user)
         return result
     }
 
-    private var authToken: AuthToken? = null
-        set(value) {
-            field = value
-            backendGateway.authToken = value
-        }
-
     fun logout() {
         sessionStore.endSession()
-        authToken = null
     }
 
-    enum class LoginResult {
+    enum class LoginOrRegisterResult {
         LOGGED_IN,
         REGISTERED
     }

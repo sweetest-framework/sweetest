@@ -5,6 +5,7 @@ import com.mysugr.android.testing.example.user.User
 import com.mysugr.android.testing.example.user.UserSteps
 import com.mysugr.testing.framework.base.*
 import com.mysugr.testing.framework.context.TestContext
+import org.mockito.ArgumentMatchers
 
 import org.mockito.Mockito.*
 
@@ -31,7 +32,7 @@ class BackendGatewaySteps(testContext: TestContext)
             }
         }
         `when`(instance.register(anyString(), anyString())).then { user.authToken }
-        `when`(instance.getUserData()).then { User(user.email) }
+        `when`(instance.getUserData(anyString())).then { User(user.email) }
     }
 
     fun thenEmailIsChecked() {
@@ -44,18 +45,6 @@ class BackendGatewaySteps(testContext: TestContext)
 
     fun thenRegistered() {
         verify(instance).register(user.email, user.password)
-    }
-
-    fun thenCorrectAuthTokenIsSet() {
-        verify(instance).authToken = user.authToken
-    }
-
-    fun thenAuthTokenIsReset() {
-        verify(instance).authToken = null
-    }
-
-    fun thenNoAuthTokenIsSet() {
-        verify(instance, never()).authToken = anyString()
     }
 
 }

@@ -8,7 +8,7 @@ import com.mysugr.android.testing.example.auth.AuthManager
 
 typealias StateListener = (LoginViewModel.State) -> Unit
 
-interface ILoginViewModel {
+interface ILoginViewModel { // TODO not needed any more
     var stateListener: StateListener
     val state: LoginViewModel.State
     fun loginOrRegister(email: String, password: String)
@@ -37,11 +37,11 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
             return
         }
 
-        state = State.Busy()
+        state = Busy()
         thread {
             state = try {
                 val result = authManager.loginOrRegister(email, password)
-                val isNewUser = result == AuthManager.LoginResult.REGISTERED
+                val isNewUser = result == AuthManager.LoginOrRegisterResult.REGISTERED
                 LoggedIn(isNewUser)
             } catch (exception: AuthManager.WrongPasswordException) {
                 Error(passwordError = R.string.error_incorrect_password)
@@ -59,8 +59,8 @@ class LoginViewModel(private val authManager: AuthManager) : ILoginViewModel {
     }
 
     override fun logout() {
-        state = State.LoggedOut()
         authManager.logout()
+        state = State.LoggedOut()
     }
 
     sealed class State(val loggedIn: Boolean) {

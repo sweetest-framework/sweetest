@@ -32,7 +32,6 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
         backendGateway {
             thenEmailIsChecked()
             thenLoggingIn()
-            thenCorrectAuthTokenIsSet()
         }
     }
 
@@ -48,7 +47,6 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
         backendGateway {
             thenEmailIsChecked()
             thenRegistered()
-            thenCorrectAuthTokenIsSet()
         }
     }
 
