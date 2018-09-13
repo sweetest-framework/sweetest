@@ -17,6 +17,8 @@ interface BackendGateway {
  */
 class DummyBackendGateway : BackendGateway {
 
+    private var loggedInUser: DummyBackend.User? = null
+
     override fun checkEmail(email: String): Boolean {
         Thread.sleep(1000L)
         return DummyBackend.userExists(email)
@@ -33,7 +35,7 @@ class DummyBackendGateway : BackendGateway {
     }
 
     private fun loginInternal(remoteUser: DummyBackend.User): AuthToken {
-        DummyBackend.loggedInUser = remoteUser
+        loggedInUser = remoteUser
         return UUID.randomUUID().toString()
     }
 
@@ -46,7 +48,7 @@ class DummyBackendGateway : BackendGateway {
     }
 
     override fun getUserData(authToken: AuthToken): User {
-        return DummyBackend.loggedInUser?.toLocalUser() ?: throw NotLoggedInException()
+        return loggedInUser?.toLocalUser() ?: throw NotLoggedInException()
     }
 
 }
