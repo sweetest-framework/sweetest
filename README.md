@@ -1,30 +1,33 @@
 # sweetest
 
-`sweetest` is a framework that helps you write test code that can also be **shared with
-[BDD](https://bit.ly/1JKQQ3h)** frameworks and does basic
-**dependency management** in test setups for you.
+`sweetest` is a Kotlin framework that helps you write test code for Java/Kotlin projects that can
+also be **shared with [BDD](https://bit.ly/1JKQQ3h)** frameworks and does convenient **dependency
+management** in test setups for you.
 
 It facilitates test code that
 
 1. is reusable ("don't repeat yourself")
-2. is readable
+2. readable
 3. has good architecture
-4. has better [documenting function](https://bit.ly/2Ne0DaH)
+4. and a better [documenting function](https://bit.ly/2Ne0DaH)
 
-Other benefits:
+Benefits:
 
-1. works with [mockito](https://site.mockito.org)
-2. allows sharing step definitions code with [BDD](https://bit.ly/1JKQQ3h) frameworks
-3. handles dependencies conveniently for testing like in [DI](https://bit.ly/1iy5nlE) frameworks
-4. open architecture (easy to extend and customise)
+1. Works with [mockito](https://site.mockito.org)
+2. Allows sharing step definitions code with [BDD](https://bit.ly/1JKQQ3h) frameworks and syncs
+   with the necessary initialization routine (tested with [Cucumber-JVM](https://bit.ly/2NhLt4s))
+3. Facilitates shared code between technology-facing and business-facing automated tests, too
+4. Handles dependencies conveniently for testing like in [DI](https://bit.ly/1iy5nlE) frameworks
+   and creates mock versions of them automatically where needed
+5. Open architecture (easy to extend and customise)
 
-## In this README you can read:
+## In this README:
 
-* Customise and contribute
-* How does it look?
-* First steps
-* Guidelines
-* License
+* [Customise and contribute](#customise-and-contribute)
+* [How does it look?](#how-does-it-look)
+* [Getting started](#getting-started)
+* [Guidelines](#guidelines)
+* [License](#license)
 
 Further details and references to related content will be available soon!
 
