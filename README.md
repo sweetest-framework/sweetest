@@ -15,16 +15,25 @@ Other benefits:
 
 1. works with [mockito](https://site.mockito.org)
 2. allows sharing step definitions code with [BDD](https://bit.ly/1JKQQ3h) frameworks
-3. handles dependencies like in [DI](https://bit.ly/1iy5nlE) frameworks
+3. handles dependencies conveniently for testing like in [DI](https://bit.ly/1iy5nlE) frameworks
 4. open architecture (easy to extend and customise)
 
 ## In this README you can read:
 
+* Customise and contribute
 * How does it look?
 * First steps
 * Guidelines
+* License
 
 Further details and references to related content will be available soon!
+
+## Customise and contribute
+
+When you're not satisfied with the API of the framework the base interfaces can easily be customised
+(these can be found in the `com.mysugr.sweetest.framework.base` package) and/or feel free to
+contribute – it's highly appreciated! That way we can work on a framework and an API that's even
+more usable and useful.
 
 ## How does it look?
 
@@ -194,3 +203,7 @@ examples from above as they are containing important details to understand
 * Use names that would read understandably in a test even for non-tech people.
 * Use `import com.mysugr.sweetest.framework.base.*` to make use of the `dependency` and `steps`
   functions as well as utilities which you might need for writing convenient test and steps code.
+
+## License
+
+This project is licensed under the Apache 2.0 license, see [LICENSE].
