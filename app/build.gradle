@@ -31,7 +31,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${versions.support}"
     implementation "com.android.support:design:${versions.support}"
 
-    testImplementation project(path: ':testing')
+    testImplementation project(path: ':sweetest')
     testImplementation "org.mockito:mockito-core:2.18.3"
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"

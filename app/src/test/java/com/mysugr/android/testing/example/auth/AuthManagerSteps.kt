@@ -2,11 +2,11 @@ package com.mysugr.android.testing.example.auth
 
 import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.user.UserSteps
-import com.mysugr.testing.framework.base.BaseSteps
-import com.mysugr.testing.framework.base.dependency
-import com.mysugr.testing.framework.base.steps
-import com.mysugr.testing.framework.context.TestContext
-import com.mysugr.testing.util.isMock
+import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.base.steps
+import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.util.isMock
 import org.mockito.Mockito.*
 
 class AuthManagerSteps(testContext: TestContext)

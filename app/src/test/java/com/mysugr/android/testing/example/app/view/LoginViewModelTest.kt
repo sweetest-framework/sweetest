@@ -3,7 +3,7 @@ package com.mysugr.android.testing.example.app.view
 import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManagerSteps
 import com.mysugr.android.testing.example.user.UserSteps
-import com.mysugr.testing.framework.base.*
+import com.mysugr.sweetest.framework.base.*
 import org.junit.Test
 
 import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*

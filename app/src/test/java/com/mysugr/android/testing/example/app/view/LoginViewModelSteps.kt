@@ -3,8 +3,8 @@ package com.mysugr.android.testing.example.app.view
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.user.UserSteps
-import com.mysugr.testing.framework.base.*
-import com.mysugr.testing.framework.context.TestContext
+import com.mysugr.sweetest.framework.base.*
+import com.mysugr.sweetest.framework.context.TestContext
 import org.junit.Assert.*
 
 class LoginViewModelSteps(testContext: TestContext)

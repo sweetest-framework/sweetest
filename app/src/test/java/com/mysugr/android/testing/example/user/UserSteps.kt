@@ -1,8 +1,8 @@
 package com.mysugr.android.testing.example.user
 
 import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
-import com.mysugr.testing.framework.base.BaseSteps
-import com.mysugr.testing.framework.context.TestContext
+import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.context.TestContext
 import java.util.*
 
 class UserSteps(testContext: TestContext)
