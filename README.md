@@ -209,4 +209,5 @@ examples from above as they are containing important details to understand
 
 ## License
 
-This project is licensed under the Apache 2.0 license, see [license file](LICENSE).
+This project is licensed under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0),
+also see [license file](LICENSE).
