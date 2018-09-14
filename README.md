@@ -103,7 +103,7 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 ```
 
 In order to tell the framework about all dependencies which can be put under test or can act as
-mocks you have specify them in the testing configuration:
+mocks you have to specify them in the testing configuration:
 
 ```
 val appModuleTestingConfiguration = moduleTestingConfiguration {
@@ -199,7 +199,7 @@ examples from above as they are containing important details to understand
 ## Guidelines
 
 * Steps should have one private property `instance`which contains the actual instance that's
-  controlled via the steps class
+  controlled via the steps class.
 * Use `given` (setup), `when` (interaction) and `then` (assertion) as prefixes for all public
   functions so the implementer can just start typing these keywords in order to narrow the
   auto-completion search down quickly.
@@ -209,4 +209,4 @@ examples from above as they are containing important details to understand
 
 ## License
 
-This project is licensed under the Apache 2.0 license, see [LICENSE].
+This project is licensed under the Apache 2.0 license, see [license file](LICENSE).
