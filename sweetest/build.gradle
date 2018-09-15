@@ -12,17 +12,3 @@ dependencies {
     api "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     api "io.cucumber:cucumber-junit:$versions.cucumber"
 }
-
-repositories {
-    mavenCentral()
-}
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
