@@ -1,9 +1,9 @@
-package com.mysugr.android.testing.example.app.view
+package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.app.R
 import kotlin.concurrent.thread
 
-import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
+import com.mysugr.android.testing.example.view.LoginViewModel.State.*
 import com.mysugr.android.testing.example.auth.AuthManager
 
 typealias StateListener = (LoginViewModel.State) -> Unit

@@ -1,10 +1,10 @@
-package com.mysugr.android.testing.example.app.view
+package com.mysugr.android.testing.example.view
 
-import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGatewaySteps
 import com.mysugr.android.testing.example.state.SessionStoreSteps
-import com.mysugr.android.testing.example.user.UserSteps
+import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.sweetest.framework.base.*
 
 import org.junit.Test
@@ -30,13 +30,13 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
         sessionStore.thenSessionIsStarted()
         backendGateway {
             thenEmailIsChecked()
-            thenLoggingIn()
+            thenLoggedIn()
         }
     }
 
     @Test
     fun `Log in as a new user`() {
-        user.exists = false
+        user.givenRequestedUserDoesntExist()
         loginViewModel {
             givenStateListenerConnected()
             whenLoggingIn()

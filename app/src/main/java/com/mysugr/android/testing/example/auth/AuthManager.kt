@@ -3,11 +3,11 @@ package com.mysugr.android.testing.example.auth
 import com.mysugr.android.testing.example.net.*
 import com.mysugr.android.testing.example.state.SessionStore
 
-class AuthManager(
+open class AuthManager(
         private val backendGateway: BackendGateway,
         private val sessionStore: SessionStore) {
 
-    fun loginOrRegister(email: String, password: String): LoginOrRegisterResult {
+    open fun loginOrRegister(email: String, password: String): LoginOrRegisterResult {
         val exists = backendGateway.checkEmail(email)
         val authToken: AuthToken
         val result: LoginOrRegisterResult

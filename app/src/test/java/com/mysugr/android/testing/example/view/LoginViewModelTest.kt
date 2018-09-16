@@ -1,12 +1,12 @@
-package com.mysugr.android.testing.example.app.view
+package com.mysugr.android.testing.example.view
 
-import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManagerSteps
-import com.mysugr.android.testing.example.user.UserSteps
+import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.sweetest.framework.base.*
 import org.junit.Test
 
-import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
+import com.mysugr.android.testing.example.view.LoginViewModel.State.*
 
 class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
@@ -30,18 +30,18 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     @Test
     fun `Login with non-existent email`() {
-        user.exists = false
+        user.givenRequestedUserDoesntExist()
         sut {
             whenLoggingIn()
             whenWaitForState(LoggedIn::class.java)
         }
         authManager.thenLoginOrRegisterIsCalled()
-        sut.thenStateIsLoggedInWithNewUser()
+        sut.thenStateIsLoggedInAsNewUser()
     }
 
     @Test
     fun `Login with wrong password`() {
-        user.correctPassword = false
+        user.givenEnteredPasswordIsIncorrect()
         sut {
             whenLoggingIn()
             whenWaitForState(Error::class.java)

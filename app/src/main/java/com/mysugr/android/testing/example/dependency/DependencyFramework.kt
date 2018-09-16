@@ -1,6 +1,6 @@
 package com.mysugr.android.testing.example.dependency
 
-import com.mysugr.android.testing.example.app.view.LoginViewModel
+import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.net.DummyBackendGateway
