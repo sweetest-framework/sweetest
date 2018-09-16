@@ -4,11 +4,10 @@ apply plugin: 'kotlin'
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
-
     api "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
-    api "junit:junit:4.12"
-    api "org.mockito:mockito-core:2.18.3"
+    api "org.mockito:mockito-core:$versions.mockito"
+    api "io.cucumber:cucumber-junit:$versions.cucumber"
     api "io.cucumber:cucumber-jvm:$versions.cucumber"
     api "io.cucumber:cucumber-picocontainer:$versions.cucumber"
-    api "io.cucumber:cucumber-junit:$versions.cucumber"
+    api "junit:junit:4.12"
 }

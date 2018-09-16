@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -24,24 +22,21 @@ android {
 }
 
 dependencies {
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation"org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-    implementation "com.android.support:appcompat-v7:${versions.support}"
-    implementation "com.android.support:design:${versions.support}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "com.android.support:appcompat-v7:$versions.support"
+    implementation "com.android.support:design:$versions.support"
 
     testImplementation project(path: ':sweetest')
-    testImplementation "org.mockito:mockito-core:2.18.3"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
+    testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
-    testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation 'junit:junit:4.12'
 
-    androidTestImplementation 'org.mockito:mockito-android:2.18.3'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:${versions.espresso}"
-    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:${versions.espresso}"
-
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$versions.espresso"
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
+    androidTestImplementation "org.mockito:mockito-android:$versions.mockito"
 }
