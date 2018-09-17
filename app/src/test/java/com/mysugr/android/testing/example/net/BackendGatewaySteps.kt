@@ -15,7 +15,7 @@ class BackendGatewaySteps(testContext: TestContext)
             .requireMock<BackendGateway>()
             .onSetUp(this::setUp)
 
-    val instance by dependency<BackendGateway>()
+    private val instance by dependency<BackendGateway>()
 
     private val user by steps<UserSteps>()
 
