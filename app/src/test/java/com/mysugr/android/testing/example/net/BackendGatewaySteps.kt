@@ -1,8 +1,8 @@
 package com.mysugr.android.testing.example.net
 
-import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.user.User
-import com.mysugr.android.testing.example.user.UserSteps
+import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.sweetest.framework.base.*
 import com.mysugr.sweetest.framework.context.TestContext
 
@@ -20,11 +20,14 @@ class BackendGatewaySteps(testContext: TestContext)
     private val user by steps<UserSteps>()
 
     private fun setUp() {
-        `when`(instance.checkEmail(anyString())).then { user.exists }
+        `when`(instance.checkEmail(anyString())).then {
+            val email = it.arguments[0] as String
+            user.isUserExisting(email)
+        }
         `when`(instance.login(anyString(), anyString())).then {
             val email = it.arguments[0] as String
             val password = it.arguments[1] as String
-            if (email == UserSteps.EMAIL && password == UserSteps.PASSWORD) {
+            if (user.isUserExisting(email) && user.isPasswordCorrect(password)) {
                 user.authToken
             } else {
                 throw UsernameOrPasswordWrongException()
@@ -38,12 +41,12 @@ class BackendGatewaySteps(testContext: TestContext)
         verify(instance).checkEmail(user.email)
     }
 
-    fun thenLoggingIn() {
-        verify(instance).login(user.email, user.password)
+    fun thenLoggedIn(email: String? = null) {
+        verify(instance).login(email ?: user.email, user.password)
     }
 
-    fun thenRegistered() {
-        verify(instance).register(user.email, user.password)
+    fun thenRegistered(email: String? = null, password: String? = null) {
+        verify(instance).register(email ?: user.email, password ?: user.password)
     }
 
 }

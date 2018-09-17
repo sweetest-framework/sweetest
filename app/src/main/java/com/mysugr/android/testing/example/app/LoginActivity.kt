@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.view.View
 import com.mysugr.android.testing.example.dependency.DependencyFramework
 
-import com.mysugr.android.testing.example.app.view.LoginViewModel
-import com.mysugr.android.testing.example.app.view.LoginViewModel.State
-import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
+import com.mysugr.android.testing.example.view.LoginViewModel
+import com.mysugr.android.testing.example.view.LoginViewModel.State
+import com.mysugr.android.testing.example.view.LoginViewModel.State.*
 
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.logging.Level

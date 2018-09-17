@@ -8,10 +8,10 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
 import com.mysugr.android.testing.example.dependency.DependencyFramework
-import com.mysugr.android.testing.example.app.view.LoginViewModel
-import com.mysugr.android.testing.example.app.view.LoginViewModel.State
-import com.mysugr.android.testing.example.app.view.LoginViewModel.State.*
-import com.mysugr.android.testing.example.app.view.StateListener
+import com.mysugr.android.testing.example.view.LoginViewModel
+import com.mysugr.android.testing.example.view.LoginViewModel.State
+import com.mysugr.android.testing.example.view.LoginViewModel.State.*
+import com.mysugr.android.testing.example.view.StateListener
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

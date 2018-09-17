@@ -1,15 +1,15 @@
 package com.mysugr.android.testing.example.auth
 
-import com.mysugr.android.testing.example.app.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.net.BackendGatewaySteps
 import com.mysugr.android.testing.example.state.SessionStoreSteps
-import com.mysugr.android.testing.example.user.UserSteps
 import com.mysugr.sweetest.framework.base.*
 
 import org.junit.Test
 
 class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
-    
+
     override fun configure() = super.configure()
             .requireReal<AuthManager>()
 
@@ -17,34 +17,34 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val sut by steps<AuthManagerSteps>()
     private val sessionStore by steps<SessionStoreSteps>()
     private val backendGateway by steps<BackendGatewaySteps>()
-    
+
     @Test
     fun `Login as existing user`() {
         sut.whenLoggingInOrRegistering()
         sessionStore.thenSessionIsStarted()
         backendGateway {
             thenEmailIsChecked()
-            thenLoggingIn()
+            thenLoggedIn()
         }
     }
 
     @Test(expected = AuthManager.WrongPasswordException::class)
     fun `Login as existing user with wrong password`() {
-        user.correctPassword = false
+        user.givenEnteredPasswordIsIncorrect()
         try {
             sut.whenLoggingInOrRegistering()
         } finally {
             sessionStore.thenSessionIsNotStarted()
             backendGateway {
                 thenEmailIsChecked()
-                thenLoggingIn()
+                thenLoggedIn()
             }
         }
     }
 
     @Test
     fun `Register new user`() {
-        user.exists = false
+        user.givenRequestedUserDoesntExist()
         sut.whenLoggingInOrRegistering()
         sessionStore.thenSessionIsStarted()
         backendGateway {
@@ -58,5 +58,5 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
         sut.whenLoggingOut()
         sessionStore.thenSessionIsEnded()
     }
-    
+
 }
