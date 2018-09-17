@@ -20,8 +20,6 @@ class AuthManagerSteps(testContext: TestContext)
     private val instance by dependency<AuthManager>()
     private val user by steps<UserSteps>()
 
-    var loginOrRegisterThrowable: Throwable? = null
-
     private fun setUp() {
         if (instance.isMock) {
             `when`(instance.loginOrRegister(anyString(), anyString())).then {
@@ -50,10 +48,6 @@ class AuthManagerSteps(testContext: TestContext)
 
     fun thenLoginOrRegisterIsCalled() {
         verify(instance).loginOrRegister(user.email, user.password)
-    }
-
-    fun thenLoginOrRegisterThrows() {
-        assertNotNull(loginOrRegisterThrowable)
     }
 
 }
