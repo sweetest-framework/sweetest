@@ -13,12 +13,12 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
      * [SessionStore] is treated as a dependency that can't be put under unit test, but it is
      * used as a mocked version and supplied to [AuthManager]'s constructor
      */
-    dependency mockOnly of<SessionStore>() // SessionStore works just as mock in tests
+    dependency mockOnly of<SessionStore>()
 
     /**
      * [BackendGateway] is treated like [SessionStore]
      */
-    dependency mockOnly of<BackendGateway>() // BackendGateway works just as mock in tests
+    dependency mockOnly of<BackendGateway>()
 
     /**
      * AuthManager can be both a mock (when [LoginViewModel] is tested) or real (when [AuthManager]
