@@ -40,10 +40,6 @@ class AuthManagerSteps(testContext: TestContext)
         }
     }
 
-    @Before("@login-integration")
-    fun dummy() {
-    }
-
     fun whenLoggingInOrRegistering(email: String? = null, password: String? = null) {
         instance.loginOrRegister(email ?: user.email, password ?: user.password)
     }
