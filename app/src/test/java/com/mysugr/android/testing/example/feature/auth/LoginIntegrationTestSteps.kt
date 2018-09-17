@@ -9,7 +9,6 @@ import com.mysugr.android.testing.example.view.LoginViewModelSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
-import cucumber.api.PendingException
 import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
@@ -30,7 +29,7 @@ class LoginIntegrationTestSteps(testContext: TestContext)
     private val user by steps<UserSteps>()
 
     @Before("@login-integration")
-    fun dummy() {}
+    fun dummy() {} // forces instantiation of this class when run with Cucumber
 
     @When("^trying to login or register with email address \"([^\"]*)\" and password \"([^\"]*)\"$")
     fun whenLoginOrRegister(email: String, password: String) {

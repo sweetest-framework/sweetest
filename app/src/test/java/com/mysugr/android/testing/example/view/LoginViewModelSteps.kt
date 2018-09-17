@@ -27,9 +27,6 @@ class LoginViewModelSteps(testContext: TestContext)
         }
     }
 
-    @Before("@login-integration")
-    fun dummy() {}
-
     fun whenLoggingIn() {
         instance.loginOrRegister(user.email, user.password)
     }

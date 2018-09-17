@@ -11,7 +11,7 @@ class UserSteps(testContext: TestContext)
     : BaseSteps(testContext, appModuleTestingConfiguration) {
 
     @Before("@login-integration")
-    fun dummy() {}
+    fun dummy() {} // forces instantiation of this class when run with Cucumber
 
     var existingEmail = "test@test.com"
     var nonExistingEmail = "other@test.com"
