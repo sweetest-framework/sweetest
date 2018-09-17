@@ -11,3 +11,5 @@ dependencies {
     api "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     api "junit:junit:4.12"
 }
+
+apply from: 'publish.gradle'

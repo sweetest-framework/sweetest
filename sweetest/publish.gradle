@@ -1,0 +1,62 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+def libName = 'sweetest'
+def libGroup = 'com.mysugr.' + libName
+def libSite = 'https://github.com/mysugr/' + libName
+def libGit = libSite + '.git'
+def libTracker = libSite + '/issues'
+
+group libGroup
+version '1.0.0'
+
+Properties properties = new Properties()
+properties.load(rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user properties.getProperty('bintray_user')
+    key properties.getProperty('bintray_key')
+    configurations = ['archives']
+    pkg {
+        repo = 'maven'
+        name = libName
+        websiteUrl = libSite
+        issueTrackerUrl = libTracker
+        vcsUrl = libGit
+        licenses = ['Apache-2.0']
+        publish = true
+        publicDownloadNumbers = true
+    }
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging 'aar'
+            groupId libGroup
+            artifactId libName
+            name libName
+            url libSite
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+            scm {
+                connection libGit
+                developerConnection libGit
+                url libSite
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
