@@ -20,6 +20,7 @@ bintray {
     pkg {
         repo = 'maven'
         name = libName
+        userOrg = 'mysugr'
         websiteUrl = libSite
         issueTrackerUrl = libTracker
         vcsUrl = libGit
