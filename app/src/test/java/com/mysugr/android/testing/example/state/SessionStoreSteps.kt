@@ -16,7 +16,7 @@ class SessionStoreSteps(testContext: TestContext)
 
     private val user by steps<UserSteps>()
 
-    val instance by dependency<SessionStore>()
+    private val instance by dependency<SessionStore>()
 
     fun thenSessionIsStarted(email: String? = null) {
         val expected = User(email ?: user.email)

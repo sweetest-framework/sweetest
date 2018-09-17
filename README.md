@@ -190,7 +190,7 @@ examples from above as they are containing important details to understand
 1. For each module create a module testing configuration. Note that it's not a class but a global
    property. Create an entry for each dependency you want to put under test, including the classes
    under test themselves:<br>
-   `dependency [any | mockOnly | realOnly] \[of<[Type]> | initializer { [object creation] }]`
+   `dependency [any | mockOnly | realOnly] [of<[Type]> | initializer { [object creation] }]`
 2. Create a steps class for each dependency, including the class under test (we usually name them
    `[class under test]Steps`).
 3. Finally you can create the final test. Here you create references to the steps objects whose
