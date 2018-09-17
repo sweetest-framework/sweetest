@@ -21,11 +21,11 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
     @Test
     fun `Login as existing user`() {
         sut.whenLoggingInOrRegistering()
-        sessionStore.thenSessionIsStarted()
         backendGateway {
             thenEmailIsChecked()
-            thenLoggedIn()
+            thenLoginAttempted()
         }
+        sessionStore.thenSessionIsStarted()
     }
 
     @Test(expected = AuthManager.WrongPasswordException::class)
@@ -34,11 +34,11 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
         try {
             sut.whenLoggingInOrRegistering()
         } finally {
-            sessionStore.thenSessionIsNotStarted()
             backendGateway {
                 thenEmailIsChecked()
-                thenLoggedIn()
+                thenLoginAttempted()
             }
+            sessionStore.thenSessionIsNotStarted()
         }
     }
 
@@ -46,11 +46,11 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
     fun `Register new user`() {
         user.givenRequestedUserDoesntExist()
         sut.whenLoggingInOrRegistering()
-        sessionStore.thenSessionIsStarted()
         backendGateway {
             thenEmailIsChecked()
             thenRegistered()
         }
+        sessionStore.thenSessionIsStarted()
     }
 
     @Test

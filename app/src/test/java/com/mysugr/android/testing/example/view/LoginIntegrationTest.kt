@@ -30,7 +30,7 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
         sessionStore.thenSessionIsStarted()
         backendGateway {
             thenEmailIsChecked()
-            thenLoggedIn()
+            thenLoginAttempted()
         }
     }
 

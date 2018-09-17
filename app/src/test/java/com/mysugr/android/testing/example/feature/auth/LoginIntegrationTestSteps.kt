@@ -55,7 +55,7 @@ class LoginIntegrationTestSteps(testContext: TestContext)
         loginViewModel.whenWaitForState(LoginViewModel.State.LoggedIn::class.java)
         loginViewModel.thenStateIsLoggedInAsExistingUser()
         sessionStore.thenSessionIsStarted(email)
-        backendGateway.thenLoggedIn(email)
+        backendGateway.thenLoginAttempted(email)
     }
 
     @Then("^the user \"([^\"]*)\" is logged in as a new user$")

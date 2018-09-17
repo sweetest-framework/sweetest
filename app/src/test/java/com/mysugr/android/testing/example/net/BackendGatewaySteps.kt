@@ -41,7 +41,7 @@ class BackendGatewaySteps(testContext: TestContext)
         verify(instance).checkEmail(user.email)
     }
 
-    fun thenLoggedIn(email: String? = null) {
+    fun thenLoginAttempted(email: String? = null) {
         verify(instance).login(email ?: user.email, user.password)
     }
 
