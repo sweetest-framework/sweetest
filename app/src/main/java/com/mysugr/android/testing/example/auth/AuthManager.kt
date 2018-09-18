@@ -1,6 +1,8 @@
 package com.mysugr.android.testing.example.auth
 
-import com.mysugr.android.testing.example.net.*
+import com.mysugr.android.testing.example.net.AuthToken
+import com.mysugr.android.testing.example.net.BackendGateway
+import com.mysugr.android.testing.example.net.UsernameOrPasswordWrongException
 import com.mysugr.android.testing.example.state.SessionStore
 
 open class AuthManager(
@@ -37,5 +39,4 @@ open class AuthManager(
     }
 
     class WrongPasswordException : Exception()
-
 }

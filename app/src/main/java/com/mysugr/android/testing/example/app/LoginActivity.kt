@@ -17,8 +17,8 @@ import java.util.logging.Logger
 
 class LoginActivity : AppCompatActivity() {
 
-    private var logger = Logger.getLogger(this::class.java.simpleName)
-    private var viewModel = DependencyFramework.loginViewModel
+    private val logger = Logger.getLogger(this::class.java.simpleName)
+    private val viewModel = DependencyFramework.loginViewModel
 
     init {
         viewModel.stateListener = { this.runOnUiThread { onStateChange(it) } }
@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun updateView(state: State) {
+    private fun updateView(state: State) {
         login_progress.visibility = if (state is Busy) View.VISIBLE else View.GONE
         login_form.visibility = if (state is LoggedOut || state is Error) View.VISIBLE else
             View.GONE

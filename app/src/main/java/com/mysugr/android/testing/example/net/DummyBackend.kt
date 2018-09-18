@@ -2,6 +2,9 @@ package com.mysugr.android.testing.example.net
 
 import com.mysugr.android.testing.example.user.User
 
+/**
+ * Simulates access to dummy backend
+ */
 object DummyBackend {
 
     private val existingUsers = mutableListOf(
@@ -18,5 +21,4 @@ object DummyBackend {
     ) {
         fun toLocalUser() = User(email)
     }
-
 }
