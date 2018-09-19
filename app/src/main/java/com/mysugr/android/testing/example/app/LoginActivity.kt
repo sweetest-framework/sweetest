@@ -17,8 +17,8 @@ import java.util.logging.Logger
 
 class LoginActivity : AppCompatActivity() {
 
-    private var logger = Logger.getLogger(this::class.java.simpleName)
-    private var viewModel = DependencyFramework.loginViewModel
+    private val logger = Logger.getLogger(this::class.java.simpleName)
+    private val viewModel = DependencyFramework.loginViewModel
 
     init {
         viewModel.stateListener = { this.runOnUiThread { onStateChange(it) } }
@@ -42,12 +42,9 @@ class LoginActivity : AppCompatActivity() {
     private fun onStateChange(state: LoginViewModel.State) {
         logger.log(Level.INFO, "State: $state")
         updateView(state)
-        if (state is LoggedIn) {
-            //showWelcomeDialog(state)
-        }
     }
 
-    fun updateView(state: State) {
+    private fun updateView(state: State) {
         login_progress.visibility = if (state is Busy) View.VISIBLE else View.GONE
         login_form.visibility = if (state is LoggedOut || state is Error) View.VISIBLE else
             View.GONE
@@ -61,16 +58,4 @@ class LoginActivity : AppCompatActivity() {
             message.text = ""
         }
     }
-
-    private fun showWelcomeDialog(state: LoggedIn) {
-
-        val title = if (state.isNewUser) "Your are now registered" else "Your are logged in"
-        val message = if (state.isNewUser) "Welcome to our app!" else "Welcome back!"
-        AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("OK") { _: DialogInterface?, _: Int -> }
-                .show()
-    }
-
 }

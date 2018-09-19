@@ -18,5 +18,4 @@ object DummyBackend {
     ) {
         fun toLocalUser() = User(email)
     }
-
 }
