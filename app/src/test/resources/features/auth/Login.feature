@@ -13,15 +13,11 @@ Feature: Login, registration and logout
     When trying to login or register with email address "test@test.com" and password "wrongpass"
     Then the user can't enter the app
 
-  Scenario: Non-existent user
-    When trying to login or register with email address "unknown@test.com" and password "somepass"
-    Then a new user with email "unknown@test.com" and password "somepass" is registered
-    Then the user "unknown@test.com" is logged in as a new user
-
-  Scenario: Password too short
-    When trying to login or register with email address "unknown@test.com" and password "short"
+  Scenario Outline: Invalid email address
+    When trying to login or register with email address "<email>"
     Then the user can't enter the app
-
-  Scenario: Invalid email address
-    When trying to login or register with email address "unknowntest.com"
-    Then the user can't enter the app
+    Examples:
+      | email       |
+      | ajehf@.com  |
+      | wrong.net   |
+      | @sth.org    |
