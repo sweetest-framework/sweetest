@@ -185,7 +185,7 @@ In this class you can see mocking/stubbing, interaction (`when...`) and assertio
 
 ## Setup
 
-In your project's gradle file please add the following line in the `dependencies` section:
+In your module's Gradle file please add the following line in the `dependencies` section:
 
 ```testImplementation 'com.mysugr.sweetest:sweetest:1.0.0'```
 
