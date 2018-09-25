@@ -25,6 +25,7 @@ Benefits:
 
 * [Customise and contribute](#customise-and-contribute)
 * [How does it look?](#how-does-it-look)
+* [Setup](#setup)
 * [Getting started](#getting-started)
 * [Guidelines](#guidelines)
 * [License](#license)
@@ -181,6 +182,14 @@ class AuthManagerSteps(testContext: TestContext)
 ```
 
 In this class you can see mocking/stubbing, interaction (`when...`) and assertion (`then...`) code.
+
+## Setup
+
+In your project's gradle file please add the following line in the `dependencies` section:
+
+```testImplementation 'com.mysugr.sweetest:sweetest:1.0.0'```
+
+If the dependency can't be found make sure you have `jcenter()` in the `repositories` section.
 
 ## Getting started
 
