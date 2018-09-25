@@ -3,7 +3,6 @@ package com.mysugr.android.testing.example.state
 import com.mysugr.android.testing.example.net.AuthToken
 import com.mysugr.android.testing.example.user.User
 
-
 interface SessionStore {
     val session: Session
     val isStarted: Boolean
@@ -29,5 +28,4 @@ class DummySessionStore : SessionStore {
     override fun endSession() {
         _session = null
     }
-
 }

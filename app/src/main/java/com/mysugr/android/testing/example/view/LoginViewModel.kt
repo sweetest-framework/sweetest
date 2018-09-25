@@ -63,5 +63,4 @@ class LoginViewModel(private val authManager: AuthManager) {
                 State(false)
         data class LoggedIn(val isNewUser: Boolean) : State(true)
     }
-
 }
