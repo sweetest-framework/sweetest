@@ -219,7 +219,19 @@ examples from above as they are containing important details to understand
 
 ## IntelliJ live templates
 
-<img src="readme/ssteps.gif">
+To make good for added overhead we can make use of IntelliJ's advanced refactoring tools, but on
+top of that you can also use live templates to make things even easier:
+
+<img src="readme/live-remplates-ssteps.gif">
+
+To use them please download these [exported IntelliJ settings](tools/live-templates.jar) and import
+them into your IDE at `File / Import settings` (make sure to just check live templates). After
+the import you can see them in the settings at `Editor / Live Templates`:
+
+<img src="readme/live-templates-settings.png">
+
+You can use the templates by beginning to type the abbreviations as shown in the image above
+and hitting the enter key.
 
 ## License
 
