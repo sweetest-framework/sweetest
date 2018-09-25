@@ -28,6 +28,7 @@ Benefits:
 * [Setup](#setup)
 * [Getting started](#getting-started)
 * [Guidelines](#guidelines)
+* [IntelliJ live templates](#intellij-live-templates)
 * [License](#license)
 
 Further details and references to related content will be available soon!
@@ -215,6 +216,10 @@ examples from above as they are containing important details to understand
 * Use names that would read understandably in a test even for non-tech people.
 * Use `import com.mysugr.sweetest.framework.base.*` to make use of the `dependency` and `steps`
   functions as well as utilities which you might need for writing convenient test and steps code.
+
+## IntelliJ live templates
+
+<img src="readme/ssteps.gif">
 
 ## License
 
