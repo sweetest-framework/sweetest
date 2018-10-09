@@ -21,6 +21,11 @@ Benefits:
    and creates mock versions of them automatically where needed
 5. Open architecture (easy to extend and customise)
 
+Further resources:
+
+- [mySugr's journey to "sweetest"](http://bit.ly/sweetest-journey)
+- [Introduction – create tests you actually love working with](http://bit.ly/sweetest-intro)
+
 ## In this README:
 
 * [Customise and contribute](#customise-and-contribute)
