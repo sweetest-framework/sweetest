@@ -1,5 +1,7 @@
 # sweetest
 
+[![CircleCI](https://circleci.com/gh/mysugr/sweetest.svg?style=svg&circle-token=8884f46e5d2ab70e5547e78375a8ab4ccea33729)](https://circleci.com/gh/mysugr/sweetest)
+
 `sweetest` is a Kotlin framework that helps you write test code for Java/Kotlin projects that can
 also be **shared with [BDD](https://bit.ly/1JKQQ3h)** frameworks and does convenient **dependency
 management** in test setups for you.
