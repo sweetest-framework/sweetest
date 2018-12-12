@@ -5,16 +5,16 @@ import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
 class DependencyState<T : Any>(
-    private val initializerContext: DependencyInitializerContext,
-    val configuration: DependencyConfiguration<T>,
-    realInitializer: DependencyInitializer<T>? = null,
-    mode: DependencyMode? = null
+        private val initializerContext: DependencyInitializerContext,
+        val configuration: DependencyConfiguration<T>,
+        initializer: DependencyInitializer<T>? = null,
+        mode: DependencyMode? = null
 ) {
 
     private var instanceField: T? = null
     private var modeField: DependencyMode? = mode
 
-    var realInitializer: DependencyInitializer<T>? = realInitializer
+    var realInitializer: DependencyInitializer<T>? = initializer
         ?: configuration.defaultRealInitializer
 
     var realInitializerUnknown: DependencyInitializer<*>?
@@ -23,7 +23,7 @@ class DependencyState<T : Any>(
         }
         get() = realInitializer
 
-    var mockInitializer: DependencyInitializer<T>? = realInitializer
+    var mockInitializer: DependencyInitializer<T>? = initializer
         ?: configuration.defaultMockInitializer
 
     var mockInitializerUnknown: DependencyInitializer<*>?
