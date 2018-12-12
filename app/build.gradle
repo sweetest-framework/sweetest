@@ -27,7 +27,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:$versions.support"
     implementation "com.android.support:design:$versions.support"
 
-    testImplementation project(path: ':sweetest')
+    testImplementation project(path: 'sweetest')
     testImplementation "org.mockito:mockito-core:$versions.mockito"
     testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
