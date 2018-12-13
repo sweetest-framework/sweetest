@@ -1,5 +1,7 @@
 package com.mysugr.sweetest.framework.coroutine
 
+import org.junit.Assert.fail
+
 /**
  * Verifies a specific call order. If the actual order is different from the expected one, an
  * [AssertionError] is thrown.
@@ -41,9 +43,7 @@ class OrderVerifier {
         currentOrderIndex++
 
         if (orderIndex != currentOrderIndex) {
-            throw AssertionError(
-                    "Expected order($currentOrderIndex), but reached order($orderIndex) instead"
-            )
+            fail("Expected order($currentOrderIndex), but reached order($orderIndex) instead")
         }
     }
 }
