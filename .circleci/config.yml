@@ -1,0 +1,110 @@
+version: 2
+
+references:
+  workspace: &workspace
+    ~/sweetest
+
+  config_android_fast: &config_android_fast
+    working_directory: *workspace
+    docker:
+      - image: circleci/android:api-27-alpha
+    resource_class: large
+    
+  config_android: &config_android
+    working_directory: *workspace
+    docker:
+      - image: circleci/android:api-27-alpha
+    resource_class: medium
+
+  config_android_slow: &config_android_slow
+      working_directory: *workspace
+      docker:
+        - image: circleci/android:api-27-alpha
+      resource_class: small
+
+  gen_cache_key: &gen_cache_key
+    run:
+      name: Generate cache key
+      command: ./.circleci/checksum.sh checksum.txt
+
+  restore_cache: &restore_cache
+    restore_cache:
+      key: gradle-{{ checksum "checksum.txt" }}
+
+  save_cache: &save_cache
+    save_cache:
+      paths:
+        - ~/.gradle/caches
+        - ~/.gradle/wrapper
+      key: gradle-{{ checksum "checksum.txt" }}
+
+  persist_to_workspace: &persist_to_workspace
+    persist_to_workspace:
+      root: .
+      paths:
+        - app/build
+        - sweetest/build
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: *workspace
+
+jobs:
+  assemble:
+    <<: *config_android_fast
+
+    steps:
+      - checkout
+      - *gen_cache_key
+      - *restore_cache
+
+      - run:
+          name: Download Dependencies
+          command: ./gradlew dependencies
+
+      - run:
+          name: Compile
+          command: >
+            ./gradlew assemble --no-daemon
+      - *save_cache
+      - *persist_to_workspace
+
+  test_unit:
+    <<: *config_android_fast
+
+    steps:
+      - checkout
+      - *attach_workspace
+      - *gen_cache_key
+      - *restore_cache
+
+      - run:
+          name: Unit Tests
+          command: >
+            ./gradlew test
+      - store_test_results:
+          path: ./app/build/test-results
+      - store_test_results:
+          path: ./sweetest/build/test-results
+
+  lint_checks:
+    <<: *config_android
+
+    steps:
+      - checkout
+      - *attach_workspace
+      - *gen_cache_key
+      - *restore_cache
+
+      - run:
+          name: Lint Checks
+          command: ./gradlew lint --no-daemon
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - assemble
+      - lint_checks
+      - test_unit:
+          requires:
+            - assemble

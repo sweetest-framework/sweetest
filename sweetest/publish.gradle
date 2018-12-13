@@ -11,7 +11,9 @@ group libGroup
 version '1.0.0'
 
 Properties properties = new Properties()
-properties.load(rootProject.file('local.properties').newDataInputStream())
+if (rootProject.file('local.properties').exists()) {
+    properties.load(rootProject.file('local.properties').newDataInputStream())
+}
 
 bintray {
     user properties.getProperty('bintray_user')
