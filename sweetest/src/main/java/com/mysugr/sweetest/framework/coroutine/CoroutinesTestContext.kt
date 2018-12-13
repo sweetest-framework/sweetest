@@ -1,9 +1,7 @@
 package com.mysugr.sweetest.framework.coroutine
 
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.*
+import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
 class CoroutinesTestContext {
@@ -17,7 +15,9 @@ class CoroutinesTestContext {
     }
 
     companion object {
-        val coroutineDispatcher by lazy { newSingleThreadContext("testDispatcher") }
+        val coroutineDispatcher: CoroutineDispatcher by lazy {
+            Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+        }
         private var instanceCounter = 0
     }
 }
