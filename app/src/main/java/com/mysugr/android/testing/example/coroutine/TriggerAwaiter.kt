@@ -17,7 +17,7 @@ class TriggerAwaiter {
 
     suspend fun awaitTrigger() = suspendCancellableCoroutine<Unit> { continuation ->
         if (currentContinuation != null) {
-            throw IllegalStateException("Sorry, only one awaitTrigger at a time")
+            error("Sorry, only one awaitTrigger at a time")
         }
 
         currentContinuation = continuation
