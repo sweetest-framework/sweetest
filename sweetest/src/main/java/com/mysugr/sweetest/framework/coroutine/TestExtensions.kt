@@ -4,6 +4,9 @@ import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.Steps
 import kotlinx.coroutines.*
 
+/**
+ * Experimental
+ */
 fun BaseJUnitTest.testCoroutine(
         testBlock: suspend CoroutineScope.() -> Unit
 ) {

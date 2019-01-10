@@ -3,6 +3,7 @@ package com.mysugr.sweetest.framework.coroutine
 import org.junit.Assert.fail
 
 /**
+ * Experimental
  * Verifies a specific call order. If the actual order is different from the expected one, an
  * [AssertionError] is thrown.
  * Successful example:

@@ -4,6 +4,9 @@ import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Experimental
+ */
 class CoroutinesTestContext {
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
