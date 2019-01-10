@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.framework.coroutine.CoroutinesTestContext
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 
 class TestContext internal constructor() {
@@ -15,6 +16,8 @@ class TestContext internal constructor() {
 
     @PublishedApi
     internal val dependencies = DependenciesTestContext()
+
+    internal val coroutines = CoroutinesTestContext()
 
     val workflow = WorkflowTestContext(steps)
 
