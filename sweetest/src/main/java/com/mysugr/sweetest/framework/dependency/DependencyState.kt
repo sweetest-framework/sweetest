@@ -55,7 +55,7 @@ class DependencyState<T : Any>(
         val instance = when (mode) {
             DependencyMode.REAL -> createInstance()
             DependencyMode.MOCK -> createMock()
-            DependencyMode.SPY -> Mockito.spy(configuration.clazz.java)
+            DependencyMode.SPY -> Mockito.spy(createInstance())
         }
         this.instanceField = instance
         return instance
