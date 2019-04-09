@@ -11,27 +11,28 @@ abstract class ClassActor : Actor() {
 
     /**
      * Creates a mock of the given class/interface.
-     * In the initializer block you have access to dependency management and can initialize the mock's behaviour.
+     * In the optional block you should initialize the mock's behaviour.
      * The resulting mock can be consumed via the delegated property and is acted on in this class.
      * Only one of these objects can be acted on in an [Actor] class.
      */
-    fun <T : Any> mock(initializeMock: InitializerScope.(mock: T) -> Unit = {}): InstancePropertyDelegate<T> {
+    fun <T : Any> mock(initializeMock: (mock: T) -> Unit = {}): InstancePropertyDelegate<T> {
         throw NotImplementedError()
     }
 
     /**
      * Lets an object be created by automatically resolving its constructor's dependencies.
-     * In the initializer block you have access to dependency management and can do initializations on the instance.
+     * In the optional block you should set up on the instance.
      * The resulting object can be consumed via the delegated property and is acted on in this class.
      * Only one of these objects can be acted on in an [Actor] class.
      */
-    fun <T : Any> auto(initializeInstance: InitializerScope.(instance: T) -> Unit = {}): InstancePropertyDelegate<T> {
+    fun <T : Any> auto(setUpInstance: (instance: T) -> Unit = {}): InstancePropertyDelegate<T> {
         throw NotImplementedError()
     }
 
     /**
-     * Lets an object be created in an instance creation block.
-     * In the block you also have access to dependency management.
+     * Lets an object be created in a custom way.
+     * In the block you should offer instantiation logic.
+     * In the block you also have access to dependency management in case you need other dependencies.
      * The resulting object can be consumed via the delegated property and is acted on in this class.
      * Only one of these objects can be acted on in an [Actor] class.
      */

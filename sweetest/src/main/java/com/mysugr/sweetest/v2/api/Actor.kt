@@ -12,7 +12,7 @@ abstract class Actor {
      * In the initializer block you have access to dependency management and can initialize stuff around the dependency
      * in whatever way you want.
      */
-    fun <T : Any> dependency(setUpInstance: InitializerScope.(instance: T) -> Unit = {}): DependencyPropertyDelegate<T> {
+    fun <T : Any> dependency(setUpInstance: (instance: T) -> Unit = {}): DependencyPropertyDelegate<T> {
         throw NotImplementedError()
     }
 
