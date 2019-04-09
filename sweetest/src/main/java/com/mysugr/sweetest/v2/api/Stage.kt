@@ -21,14 +21,6 @@ abstract class Stage {
         throw NotImplementedError()
     }
 
-    /**
-     * Does not make sure the type of actor is initialized
-     * If the type of actor is initialized, it can be consumed via the delegated property, otherwise it is null
-     */
-    fun <T : Actor> maybeActor(): InstancePropertyDelegate<T?> {
-        throw NotImplementedError()
-    }
-
     operator fun <T : Any> T.invoke(block: T.() -> Unit) {
         block()
     }
