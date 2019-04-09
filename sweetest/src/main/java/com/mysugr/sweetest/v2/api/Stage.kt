@@ -31,10 +31,6 @@ abstract class Stage {
         block()
     }
 
-    inline infix fun <T : Actor> T?.maybe(block: T.() -> Unit) {
-        this?.block()
-    }
-
     fun onBefore(block: () -> Unit) {
         throw NotImplementedError()
     }
