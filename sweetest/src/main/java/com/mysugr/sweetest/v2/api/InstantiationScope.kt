@@ -1,6 +1,6 @@
 package com.mysugr.sweetest.v2.api
 
-class InitializerScope {
+class InstantiationScope {
 
     /**
      * Returns an instance of a dependency specified by the type of the generic argument (which can be in turn be

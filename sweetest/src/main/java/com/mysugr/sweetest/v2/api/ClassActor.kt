@@ -36,7 +36,7 @@ abstract class ClassActor : Actor() {
      * The resulting object can be consumed via the delegated property and is acted on in this class.
      * Only one of these objects can be acted on in an [Actor] class.
      */
-    fun <T : Any> custom(createInstance: InitializerScope.() -> T): InstancePropertyDelegate<T> {
+    fun <T : Any> custom(createInstance: InstantiationScope.() -> T): InstancePropertyDelegate<T> {
         throw NotImplementedError()
     }
 }
