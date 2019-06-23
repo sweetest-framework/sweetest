@@ -35,6 +35,13 @@ class DependenciesTest {
         val b by steps<BSteps>()
     }
 
+    class TestClassAReal : BaseJUnitTest(moduleTestingConfiguration) {
+        val a by steps<ASteps>()
+        val b by steps<BSteps>()
+        override fun configure() = super.configure()
+                .requireReal<ASteps>()
+    }
+
     @Before
     fun setUp() { }
 
@@ -52,6 +59,14 @@ class DependenciesTest {
         TestClass().run {
             junitBefore()
             assertTrue(a.instance.isMock)
+        }
+    }
+
+    @Test(expected = Throwable::class)
+    fun `A is mockOnly, can't be used as real`() {
+        givenAMockOnly()
+        TestClassAReal().run {
+            junitBefore()
         }
     }
 
