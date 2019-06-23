@@ -8,6 +8,7 @@ import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.util.isMock
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Ignore
@@ -67,6 +68,15 @@ class DependenciesTest {
         TestClass().run {
             junitBefore()
             assertTrue(a.instance.isMock)
+        }
+    }
+
+    @Test
+    fun `B is real`() {
+        givenAMockBReal()
+        TestClass().run {
+            junitBefore()
+            assertFalse(b.instance.isMock)
         }
     }
 
