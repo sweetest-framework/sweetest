@@ -10,6 +10,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.util.isMock
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 class DependenciesTest {
@@ -42,6 +43,13 @@ class DependenciesTest {
                 .requireReal<ASteps>()
     }
 
+    class TestClassBMock : BaseJUnitTest(moduleTestingConfiguration) {
+        val a by steps<ASteps>()
+        val b by steps<BSteps>()
+        override fun configure() = super.configure()
+                .requireMock<BViewModel>()
+    }
+
     @Before
     fun setUp() { }
 
@@ -55,7 +63,7 @@ class DependenciesTest {
 
     @Test
     fun `A can be used as mock`() {
-        givenAMockOnly()
+        givenAMockBReal()
         TestClass().run {
             junitBefore()
             assertTrue(a.instance.isMock)
@@ -64,8 +72,17 @@ class DependenciesTest {
 
     @Test(expected = Throwable::class)
     fun `A is mockOnly, can't be used as real`() {
-        givenAMockOnly()
+        givenAMockBReal()
         TestClassAReal().run {
+            junitBefore()
+        }
+    }
+
+    @Test(expected = Throwable::class)
+    @Ignore("Is not checked currently, but has no negative impact on test outcomes")
+    fun `B is realOnly, can't be used as mock`() {
+        givenAMockBReal()
+        TestClassBMock().run {
             junitBefore()
         }
     }
@@ -74,7 +91,7 @@ class DependenciesTest {
         moduleTestingConfiguration = moduleTestingConfiguration { }
     }
 
-    private fun givenAMockOnly() {
+    private fun givenAMockBReal() {
         moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly of<AService>()
             dependency realOnly of<BViewModel>()
