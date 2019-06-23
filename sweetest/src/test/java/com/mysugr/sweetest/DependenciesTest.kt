@@ -7,6 +7,8 @@ import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.util.isMock
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -44,7 +46,23 @@ class DependenciesTest {
         }
     }
 
+    @Test
+    fun `A can be used as mock`() {
+        givenAMockOnly()
+        TestClass().run {
+            junitBefore()
+            assertTrue(a.instance.isMock)
+        }
+    }
+
     private fun givenNothingConfigured() {
         moduleTestingConfiguration = moduleTestingConfiguration { }
+    }
+
+    private fun givenAMockOnly() {
+        moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency mockOnly of<AService>()
+            dependency realOnly of<BViewModel>()
+        }
     }
 }
