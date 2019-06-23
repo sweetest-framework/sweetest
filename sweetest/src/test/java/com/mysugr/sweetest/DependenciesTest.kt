@@ -8,8 +8,7 @@ import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.util.isMock
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -18,6 +17,7 @@ class DependenciesTest {
 
     companion object {
         lateinit var moduleTestingConfiguration: ModuleTestingConfiguration
+        lateinit var initializedAInstance: AService
     }
 
     class AService
@@ -97,6 +97,18 @@ class DependenciesTest {
         }
     }
 
+    @Test
+    fun `A is default-configured initialized instance`() {
+        givenAInitializedMockBReal()
+        TestClass().run {
+            junitBefore()
+            a.instance // needs to be accessed in order to initialize the dependency
+            assertNotNull(initializedAInstance)
+            assertEquals(initializedAInstance, a.instance)
+        }
+
+    }
+
     private fun givenNothingConfigured() {
         moduleTestingConfiguration = moduleTestingConfiguration { }
     }
@@ -104,6 +116,13 @@ class DependenciesTest {
     private fun givenAMockBReal() {
         moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly of<AService>()
+            dependency realOnly of<BViewModel>()
+        }
+    }
+
+    private fun givenAInitializedMockBReal() {
+        moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency mockOnly initializer { AService().also { initializedAInstance = it } }
             dependency realOnly of<BViewModel>()
         }
     }
