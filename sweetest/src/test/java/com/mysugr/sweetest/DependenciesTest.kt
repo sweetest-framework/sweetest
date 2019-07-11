@@ -7,6 +7,7 @@ import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.util.isMock
 import org.junit.Assert.*
 import org.junit.Before
@@ -52,7 +53,9 @@ class DependenciesTest {
     }
 
     @Before
-    fun setUp() { }
+    fun setUp() {
+        TestEnvironment.fullReset()
+    }
 
     @Test(expected = Throwable::class)
     fun `No dependencies configured leads to exception`() {
