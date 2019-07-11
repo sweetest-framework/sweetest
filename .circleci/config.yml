@@ -7,20 +7,26 @@ references:
   config_android_fast: &config_android_fast
     working_directory: *workspace
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
     resource_class: large
     
   config_android: &config_android
     working_directory: *workspace
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
     resource_class: medium
 
   config_android_slow: &config_android_slow
       working_directory: *workspace
       docker:
-        - image: circleci/android:api-27-alpha
+        - image: circleci/android:api-28-alpha
       resource_class: small
+
+  install_licenses: &install_licenses
+    run:
+      name: Install Android SDK Licenses from Repository
+      when: always
+      command: .circleci/install_licenses.sh
 
   gen_cache_key: &gen_cache_key
     run:
@@ -56,6 +62,7 @@ jobs:
       - checkout
       - *gen_cache_key
       - *restore_cache
+      - *install_licenses
 
       - run:
           name: Download Dependencies
@@ -76,6 +83,7 @@ jobs:
       - *attach_workspace
       - *gen_cache_key
       - *restore_cache
+      - *install_licenses
 
       - run:
           name: Unit Tests
@@ -94,6 +102,7 @@ jobs:
       - *attach_workspace
       - *gen_cache_key
       - *restore_cache
+      - *install_licenses
 
       - run:
           name: Lint Checks
