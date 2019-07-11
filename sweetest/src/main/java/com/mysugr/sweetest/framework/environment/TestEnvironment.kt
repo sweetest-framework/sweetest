@@ -12,13 +12,26 @@ import kotlin.reflect.KClass
 
 object TestEnvironment {
 
-    private val _dependencies = DependencyManager {
-        DependencySetup.init(it)
+    private lateinit var _dependencies: DependencyManager
+
+    private lateinit var dependenciesController: DependencyManager.Controller
+
+    val dependencies: DependencyAccessor get() = _dependencies
+
+    init {
+        setUpDependencyManager()
     }
 
-    private val dependenciesController = DependencyManager.Controller(_dependencies)
+    private fun setUpDependencyManager() {
+        _dependencies = DependencyManager {
+            DependencySetup.init(it)
+        }
+        dependenciesController = DependencyManager.Controller(_dependencies)
+    }
 
-    val dependencies: DependencyAccessor = _dependencies
+    fun fullReset() {
+        setUpDependencyManager()
+    }
 
     fun reset() {
         dependenciesController.resetState()
