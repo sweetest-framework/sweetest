@@ -7,19 +7,19 @@ references:
   config_android_fast: &config_android_fast
     working_directory: *workspace
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
     resource_class: large
     
   config_android: &config_android
     working_directory: *workspace
     docker:
-      - image: circleci/android:api-27-alpha
+      - image: circleci/android:api-28-alpha
     resource_class: medium
 
   config_android_slow: &config_android_slow
       working_directory: *workspace
       docker:
-        - image: circleci/android:api-27-alpha
+        - image: circleci/android:api-28-alpha
       resource_class: small
 
   gen_cache_key: &gen_cache_key
