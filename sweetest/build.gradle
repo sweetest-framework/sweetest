@@ -1,5 +1,46 @@
-apply plugin: 'java-library'
-apply plugin: 'kotlin'
+buildscript {
+    ext.publishingInfo = [
+            version: '1.0.1',
+            org    : 'mysugr',
+            lib    : 'sweetest',
+            group  : 'com.mysugr',
+            site   : 'https://github.com/mysugr/sweetest',
+            git    : 'https://github.com/mysugr/sweetest.git',
+            tracker: 'https://github.com/mysugr/sweetest/issues'
+    ]
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
+
+    }
+}
+
+plugins {
+    id 'maven-publish'
+    id 'java-library'
+    id 'kotlin'
+}
+
+group "${publishingInfo.group}.${publishingInfo.lib}"
+
+version publishingInfo.version
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+apply from: 'publish-bintray.gradle'
+apply from: 'publish-maven.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -12,5 +53,3 @@ dependencies {
     api "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     api "junit:junit:4.12"
 }
-
-apply from: 'publish.gradle'
