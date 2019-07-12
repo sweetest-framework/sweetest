@@ -1,15 +1,6 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def libName = 'sweetest'
-def libGroup = 'com.mysugr.' + libName
-def libSite = 'https://github.com/mysugr/' + libName
-def libGit = libSite + '.git'
-def libTracker = libSite + '/issues'
-
-group libGroup
-version '1.0.1'
-
 Properties properties = new Properties()
 if (rootProject.file('local.properties').exists()) {
     properties.load(rootProject.file('local.properties').newDataInputStream())
@@ -21,11 +12,11 @@ bintray {
     configurations = ['archives']
     pkg {
         repo = 'maven'
-        name = libName
-        userOrg = 'mysugr'
-        websiteUrl = libSite
-        issueTrackerUrl = libTracker
-        vcsUrl = libGit
+        name = publishingInfo.lib
+        userOrg = publishingInfo.org
+        websiteUrl = publishingInfo.site
+        issueTrackerUrl = publishingInfo.tracker
+        vcsUrl = publishingInfo.git
         licenses = ['Apache-2.0']
         publish = true
         publicDownloadNumbers = true
@@ -36,10 +27,10 @@ install {
     repositories.mavenInstaller {
         pom.project {
             packaging 'aar'
-            groupId libGroup
-            artifactId libName
-            name libName
-            url libSite
+            groupId "${publishingInfo.group}.${publishingInfo.lib}"
+            artifactId publishingInfo.lib
+            name publishingInfo.lib
+            url publishingInfo.site
             licenses {
                 license {
                     name 'The Apache Software License, Version 2.0'
@@ -47,19 +38,10 @@ install {
                 }
             }
             scm {
-                connection libGit
-                developerConnection libGit
-                url libSite
+                connection publishingInfo.git
+                developerConnection publishingInfo.git
+                url publishingInfo.site
             }
         }
     }
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.java.srcDirs
-    classifier 'sources'
-}
-
-artifacts {
-    archives sourcesJar
 }
