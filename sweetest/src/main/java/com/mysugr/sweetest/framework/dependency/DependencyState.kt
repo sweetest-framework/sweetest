@@ -5,17 +5,18 @@ import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
 class DependencyState<T : Any>(
-        private val initializerContext: DependencyInitializerContext,
-        val configuration: DependencyConfiguration<T>,
-        initializer: DependencyInitializer<T>? = null,
-        mode: DependencyMode? = null
+    private val dependencyClass: KClass<T>,
+    private val initializerContext: DependencyInitializerContext,
+    val configuration: DependencyConfiguration<T>?,
+    initializer: DependencyInitializer<T>? = null,
+    mode: DependencyMode? = null
 ) {
 
     private var instanceField: T? = null
-    private var modeField: DependencyMode? = mode
+    private var modeField: DependencyMode? = mode ?: configuration?.defaultDependencyMode ?: null
 
     var realInitializer: DependencyInitializer<T>? = initializer
-        ?: configuration.defaultRealInitializer
+        ?: configuration?.defaultRealInitializer
 
     var realInitializerUnknown: DependencyInitializer<*>?
         set(value) {
@@ -24,7 +25,7 @@ class DependencyState<T : Any>(
         get() = realInitializer
 
     var mockInitializer: DependencyInitializer<T>? = initializer
-        ?: configuration.defaultMockInitializer
+        ?: configuration?.defaultMockInitializer
 
     var mockInitializerUnknown: DependencyInitializer<*>?
         set(value) {
@@ -36,20 +37,28 @@ class DependencyState<T : Any>(
         get() = instanceField ?: initializeInstance()
 
     var mode: DependencyMode
-        get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
+        get() = modeField ?: configuration?.defaultDependencyMode ?: DependencyMode.MOCK
         set(value) {
             if (value != modeField) {
                 if (modeField != null) {
-                    throw IllegalStateException("Can't change dependency mode or \"${configuration.clazz}\", it " +
-                        "has already been set before and can't be changed afterwards")
+                    throw IllegalStateException(
+                        """
+                            Can't change dependency mode of \"${dependencyClass.simpleName}\" to $value as it is already
+                            enforced to be $modeField (configuration: ${configuration?.defaultDependencyMode})
+                        """.trimIndent()
+                    )
                 }
                 if (instanceField != null) {
-                    throw IllegalStateException("Can't set dependency mode of \"${configuration.clazz}\", instance " +
-                        "has already been created")
+                    throw IllegalStateException(
+                        "Can't set dependency mode of \"${dependencyClass.simpleName}\", " +
+                            "instance has already been created"
+                    )
                 }
                 modeField = value
             }
         }
+
+    val hasConfiguration get() = configuration != null
 
     private fun initializeInstance(): T {
         val instance = when (mode) {
@@ -63,7 +72,7 @@ class DependencyState<T : Any>(
 
     private fun createMock(): T = mockInitializer?.let { it(initializerContext) } ?: createDefaultMock()
 
-    private fun createDefaultMock(): T = Mockito.mock(configuration.clazz.java)
+    private fun createDefaultMock(): T = Mockito.mock(dependencyClass.java)
 
     private fun createInstance(): T {
         return realInitializer?.let {
@@ -73,7 +82,7 @@ class DependencyState<T : Any>(
 
     private fun createInstanceAutomatically(): T {
         return try {
-            val constructors = configuration.clazz.constructors
+            val constructors = dependencyClass.constructors
             if (constructors.size > 1) {
                 throw IllegalArgumentException("Can't auto-initialize dependency which has more than one constructor")
             }
@@ -83,15 +92,19 @@ class DependencyState<T : Any>(
             val arguments = try {
                 argumentTypes.map { initializerContext.instanceOf(it) }.toTypedArray()
             } catch (exception: Exception) {
-                throw RuntimeException("At least one dependency required by the constructor could " +
-                    "not be found.", exception)
+                throw RuntimeException(
+                    "At least one dependency required by the constructor could " +
+                        "not be found.", exception
+                )
             }
 
             constructor.call(*arguments)
         } catch (exception: Exception) {
-            throw RuntimeException("Couldn't automatically construct dependency \"$configuration\". Either you need " +
-                "a manual initializer, the class should have a single constructor or one of the dependencies " +
-                "required by the constructor could not be initialized.", exception)
+            throw RuntimeException(
+                "Couldn't automatically construct dependency \"$configuration\". Either you need " +
+                    "a manual initializer, the class should have a single constructor or one of the dependencies " +
+                    "required by the constructor could not be initialized.", exception
+            )
         }
     }
 
@@ -103,11 +116,14 @@ class DependencyState<T : Any>(
         } catch (mockitoException: MockitoException) {
             throw mockitoException
         } catch (throwable: Throwable) {
-            throw DependencyInstanceInitializationException("Initializer for \"$configuration\" " +
-                "failed", throwable)
+            throw DependencyInstanceInitializationException(
+                "Initializer for \"$configuration\" " +
+                    "failed", throwable
+            )
         }
     }
 
-    class DependencyInstanceInitializationException(message: String, cause: Throwable)
-        : Exception(message, cause)
+    override fun toString() = dependencyClass.simpleName!!
+
+    class DependencyInstanceInitializationException(message: String, cause: Throwable) : Exception(message, cause)
 }
