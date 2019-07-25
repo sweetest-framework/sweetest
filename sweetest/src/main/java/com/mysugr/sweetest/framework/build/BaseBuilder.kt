@@ -15,11 +15,11 @@ import kotlin.reflect.KClass
 
 abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     @PublishedApi internal val testContext: TestContext,
-    moduleTestingConfiguration: ModuleTestingConfiguration
+    moduleTestingConfiguration: ModuleTestingConfiguration? = null
 ) {
 
     init {
-        testContext.configurations.put(moduleTestingConfiguration)
+        moduleTestingConfiguration?.let(testContext.configurations::put)
     }
 
     private var built = false
