@@ -8,46 +8,36 @@ import kotlin.reflect.KClass
 class DependenciesTestContext {
 
     fun requireReal(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.REAL
+        TestEnvironment.dependencies.states[clazz].mode = DependencyMode.REAL
     }
 
     fun offerReal(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = TestEnvironment.dependencies.configurations.getAssignableFrom(clazz)
-        TestEnvironment.dependencies.states[dependency].realInitializerUnknown = initializer
+        TestEnvironment.dependencies.states[clazz].realInitializerUnknown = initializer
     }
 
     fun offerRealRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].run {
+        TestEnvironment.dependencies.states[clazz].run {
             realInitializerUnknown = initializer
             mode = DependencyMode.REAL
         }
     }
 
     fun requireMock(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.MOCK
+        TestEnvironment.dependencies.states[clazz].mode = DependencyMode.MOCK
     }
 
     fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mockInitializerUnknown = initializer
+        TestEnvironment.dependencies.states[clazz].mockInitializerUnknown = initializer
     }
 
     fun offerMockRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].run {
+        TestEnvironment.dependencies.states[clazz].run {
             mockInitializerUnknown = initializer
             mode = DependencyMode.MOCK
         }
     }
 
     fun requireSpy(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.SPY
+        TestEnvironment.dependencies.states[clazz].mode = DependencyMode.SPY
     }
-
-    private fun getDependencyConfiguration(clazz: KClass<*>) =
-        TestEnvironment.dependencies.configurations.getAssignableTo(clazz)
 }

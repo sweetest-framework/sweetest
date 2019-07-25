@@ -6,6 +6,7 @@ import kotlin.reflect.KClass
 interface DependencyConfigurationConsumer {
     val all: Collection<DependencyConfiguration<*>>
     operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T>
+    fun <T : Any> tryGetAssignableWith(clazz: KClass<T>): DependencyConfiguration<T>?
     fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>
     fun <T : Any> getAssignableFrom(clazz: KClass<T>): DependencyConfiguration<T>
 }
@@ -34,38 +35,51 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
 
         val found = configurations[clazz]
         return if (found == null) {
-            val newDependency = DependencyConfiguration(clazz, realInitializer, mockInitializer,
-                dependencyMode)
+            val newDependency = DependencyConfiguration(
+                clazz, realInitializer, mockInitializer,
+                dependencyMode
+            )
             configurations[clazz] = newDependency
             if (alias != null) {
                 configurations[alias] = newDependency
             }
             newDependency
         } else {
-            throw RuntimeException("Dependency \"$clazz\" already configured! Please make sure " +
-                "you haven't added it to two different Dependencies objects!")
+            throw RuntimeException(
+                "Dependency \"$clazz\" already configured! Please make sure " +
+                    "you haven't added it to two different Dependencies objects!"
+            )
         }
     }
 
-    override operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T> = configurations[clazz] as? DependencyConfiguration<T>
-        ?: throw NotFoundException(clazz)
+    override operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T> =
+        configurations[clazz] as? DependencyConfiguration<T>
+            ?: throw NotFoundException(clazz)
 
-    override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T> {
+    override fun <T : Any> tryGetAssignableWith(clazz: KClass<T>): DependencyConfiguration<T>? {
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }
             as? DependencyConfiguration<T>
-            ?: throw NotFoundException(clazz, "No dependency " +
-                "assignable to \"${clazz.simpleName}\" found.")
+    }
+
+    override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T> {
+        return tryGetAssignableWith(clazz)
+            ?: throw NotFoundException(
+                clazz, "No dependency " +
+                    "assignable to \"${clazz.simpleName}\" found."
+            )
     }
 
     override fun <T : Any> getAssignableFrom(clazz: KClass<T>): DependencyConfiguration<T> {
         return configurations.values.find { it.clazz.java.isAssignableFrom(clazz.java) }
             as? DependencyConfiguration<T>
-            ?: throw NotFoundException(clazz, "No dependency " +
-                "assignable from \"${clazz.simpleName}\" found.")
+            ?: throw NotFoundException(
+                clazz, "No dependency " +
+                    "assignable from \"${clazz.simpleName}\" found."
+            )
     }
 
-    class NotFoundException(val clazz: KClass<*>, message: String? = null)
-        : Exception(transformMessage(clazz, message)) {
+    class NotFoundException(val clazz: KClass<*>, message: String? = null) :
+        Exception(transformMessage(clazz, message)) {
 
         companion object {
             private fun transformMessage(clazz: KClass<*>, message: String?): String {

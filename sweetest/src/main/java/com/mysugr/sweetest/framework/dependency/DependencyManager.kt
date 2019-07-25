@@ -19,15 +19,14 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit)
 
     private val initializerContext = object : DependencyInitializerContext() {
         override fun <T : Any> instanceOf(clazz: KClass<T>): T {
-            val configuration = configurations.getAssignableTo(clazz)
-            val state = states[configuration]
+            val state = states[clazz]
             return state.instance
         }
     }
 
     override val states: DependencyStatesConsumer
         get() = if (_states == null) {
-            _states = DependencyStates(initializerContext)
+            _states = DependencyStates(initializerContext, configurations)
             _states!!
         } else {
             _states!!
