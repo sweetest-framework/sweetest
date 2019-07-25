@@ -45,6 +45,9 @@ class Dsl {
         internal fun addDependency(configuration: DependencyConfiguration<*>) {
             dependencies.add(configuration)
             com.mysugr.sweetest.framework.dependency.DependencySetup.addConfiguration(configuration)
+            // we need to force the initialization of the dependency state so the dependency configuration order
+            // determines the resulting type instead of the dependency consumption order (TODO solve legacy workaround)
+            TestEnvironment.dependencies.states[configuration.clazz]
         }
 
         // Supplier configuration
