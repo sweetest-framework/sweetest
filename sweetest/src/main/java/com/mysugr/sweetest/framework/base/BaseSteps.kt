@@ -8,10 +8,12 @@ import kotlin.coroutines.CoroutineContext
 
 interface Steps: CoroutineScope
 
-abstract class BaseSteps(
+abstract class BaseSteps @Deprecated("Module testing configuration will be phased out") constructor(
     private val testContext: TestContext,
-    private val moduleTestingConfiguration: ModuleTestingConfiguration
+    private val moduleTestingConfiguration: ModuleTestingConfiguration?
 ) : Steps, TestingAccessor {
+
+    constructor(testContext: TestContext) : this(testContext, null)
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
