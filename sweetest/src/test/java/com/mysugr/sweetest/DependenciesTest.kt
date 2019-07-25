@@ -42,7 +42,7 @@ class DependenciesTest {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
         override fun configure() = super.configure()
-                .requireReal<ASteps>()
+                .requireReal<AService>()
     }
 
     class TestClassBMock : BaseJUnitTest(moduleTestingConfiguration) {
