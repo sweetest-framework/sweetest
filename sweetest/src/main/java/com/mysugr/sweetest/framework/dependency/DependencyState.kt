@@ -82,11 +82,14 @@ class DependencyState<T : Any>(
 
     private fun createInstanceAutomatically(): T {
         return try {
-            val constructors = dependencyClass.constructors
-            if (constructors.size > 1) {
-                throw IllegalArgumentException("Can't auto-initialize dependency which has more than one constructor")
-            }
-            val constructor = constructors.first()
+            val constructor = dependencyClass.constructors.firstOrNull()
+                ?: throw IllegalArgumentException(
+                    """
+                        Can't auto-initialize dependency which has more than one or no constructors. Please make sure
+                        the dependency has just one constructor and you're not trying to get an interface of a
+                        dependency whose implementation is neither supplied nor configured.
+                    """.trimIndent()
+                )
             val argumentTypes = constructor.parameters.map { it.type.classifier as KClass<*> }
 
             val arguments = try {
