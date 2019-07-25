@@ -66,8 +66,12 @@ class Dsl {
         inline fun <reified T1 : Steps, reified T2 : Steps, reified T3 : Steps, reified R : Any> factory(
             noinline createObject: (T1, T2, T3) -> R
         ) {
-            factories.add(FactoryRunner3(R::class.java, T1::class.java, T2::class.java, T3::class.java,
-                createObject))
+            factories.add(
+                FactoryRunner3(
+                    R::class.java, T1::class.java, T2::class.java, T3::class.java,
+                    createObject
+                )
+            )
         }
 
         // Dependency configuration
@@ -76,10 +80,6 @@ class Dsl {
 
         data class RightOperand(
             @PublishedApi internal val addFunction: (dependencyMode: DependencyMode?, only: Boolean) -> Unit
-        )
-
-        data class AutoInitializerRightOperand(
-            @PublishedApi internal val addFunction: () -> Unit
         )
 
         val dependency = LeftOperand()
@@ -103,11 +103,34 @@ class Dsl {
         inline fun <reified T : Any> initializer(noinline initializer: DependencyInitializer<T>) =
             RightOperand { dependencyMode, only ->
                 val finalDependencyMode = if (only) dependencyMode else null
-                if (dependencyMode == DependencyMode.MOCK) {
-                    addDependency(DependencyConfiguration(T::class, null, initializer, finalDependencyMode))
-                } else {
-                    addDependency(DependencyConfiguration(T::class, initializer, null, finalDependencyMode))
+                if (!only) {
+                    throw IllegalArgumentException(
+                        """
+                            When you want to supply an initializer you have to lay out whether it's real or mock. Please
+                            either choose "mockOnly" vs. "realOnly" instead of "any" or "mockInitializer" vs.
+                            "realInitializer" instead of "initializer"
+                        """.trimIndent()
+                    )
                 }
+                when (dependencyMode) {
+                    DependencyMode.MOCK ->
+                        addDependency(DependencyConfiguration(T::class, null, initializer, finalDependencyMode))
+                    DependencyMode.REAL ->
+                        addDependency(DependencyConfiguration(T::class, initializer, null, finalDependencyMode))
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+        inline fun <reified T : Any> mockInitializer(noinline initializer: DependencyInitializer<T>) =
+            RightOperand { dependencyMode, only ->
+                val finalDependencyMode = if (only) dependencyMode else null
+                addDependency(DependencyConfiguration(T::class, null, initializer, finalDependencyMode))
+            }
+
+        inline fun <reified T : Any> realInitializer(noinline initializer: DependencyInitializer<T>) =
+            RightOperand { dependencyMode, only ->
+                val finalDependencyMode = if (only) dependencyMode else null
+                addDependency(DependencyConfiguration(T::class, initializer, null, finalDependencyMode))
             }
 
         inline fun <reified T : Any> of() =
