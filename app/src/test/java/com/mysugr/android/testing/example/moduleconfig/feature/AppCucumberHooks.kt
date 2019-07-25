@@ -1,4 +1,4 @@
-package com.mysugr.android.testing.example.feature
+package com.mysugr.android.testing.example.moduleconfig.feature
 
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.cucumber.HookOrder

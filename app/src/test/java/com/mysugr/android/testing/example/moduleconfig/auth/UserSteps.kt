@@ -1,6 +1,6 @@
-package com.mysugr.android.testing.example.feature.auth
+package com.mysugr.android.testing.example.moduleconfig.auth
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.moduleconfig.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.context.TestContext
 import cucumber.api.java.Before

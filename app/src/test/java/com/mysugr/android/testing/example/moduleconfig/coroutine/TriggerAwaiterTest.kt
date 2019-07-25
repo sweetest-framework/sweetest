@@ -1,6 +1,6 @@
-package com.mysugr.android.testing.example.coroutine
+package com.mysugr.android.testing.example.moduleconfig.coroutine
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.moduleconfig.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.coroutine.testCoroutine

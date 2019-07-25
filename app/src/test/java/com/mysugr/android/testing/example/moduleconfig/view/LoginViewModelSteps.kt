@@ -1,12 +1,11 @@
-package com.mysugr.android.testing.example.view
+package com.mysugr.android.testing.example.moduleconfig.view
 
 import com.mysugr.android.testing.example.app.R
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.moduleconfig.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.moduleconfig.auth.UserSteps
+import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.sweetest.framework.base.*
 import com.mysugr.sweetest.framework.context.TestContext
-import cucumber.api.java.Before
-import cucumber.api.java.en.When
 import org.junit.Assert.*
 
 class LoginViewModelSteps(testContext: TestContext)

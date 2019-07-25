@@ -1,8 +1,10 @@
-package com.mysugr.android.testing.example.net
+package com.mysugr.android.testing.example.moduleconfig.net
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.moduleconfig.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.user.User
-import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.moduleconfig.auth.UserSteps
+import com.mysugr.android.testing.example.net.BackendGateway
+import com.mysugr.android.testing.example.net.UsernameOrPasswordWrongException
 import com.mysugr.sweetest.framework.base.*
 import com.mysugr.sweetest.framework.context.TestContext
 

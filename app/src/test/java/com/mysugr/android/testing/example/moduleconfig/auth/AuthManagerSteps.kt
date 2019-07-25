@@ -1,14 +1,13 @@
-package com.mysugr.android.testing.example.auth
+package com.mysugr.android.testing.example.moduleconfig.auth
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.auth.AuthManager
+import com.mysugr.android.testing.example.moduleconfig.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.moduleconfig.auth.UserSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.util.isMock
-import cucumber.api.java.Before
-import org.junit.Assert.*
 import org.mockito.Mockito.*
 
 class AuthManagerSteps(testContext: TestContext)

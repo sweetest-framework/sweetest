@@ -1,5 +1,5 @@
 
-package com.mysugr.android.testing.example
+package com.mysugr.android.testing.example.moduleconfig
 
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
