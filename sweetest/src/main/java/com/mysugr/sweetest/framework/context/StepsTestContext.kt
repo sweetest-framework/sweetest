@@ -9,7 +9,7 @@ interface StepsProvider {
     fun <T : Steps> getOf(clazz: Class<T>): T
 }
 
-class StepsTestContext(private val testContext: TestContext) {
+class StepsTestContext(private val testContext: Any) {
 
     private val required = mutableListOf<Class<Steps>>()
     private val map = mutableMapOf<Class<*>, Steps>()
