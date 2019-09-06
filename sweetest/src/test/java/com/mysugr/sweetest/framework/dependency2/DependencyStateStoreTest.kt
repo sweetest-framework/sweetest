@@ -1,14 +1,38 @@
-package com.mysugr.sweetest.framework.context2.internal.dependencies
+package com.mysugr.sweetest.framework.dependency2
 
-import com.mysugr.sweetest.framework.context2.internal.DependenciesTestContext
-import com.mysugr.sweetest.framework.dependency2.DependencyState
 import org.junit.Test
 
-class RetrievalTest {
+class DependencyStateStoreTest {
+
+    private val sut = DependencyStateStore()
+
+    @Test
+    fun `Can assign test state`() {
+        val state = DependencyState(A::class) { A() }
+        sut.assignDependencyStateFor(A::class, state)
+    }
+
+    @Test
+    fun `Can assign test state for superclass`() {
+        val state = DependencyState(AAA::class) { AAA() }
+        sut.assignDependencyStateFor(AA::class, state)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `Can't assign test state for subclass`() {
+        val state = DependencyState(A::class) { A() }
+        sut.assignDependencyStateFor(AA::class, state)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `Can't assign test state twice for same type`() {
+        val state = DependencyState(A::class) { A() }
+        sut.assignDependencyStateFor(A::class, state)
+        sut.assignDependencyStateFor(A::class, state)
+    }
 
     @Test
     fun `Can retrieve test state`() {
-        val sut = DependenciesTestContext()
         val state = DependencyState(A::class) { A() }
         sut.assignDependencyStateFor(A::class, state)
         val actual = sut.getDependencyStateFor(A::class)
@@ -17,7 +41,6 @@ class RetrievalTest {
 
     @Test
     fun `Can retrieve test state for various assigned types`() {
-        val sut = DependenciesTestContext()
         val state = DependencyState(AA::class) { AA() }
         sut.assignDependencyStateFor(AA::class, state)
         sut.assignDependencyStateFor(A::class, state)
@@ -29,7 +52,6 @@ class RetrievalTest {
 
     @Test
     fun `Tests existence of state correctly`() {
-        val sut = DependenciesTestContext()
         assert(!sut.hasDependencyStateFor(A::class))
         val state = DependencyState(A::class) { A() }
         sut.assignDependencyStateFor(A::class, state)
@@ -39,4 +61,6 @@ class RetrievalTest {
     open class A
 
     open class AA : A()
+
+    class AAA : AA()
 }
