@@ -27,6 +27,15 @@ class RetrievalTest {
         assert(actual2 === state)
     }
 
+    @Test
+    fun `Tests existence of state correctly`() {
+        val sut = DependenciesTestContext()
+        assert(!sut.hasDependencyStateFor(A::class))
+        val state = DependencyState(A::class) { A() }
+        sut.assignDependencyStateFor(A::class, state)
+        assert(sut.hasDependencyStateFor(A::class))
+    }
+
     open class A
 
     open class AA : A()

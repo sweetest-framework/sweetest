@@ -9,6 +9,8 @@ import kotlin.reflect.full.isSuperclassOf
 class DependenciesTestContext {
     private val dependencyStates = mutableMapOf<KClass<*>, DependencyState>()
 
+    fun hasDependencyStateFor(type: KClass<*>) = dependencyStates.containsKey(type)
+
     fun <T : Any> getDependencyStateFor(type: KClass<T>): DependencyState {
         return dependencyStates[type] ?: throw IllegalStateException(
             "Dependency state not initialized, please use standard dependency() function to access dependencies!"
@@ -23,6 +25,8 @@ class DependenciesTestContext {
         dependencyStates[assignedType] = dependencyState
     }
 }
+
+
 
 fun <T : Any> DependenciesTestContext.consumeDependency(type: KClass<T>): T =
     getDependencyStateFor(type).getOrInitializeInstance(type)
