@@ -26,7 +26,7 @@ class LoginViewModel(private val authManager: AuthManager) {
         }
 
         if (!validatePassword(password)) {
-            state = Error(passwordError = R. string.error_invalid_password)
+            state = Error(passwordError = R.string.error_invalid_password)
             return
         }
 
@@ -40,7 +40,6 @@ class LoginViewModel(private val authManager: AuthManager) {
                 Error(passwordError = R.string.error_incorrect_password)
             }
         }
-
     }
 
     private fun validatePassword(password: String): Boolean {

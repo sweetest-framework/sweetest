@@ -27,5 +27,4 @@ class AppCucumberHooks(private val testContext: TestContext) {
     fun setUp() {
         testContext.workflow.proceedTo(InitializationStep.SET_UP)
     }
-
 }

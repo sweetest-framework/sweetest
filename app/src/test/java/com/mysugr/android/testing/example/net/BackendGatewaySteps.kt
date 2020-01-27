@@ -8,12 +8,12 @@ import com.mysugr.sweetest.framework.context.TestContext
 
 import org.mockito.Mockito.*
 
-class BackendGatewaySteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class BackendGatewaySteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireMock<BackendGateway>()
-            .onSetUp(this::setUp)
+        .requireMock<BackendGateway>()
+        .onSetUp(this::setUp)
 
     private val instance by dependency<BackendGateway>()
 
@@ -48,5 +48,4 @@ class BackendGatewaySteps(testContext: TestContext)
     fun thenRegistered(email: String? = null, password: String? = null) {
         verify(instance).register(email ?: user.email, password ?: user.password)
     }
-
 }

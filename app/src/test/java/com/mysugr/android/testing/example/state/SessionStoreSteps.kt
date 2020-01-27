@@ -8,11 +8,11 @@ import com.mysugr.sweetest.framework.context.TestContext
 
 import org.mockito.Mockito.*
 
-class SessionStoreSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class SessionStoreSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireMock<SessionStore>()
+        .requireMock<SessionStore>()
 
     private val user by steps<UserSteps>()
 
@@ -30,5 +30,4 @@ class SessionStoreSteps(testContext: TestContext)
     fun thenSessionIsEnded() {
         verify(instance).endSession()
     }
-
 }

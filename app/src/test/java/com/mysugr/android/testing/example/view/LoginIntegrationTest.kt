@@ -12,8 +12,8 @@ import org.junit.Test
 class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireReal<LoginViewModel>()
-            .requireReal<AuthManager>()
+        .requireReal<LoginViewModel>()
+        .requireReal<AuthManager>()
 
     private val user by steps<UserSteps>()
     private val loginViewModel by steps<LoginViewModelSteps>()
@@ -48,5 +48,4 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
             thenRegistered()
         }
     }
-
 }

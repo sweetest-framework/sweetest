@@ -42,14 +42,14 @@ class DependenciesTest {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
         override fun configure() = super.configure()
-                .requireReal<ASteps>()
+            .requireReal<ASteps>()
     }
 
     class TestClassBMock : BaseJUnitTest(moduleTestingConfiguration) {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
         override fun configure() = super.configure()
-                .requireMock<BViewModel>()
+            .requireMock<BViewModel>()
     }
 
     @Before
@@ -109,7 +109,6 @@ class DependenciesTest {
             assertNotNull(initializedAInstance)
             assertEquals(initializedAInstance, a.instance)
         }
-
     }
 
     private fun givenNothingConfigured() {

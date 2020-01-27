@@ -10,8 +10,8 @@ import kotlinx.coroutines.yield
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 
-class TriggerAwaiterSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class TriggerAwaiterSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     private val sut = TriggerAwaiter()
 

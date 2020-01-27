@@ -6,8 +6,9 @@ import com.mysugr.android.testing.example.net.UsernameOrPasswordWrongException
 import com.mysugr.android.testing.example.state.SessionStore
 
 open class AuthManager(
-        private val backendGateway: BackendGateway,
-        private val sessionStore: SessionStore) {
+    private val backendGateway: BackendGateway,
+    private val sessionStore: SessionStore
+) {
 
     open fun loginOrRegister(email: String, password: String): LoginOrRegisterResult {
         val exists = backendGateway.checkEmail(email)

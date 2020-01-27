@@ -11,7 +11,7 @@ import org.junit.Test
 class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireReal<AuthManager>()
+        .requireReal<AuthManager>()
 
     private val user by steps<UserSteps>()
     private val sut by steps<AuthManagerSteps>()
@@ -58,5 +58,4 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
         sut.whenLoggingOut()
         sessionStore.thenSessionIsEnded()
     }
-
 }

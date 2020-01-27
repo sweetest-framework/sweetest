@@ -1,16 +1,12 @@
 package com.mysugr.android.testing.example.app
 
-import android.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.mysugr.android.testing.example.dependency.DependencyFramework
-
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State
 import com.mysugr.android.testing.example.view.LoginViewModel.State.*
-
 import kotlinx.android.synthetic.main.activity_login.*
 import java.util.logging.Level
 import java.util.logging.Logger

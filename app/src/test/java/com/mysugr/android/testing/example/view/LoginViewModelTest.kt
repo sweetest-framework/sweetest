@@ -11,8 +11,8 @@ import com.mysugr.android.testing.example.view.LoginViewModel.State.*
 class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireReal<LoginViewModel>()
-            .onSetUp { sut.givenStateListenerConnected() }
+        .requireReal<LoginViewModel>()
+        .onSetUp { sut.givenStateListenerConnected() }
 
     private val sut by steps<LoginViewModelSteps>()
     private val authManager by steps<AuthManagerSteps>()
@@ -49,5 +49,4 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
         authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsPasswordErrorWrongPassword()
     }
-
 }

@@ -1,6 +1,5 @@
 package com.mysugr.android.testing.example.app
 
-
 import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.*
@@ -17,7 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.*
-
 
 class LoginActivityTest {
 
@@ -51,7 +49,6 @@ class LoginActivityTest {
             InstrumentationRegistry.getInstrumentation().waitForIdleSync()
             waitForListener ?: error("Listener not set by Activity")
         }
-
     }
 
     @After
@@ -83,13 +80,10 @@ class LoginActivityTest {
         state = LoggedIn(true)
         onView(withId(R.id.logout_button))
                 .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
     }
-
 
     @Test
     fun testInteraction() {
-
         run {
             val expectedEmail = "email@test.com"
             val expectedPassword = "supersecure"
@@ -109,7 +103,5 @@ class LoginActivityTest {
                     .perform(click())
             verify(loginViewModel).logout()
         }
-
     }
-
 }
