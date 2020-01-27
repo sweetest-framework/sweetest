@@ -1,12 +1,14 @@
 package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.auth.AuthManagerSteps
+import com.mysugr.android.testing.example.auth.AuthManagerMockSteps
 import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.sweetest.framework.base.*
+import com.mysugr.android.testing.example.view.LoginViewModel.State.Error
+import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedIn
+import com.mysugr.sweetest.framework.base.BaseJUnitTest
+import com.mysugr.sweetest.framework.base.invoke
+import com.mysugr.sweetest.framework.base.steps
 import org.junit.Test
-
-import com.mysugr.android.testing.example.view.LoginViewModel.State.*
 
 class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
@@ -15,7 +17,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
         .onSetUp { sut.givenStateListenerConnected() }
 
     private val sut by steps<LoginViewModelSteps>()
-    private val authManager by steps<AuthManagerSteps>()
+    private val authManager by steps<AuthManagerMockSteps>()
     private val user by steps<UserSteps>()
 
     @Test

@@ -11,10 +11,11 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.verify
 
-class AuthManagerSteps(testContext: TestContext) :
+class AuthManagerMockSteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
+        .requireMock<AuthManager>()
         .onSetUp(this::setUp)
 
     private val instance by dependency<AuthManager>()
@@ -36,14 +37,6 @@ class AuthManagerSteps(testContext: TestContext) :
                 }
             }
         }
-    }
-
-    fun whenLoggingInOrRegistering(email: String? = null, password: String? = null) {
-        instance.loginOrRegister(email ?: user.email, password ?: user.password)
-    }
-
-    fun whenLoggingOut() {
-        instance.logout()
     }
 
     fun thenLoginOrRegisterIsCalled() {

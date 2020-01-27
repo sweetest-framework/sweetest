@@ -10,11 +10,8 @@ import org.junit.Test
 
 class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
-    override fun configure() = super.configure()
-        .requireReal<AuthManager>()
-
     private val user by steps<UserSteps>()
-    private val sut by steps<AuthManagerSteps>()
+    private val sut by steps<AuthManagerRealSteps>()
     private val sessionStore by steps<SessionStoreSteps>()
     private val backendGateway by steps<BackendGatewaySteps>()
 
