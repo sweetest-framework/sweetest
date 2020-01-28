@@ -6,7 +6,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
-interface Steps: CoroutineScope
+interface Steps : CoroutineScope
 
 abstract class BaseSteps(
     private val testContext: TestContext,

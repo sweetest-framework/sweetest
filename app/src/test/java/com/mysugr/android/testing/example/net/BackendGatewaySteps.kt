@@ -1,19 +1,22 @@
 package com.mysugr.android.testing.example.net
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.user.User
 import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.sweetest.framework.base.*
+import com.mysugr.android.testing.example.user.User
+import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 
-import org.mockito.Mockito.*
-
-class BackendGatewaySteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class BackendGatewaySteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireMock<BackendGateway>()
-            .onSetUp(this::setUp)
+        .requireMock<BackendGateway>()
+        .onSetUp(this::setUp)
 
     private val instance by dependency<BackendGateway>()
 
@@ -48,5 +51,4 @@ class BackendGatewaySteps(testContext: TestContext)
     fun thenRegistered(email: String? = null, password: String? = null) {
         verify(instance).register(email ?: user.email, password ?: user.password)
     }
-
 }

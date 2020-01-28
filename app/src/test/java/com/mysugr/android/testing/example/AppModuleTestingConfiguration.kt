@@ -33,5 +33,4 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
      * initialized.
      */
     dependency realOnly initializer { LoginViewModel(instanceOf()) }
-
 }

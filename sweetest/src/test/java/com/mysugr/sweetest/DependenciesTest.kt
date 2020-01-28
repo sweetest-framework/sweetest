@@ -9,7 +9,10 @@ import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.util.isMock
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -42,14 +45,14 @@ class DependenciesTest {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
         override fun configure() = super.configure()
-                .requireReal<ASteps>()
+            .requireReal<ASteps>()
     }
 
     class TestClassBMock : BaseJUnitTest(moduleTestingConfiguration) {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
         override fun configure() = super.configure()
-                .requireMock<BViewModel>()
+            .requireMock<BViewModel>()
     }
 
     @Before
@@ -109,7 +112,6 @@ class DependenciesTest {
             assertNotNull(initializedAInstance)
             assertEquals(initializedAInstance, a.instance)
         }
-
     }
 
     private fun givenNothingConfigured() {

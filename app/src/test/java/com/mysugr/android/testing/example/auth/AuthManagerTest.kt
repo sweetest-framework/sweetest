@@ -4,14 +4,16 @@ import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.net.BackendGatewaySteps
 import com.mysugr.android.testing.example.state.SessionStoreSteps
-import com.mysugr.sweetest.framework.base.*
+import com.mysugr.sweetest.framework.base.BaseJUnitTest
+import com.mysugr.sweetest.framework.base.invoke
+import com.mysugr.sweetest.framework.base.steps
 
 import org.junit.Test
 
 class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireReal<AuthManager>()
+        .requireReal<AuthManager>()
 
     private val user by steps<UserSteps>()
     private val sut by steps<AuthManagerSteps>()
@@ -58,5 +60,4 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
         sut.whenLoggingOut()
         sessionStore.thenSessionIsEnded()
     }
-
 }

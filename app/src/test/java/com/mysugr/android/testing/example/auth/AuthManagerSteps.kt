@@ -7,15 +7,15 @@ import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.util.isMock
-import cucumber.api.java.Before
-import org.junit.Assert.*
-import org.mockito.Mockito.*
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.anyString
+import org.mockito.Mockito.verify
 
-class AuthManagerSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class AuthManagerSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .onSetUp(this::setUp)
+        .onSetUp(this::setUp)
 
     private val instance by dependency<AuthManager>()
     private val user by steps<UserSteps>()
@@ -49,5 +49,4 @@ class AuthManagerSteps(testContext: TestContext)
     fun thenLoginOrRegisterIsCalled() {
         verify(instance).loginOrRegister(user.email, user.password)
     }
-
 }
