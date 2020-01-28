@@ -5,7 +5,7 @@ import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.context.TestContext
 import cucumber.api.java.Before
 import cucumber.api.java.en.Given
-import java.util.*
+import java.util.UUID
 
 class UserSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
 

@@ -1,12 +1,15 @@
 package com.mysugr.android.testing.example.net
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.user.User
 import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.sweetest.framework.base.*
+import com.mysugr.android.testing.example.user.User
+import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
-
-import org.mockito.Mockito.*
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 
 class BackendGatewaySteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {

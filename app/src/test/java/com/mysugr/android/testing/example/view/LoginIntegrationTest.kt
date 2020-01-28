@@ -2,11 +2,12 @@ package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManager
+import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.net.BackendGatewaySteps
 import com.mysugr.android.testing.example.state.SessionStoreSteps
-import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.sweetest.framework.base.*
-
+import com.mysugr.sweetest.framework.base.BaseJUnitTest
+import com.mysugr.sweetest.framework.base.invoke
+import com.mysugr.sweetest.framework.base.steps
 import org.junit.Test
 
 class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {

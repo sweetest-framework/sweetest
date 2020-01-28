@@ -1,18 +1,17 @@
 package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.app.R
+import com.mysugr.android.testing.example.auth.AuthManager
+import com.mysugr.android.testing.example.view.LoginViewModel.State
 import kotlin.concurrent.thread
 
-import com.mysugr.android.testing.example.view.LoginViewModel.State.*
-import com.mysugr.android.testing.example.auth.AuthManager
-
-typealias StateListener = (LoginViewModel.State) -> Unit
+typealias StateListener = (State) -> Unit
 
 class LoginViewModel(private val authManager: AuthManager) {
 
     lateinit var stateListener: StateListener
 
-    var state: State = LoggedOut()
+    var state: State = State.LoggedOut()
         private set(value) {
             field = value
             stateListener(value)
@@ -21,23 +20,23 @@ class LoginViewModel(private val authManager: AuthManager) {
     fun loginOrRegister(email: String, password: String) {
 
         if (!validateEmail(email)) {
-            state = Error(emailError = R.string.error_invalid_email)
+            state = State.Error(emailError = R.string.error_invalid_email)
             return
         }
 
         if (!validatePassword(password)) {
-            state = Error(passwordError = R.string.error_invalid_password)
+            state = State.Error(passwordError = R.string.error_invalid_password)
             return
         }
 
-        state = Busy()
+        state = State.Busy()
         thread {
             state = try {
                 val result = authManager.loginOrRegister(email, password)
                 val isNewUser = result == AuthManager.LoginOrRegisterResult.REGISTERED
-                LoggedIn(isNewUser)
+                State.LoggedIn(isNewUser)
             } catch (exception: AuthManager.WrongPasswordException) {
-                Error(passwordError = R.string.error_incorrect_password)
+                State.Error(passwordError = R.string.error_incorrect_password)
             }
         }
     }
