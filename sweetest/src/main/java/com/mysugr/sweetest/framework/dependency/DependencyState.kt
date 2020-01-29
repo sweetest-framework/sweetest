@@ -5,10 +5,10 @@ import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
 class DependencyState<T : Any>(
-        private val initializerContext: DependencyInitializerContext,
-        val configuration: DependencyConfiguration<T>,
-        initializer: DependencyInitializer<T>? = null,
-        mode: DependencyMode? = null
+    private val initializerContext: DependencyInitializerContext,
+    val configuration: DependencyConfiguration<T>,
+    initializer: DependencyInitializer<T>? = null,
+    mode: DependencyMode? = null
 ) {
 
     private var instanceField: T? = null
@@ -40,12 +40,16 @@ class DependencyState<T : Any>(
         set(value) {
             if (value != modeField) {
                 if (modeField != null) {
-                    throw IllegalStateException("Can't change dependency mode or \"${configuration.clazz}\", it " +
-                        "has already been set before and can't be changed afterwards")
+                    throw IllegalStateException(
+                        "Can't change dependency mode or \"${configuration.clazz}\", it " +
+                            "has already been set before and can't be changed afterwards"
+                    )
                 }
                 if (instanceField != null) {
-                    throw IllegalStateException("Can't set dependency mode of \"${configuration.clazz}\", instance " +
-                        "has already been created")
+                    throw IllegalStateException(
+                        "Can't set dependency mode of \"${configuration.clazz}\", instance " +
+                            "has already been created"
+                    )
                 }
                 modeField = value
             }
@@ -61,7 +65,8 @@ class DependencyState<T : Any>(
         return instance
     }
 
-    private fun createMock(): T = mockInitializer?.let { it(initializerContext) } ?: createDefaultMock()
+    private fun createMock(): T =
+        mockInitializer?.let { it(initializerContext) } ?: createDefaultMock()
 
     private fun createDefaultMock(): T = Mockito.mock(configuration.clazz.java)
 
@@ -83,15 +88,19 @@ class DependencyState<T : Any>(
             val arguments = try {
                 argumentTypes.map { initializerContext.instanceOf(it) }.toTypedArray()
             } catch (exception: Exception) {
-                throw RuntimeException("At least one dependency required by the constructor could " +
-                    "not be found.", exception)
+                throw RuntimeException(
+                    "At least one dependency required by the constructor could " +
+                        "not be found.", exception
+                )
             }
 
             constructor.call(*arguments)
         } catch (exception: Exception) {
-            throw RuntimeException("Couldn't automatically construct dependency \"$configuration\". Either you need " +
-                "a manual initializer, the class should have a single constructor or one of the dependencies " +
-                "required by the constructor could not be initialized.", exception)
+            throw RuntimeException(
+                "Couldn't automatically construct dependency \"$configuration\". Either you need " +
+                    "a manual initializer, the class should have a single constructor or one of the dependencies " +
+                    "required by the constructor could not be initialized.", exception
+            )
         }
     }
 
@@ -103,11 +112,13 @@ class DependencyState<T : Any>(
         } catch (mockitoException: MockitoException) {
             throw mockitoException
         } catch (throwable: Throwable) {
-            throw DependencyInstanceInitializationException("Initializer for \"$configuration\" " +
-                "failed", throwable)
+            throw DependencyInstanceInitializationException(
+                "Initializer for \"$configuration\" " +
+                    "failed", throwable
+            )
         }
     }
 
-    class DependencyInstanceInitializationException(message: String, cause: Throwable)
-        : Exception(message, cause)
+    class DependencyInstanceInitializationException(message: String, cause: Throwable) :
+        Exception(message, cause)
 }

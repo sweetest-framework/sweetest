@@ -1,7 +1,7 @@
 package com.mysugr.android.testing.example.net
 
 import com.mysugr.android.testing.example.user.User
-import java.util.*
+import java.util.UUID
 
 /**
  * Gateway to the [DummyBackend]

@@ -2,13 +2,18 @@ package com.mysugr.sweetest.framework.coroutine
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.Steps
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 
 /**
  * Experimental
  */
 fun BaseJUnitTest.testCoroutine(
-        testBlock: suspend CoroutineScope.() -> Unit
+    testBlock: suspend CoroutineScope.() -> Unit
 ) {
     runBlocking {
         val coroutinesTestContext = accessor.testContext.coroutines
@@ -32,7 +37,8 @@ suspend fun Deferred<*>.throwExceptionIfFailed() {
  * This function counts the number of child jobs and calls [yield] the number of times as jobs are present.
  */
 suspend fun CoroutineScope.yieldForEachJob() {
-    val job = coroutineContext[Job.Key] ?: kotlin.error("coroutineContext doesn't have a parent Job.")
+    val job =
+        coroutineContext[Job.Key] ?: kotlin.error("coroutineContext doesn't have a parent Job.")
     kotlin.repeat(countJobs(job)) { yield() }
 }
 

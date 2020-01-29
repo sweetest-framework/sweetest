@@ -62,5 +62,4 @@ object DependencyFramework {
         _authManager = null
         _sessionStore = null
     }
-
 }

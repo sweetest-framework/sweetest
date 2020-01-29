@@ -4,8 +4,8 @@ import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
 import kotlin.reflect.KClass
 
-class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit)
-    : DependencyAccessor {
+class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) :
+    DependencyAccessor {
 
     private var _states: DependencyStates? = null
     private val configurationsField = DependencyConfigurations()

@@ -13,15 +13,15 @@ import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
 
-class LoginIntegrationTestSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class LoginIntegrationTestSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
-    override fun configure()= super.configure()
-            .requireReal<LoginViewModel>()
-            .requireReal<AuthManager>()
-            .onSetUp {
-                loginViewModel.givenStateListenerConnected()
-            }
+    override fun configure() = super.configure()
+        .requireReal<LoginViewModel>()
+        .requireReal<AuthManager>()
+        .onSetUp {
+            loginViewModel.givenStateListenerConnected()
+        }
 
     private val loginViewModel by steps<LoginViewModelSteps>()
     private val sessionStore by steps<SessionStoreSteps>()
@@ -29,7 +29,8 @@ class LoginIntegrationTestSteps(testContext: TestContext)
     private val user by steps<UserSteps>()
 
     @Before("@login-integration")
-    fun dummy() {} // forces instantiation of this class when run with Cucumber
+    fun dummy() {
+    } // forces instantiation of this class when run with Cucumber
 
     @When("^trying to login or register with email address \"([^\"]*)\" and password \"([^\"]*)\"$")
     fun whenLoginOrRegister(email: String, password: String) {
@@ -70,5 +71,4 @@ class LoginIntegrationTestSteps(testContext: TestContext)
         loginViewModel.whenWaitForStateNot(LoginViewModel.State.LoggedIn::class.java)
         loginViewModel.thenStateIsNotLoggedIn()
     }
-
 }

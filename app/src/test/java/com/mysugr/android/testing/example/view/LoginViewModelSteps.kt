@@ -3,14 +3,16 @@ package com.mysugr.android.testing.example.view
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.sweetest.framework.base.*
+import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
-import cucumber.api.java.Before
-import cucumber.api.java.en.When
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 
-class LoginViewModelSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class LoginViewModelSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     private val instance by dependency<LoginViewModel>()
     private val user by steps<UserSteps>()
@@ -41,21 +43,21 @@ class LoginViewModelSteps(testContext: TestContext)
         val maxTimeMillis = 1000L
 
         fun checkLastState() =
-                if (recordedStateChanges.size == 0) {
-                    false
+            if (recordedStateChanges.size == 0) {
+                false
+            } else {
+                val last = recordedStateChanges.last()
+                val matchesType = if (invert) {
+                    last::class.java != ofType
                 } else {
-                    val last = recordedStateChanges.last()
-                    val matchesType = if (invert) {
-                        last::class.java != ofType
-                    } else {
-                        last::class.java == ofType
-                    }
-                    if (matchesType) {
-                        @Suppress("UNCHECKED_CAST")
-                        resultState = last as R
-                    }
-                    matchesType
+                    last::class.java == ofType
                 }
+                if (matchesType) {
+                    @Suppress("UNCHECKED_CAST")
+                    resultState = last as R
+                }
+                matchesType
+            }
 
         while (!checkLastState()) {
             val timeToGo = maxTimeMillis - (System.currentTimeMillis() - startedAtMillis)
@@ -69,7 +71,6 @@ class LoginViewModelSteps(testContext: TestContext)
         }
 
         return resultState!!
-
     }
 
     fun thenStateChangeWasNotified() {
@@ -108,8 +109,7 @@ class LoginViewModelSteps(testContext: TestContext)
     fun thenStateIsPasswordErrorWrongPassword() {
         thenStateChangeWasNotified()
         (recordedStateChanges.last() as? LoginViewModel.State.Error)
-                ?.also { assertTrue(it.passwordError == R.string.error_incorrect_password) }
-                ?: fail("The last state is not of type Error")
+            ?.also { assertTrue(it.passwordError == R.string.error_incorrect_password) }
+            ?: fail("The last state is not of type Error")
     }
-
 }

@@ -1,17 +1,17 @@
 package com.mysugr.android.testing.example.app
 
-import android.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.view.View
 import com.mysugr.android.testing.example.dependency.DependencyFramework
-
-import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State
-import com.mysugr.android.testing.example.view.LoginViewModel.State.*
-
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.email
+import kotlinx.android.synthetic.main.activity_login.login_form
+import kotlinx.android.synthetic.main.activity_login.login_progress
+import kotlinx.android.synthetic.main.activity_login.logout_button
+import kotlinx.android.synthetic.main.activity_login.message
+import kotlinx.android.synthetic.main.activity_login.password
+import kotlinx.android.synthetic.main.activity_login.sign_in_button
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -39,19 +39,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun onStateChange(state: LoginViewModel.State) {
+    private fun onStateChange(state: State) {
         logger.log(Level.INFO, "State: $state")
         updateView(state)
     }
 
     private fun updateView(state: State) {
-        login_progress.visibility = if (state is Busy) View.VISIBLE else View.GONE
-        login_form.visibility = if (state is LoggedOut || state is Error) View.VISIBLE else
+        login_progress.visibility = if (state is State.Busy) View.VISIBLE else View.GONE
+        login_form.visibility = if (state is State.LoggedOut || state is Error) View.VISIBLE else
             View.GONE
         logout_button.visibility = if (state.loggedIn) View.VISIBLE else View.GONE
-        email.error = (state as? Error)?.emailError?.let { this.resources.getString(it) }
-        password.error = (state as? Error)?.passwordError?.let { this.resources.getString(it) }
-        if (state is LoggedIn) {
+        email.error = (state as? State.Error)?.emailError?.let { this.resources.getString(it) }
+        password.error = (state as? State.Error)?.passwordError?.let { this.resources.getString(it) }
+        if (state is State.LoggedIn) {
             message.setText(if (state.isNewUser) R.string.login_new_user else
                 R.string.login_existing_user)
         } else {

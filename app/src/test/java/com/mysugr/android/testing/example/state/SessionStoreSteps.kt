@@ -1,18 +1,21 @@
 package com.mysugr.android.testing.example.state
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.user.User
 import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.sweetest.framework.base.*
+import com.mysugr.android.testing.example.user.User
+import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.never
+import org.mockito.Mockito.verify
 
-import org.mockito.Mockito.*
-
-class SessionStoreSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration) {
+class SessionStoreSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-            .requireMock<SessionStore>()
+        .requireMock<SessionStore>()
 
     private val user by steps<UserSteps>()
 
@@ -30,5 +33,4 @@ class SessionStoreSteps(testContext: TestContext)
     fun thenSessionIsEnded() {
         verify(instance).endSession()
     }
-
 }
