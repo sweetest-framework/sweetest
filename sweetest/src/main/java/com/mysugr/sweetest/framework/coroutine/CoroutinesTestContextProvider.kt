@@ -1,17 +1,13 @@
 package com.mysugr.sweetest.framework.coroutine
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
 
 class CoroutinesTestContextProvider : CoroutinesTestContext {
 
     private var delegate: CoroutinesTestContext? = null
 
-    override val coroutineDispatcher: CoroutineDispatcher
-        get() = getDelegate().coroutineDispatcher
-
-    override val coroutineContext: CoroutineContext
-        get() = getDelegate().coroutineContext
+    override val coroutineScope: CoroutineScope
+        get() = getDelegate().coroutineScope
 
     fun initializeLegacy() {
         checkAlreadyInitialized()

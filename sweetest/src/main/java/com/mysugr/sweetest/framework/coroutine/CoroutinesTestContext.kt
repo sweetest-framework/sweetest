@@ -1,18 +1,20 @@
 package com.mysugr.sweetest.framework.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.CoroutineContext
 
 interface CoroutinesTestContext {
-    val coroutineDispatcher get() = coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
-    val coroutineContext: CoroutineContext
+    val coroutineScope: CoroutineScope
 
-    suspend fun finish()
+    fun finish()
 
     companion object {
 
-        val coroutineDispatcher get() = getCurrentInstance().coroutineDispatcher
+        val coroutineDispatcher
+            get() = getCurrentInstance()
+                .coroutineScope
+                .coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
 
         private var currentInstance: CoroutinesTestContext? = null
 
@@ -27,3 +29,4 @@ interface CoroutinesTestContext {
             )
     }
 }
+

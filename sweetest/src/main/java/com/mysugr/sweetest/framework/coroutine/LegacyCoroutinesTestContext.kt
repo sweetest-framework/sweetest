@@ -1,6 +1,7 @@
 package com.mysugr.sweetest.framework.coroutine
 
 import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.cancelAndJoin
@@ -10,10 +11,11 @@ import java.util.concurrent.Executors
 class LegacyCoroutinesTestContext : CoroutinesTestContext {
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
-    override val coroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    override val coroutineContext = coroutineDispatcher + supervisorJob + name
+    private val coroutineDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
 
-    override suspend fun finish() = runBlocking {
+    override val coroutineScope = CoroutineScope(coroutineDispatcher + supervisorJob + name)
+
+    override fun finish() = runBlocking {
         supervisorJob.cancelAndJoin()
     }
 
