@@ -9,18 +9,19 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
-/**
- * Experimental
- */
 fun BaseJUnitTest.testCoroutine(
     testBlock: suspend CoroutineScope.() -> Unit
 ) {
     runBlocking {
         val coroutinesTestContext = accessor.testContext.coroutines
-        withContext(coroutinesTestContext.coroutineContext) {
-            testBlock()
+        coroutinesTestContext.initializeLegacy()
+        try {
+            withContext(coroutinesTestContext.coroutineContext) {
+                testBlock()
+            }
+        } finally {
+            coroutinesTestContext.finish()
         }
-        coroutinesTestContext.testFinished()
     }
 }
 

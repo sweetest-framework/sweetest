@@ -1,30 +1,29 @@
 package com.mysugr.sweetest.framework.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.cancelAndJoin
-import java.util.concurrent.Executors
+import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 
-/**
- * Experimental
- */
-class CoroutinesTestContext {
-    private val name = CoroutineName("testCoroutine${instanceCounter++}")
-    private val supervisorJob = SupervisorJob()
+interface CoroutinesTestContext {
+    val coroutineDispatcher get() = coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
     val coroutineContext: CoroutineContext
-        get() = coroutineDispatcher + supervisorJob + name
 
-    suspend fun testFinished() {
-        supervisorJob.cancelAndJoin()
-    }
+    suspend fun finish()
 
     companion object {
-        val coroutineDispatcher: CoroutineDispatcher by lazy {
-            Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+
+        val coroutineDispatcher get() = getCurrentInstance().coroutineDispatcher
+
+        private var currentInstance: CoroutinesTestContext? = null
+
+        internal fun setCurrentInstance(coroutinesTestContext: CoroutinesTestContext?) {
+            currentInstance = coroutinesTestContext
         }
-        private var instanceCounter = 0
+
+        private fun getCurrentInstance(): CoroutinesTestContext =
+            currentInstance ?: error(
+                "CoroutinesTestContext is not set, please make sure you don't " +
+                    "access coroutineDispatcher or coroutineContext prematurely"
+            )
     }
 }
