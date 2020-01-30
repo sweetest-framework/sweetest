@@ -4,17 +4,19 @@ import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import kotlinx.coroutines.CoroutineScope
 
-class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) :
-    CoroutinesTestContext {
+class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) {
 
     private var delegate: CoroutinesTestContext? = null
 
-    override val coroutineScope: CoroutineScope
+    val coroutineScope: CoroutineScope
         get() = getDelegate().coroutineScope
 
     init {
         workflowTestContext.subscribe(InitializationStep.SET_UP) {
             initializeLegacy()
+        }
+        workflowTestContext.subscribe(InitializationStep.TEAR_DOWN) {
+            finish()
         }
     }
 
@@ -23,7 +25,7 @@ class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) :
         setDelegate(LegacyCoroutinesTestContext())
     }
 
-    override suspend fun finish() {
+    private fun finish() {
         try {
             getDelegate().finish()
         } finally {
