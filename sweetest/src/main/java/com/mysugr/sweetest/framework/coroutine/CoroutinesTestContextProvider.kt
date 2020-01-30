@@ -1,15 +1,24 @@
 package com.mysugr.sweetest.framework.coroutine
 
+import com.mysugr.sweetest.framework.context.WorkflowTestContext
+import com.mysugr.sweetest.framework.flow.InitializationStep
 import kotlinx.coroutines.CoroutineScope
 
-class CoroutinesTestContextProvider : CoroutinesTestContext {
+class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) :
+    CoroutinesTestContext {
 
     private var delegate: CoroutinesTestContext? = null
 
     override val coroutineScope: CoroutineScope
         get() = getDelegate().coroutineScope
 
-    fun initializeLegacy() {
+    init {
+        workflowTestContext.subscribe(InitializationStep.SET_UP) {
+            initializeLegacy()
+        }
+    }
+
+    private fun initializeLegacy() {
         checkAlreadyInitialized()
         setDelegate(LegacyCoroutinesTestContext())
     }

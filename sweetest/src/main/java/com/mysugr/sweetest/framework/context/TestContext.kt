@@ -17,10 +17,10 @@ class TestContext internal constructor() {
     @PublishedApi
     internal val dependencies = DependenciesTestContext()
 
-    @PublishedApi
-    internal val coroutines = CoroutinesTestContextProvider()
-
     val workflow = WorkflowTestContext(steps)
+
+    @PublishedApi
+    internal val coroutines = CoroutinesTestContextProvider(workflow)
 
     init {
         TestEnvironment.reset()

@@ -15,7 +15,6 @@ fun BaseJUnitTest.testCoroutine(
 ) {
     runBlocking {
         val coroutinesTestContext = accessor.testContext.coroutines
-        coroutinesTestContext.initializeLegacy()
         try {
             withContext(coroutinesTestContext.coroutineContext) {
                 testBlock()
