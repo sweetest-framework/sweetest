@@ -48,9 +48,13 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         return this as TSelf
     }
 
+    // STEPS
+
     inline fun <reified T : Steps> requireSteps() = apply {
         testContext.steps.setUpAsRequired(T::class as KClass<Steps>)
     }
+
+    // DEPENDENCIES
 
     inline fun <reified T : Any> requireReal() = apply {
         testContext.dependencies.requireReal(T::class)
@@ -80,6 +84,8 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         testContext.dependencies.requireSpy(T::class)
     }
 
+    // FACTORY
+
     inline fun <reified R : Any> offerFactory(noinline createObject: () -> R) = apply {
         testContext.factories.configure(FactoryRunner0(R::class.java, createObject))
     }
@@ -100,6 +106,21 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         testContext.factories.configure(FactoryRunner3(R::class.java, T1::class.java, T2::class.java, T3::class.java,
             createObject))
     }
+
+    // COROUTINES
+
+    /**
+     * sweetest uses and exposes [kotlinx.coroutines.test.TestCoroutineScope] as a standard way to test with coroutines,
+     * but before that was available sweetest had its own solution which can still be used by enabling this option (see
+     * [com.mysugr.sweetest.framework.coroutine.testCoroutine]).
+     */
+    fun useLegacyCoroutineScope() = apply {
+        testContext.coroutines.configure {
+            useLegacyCoroutineScope()
+        }
+    }
+
+    // TEST WORKFLOW EVENTS
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetBuilt()

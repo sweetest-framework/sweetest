@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
@@ -21,6 +22,8 @@ fun BaseJUnitTest.testCoroutine(
 }
 
 val TestingAccessor.coroutineScope get() = accessor.testContext.coroutines.coroutineScope
+
+val TestingAccessor.testCoroutineScope get() = accessor.testContext.coroutines.coroutineScope as TestCoroutineScope
 
 suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
 

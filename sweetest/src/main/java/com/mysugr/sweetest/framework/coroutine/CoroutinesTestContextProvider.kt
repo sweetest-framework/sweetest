@@ -4,25 +4,44 @@ import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import kotlinx.coroutines.CoroutineScope
 
-class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) {
-
-    private var delegate: CoroutinesTestContext? = null
+internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) {
 
     val coroutineScope: CoroutineScope
         get() = getDelegate().coroutineScope
 
+    private var delegate: CoroutinesTestContext? = null
+    private val isInitialized get() = delegate != null
+    private val configuration = CoroutinesTestConfiguration()
+
     init {
+        initializeOnSetUpEvent(workflowTestContext)
+        finishOnTearDownEvent(workflowTestContext)
+    }
+
+    fun configure(block: CoroutinesTestConfiguration.() -> Unit) {
+        checkAlreadyInitialized()
+        block(configuration)
+    }
+
+    private fun initializeOnSetUpEvent(workflowTestContext: WorkflowTestContext) {
         workflowTestContext.subscribe(InitializationStep.SET_UP) {
-            initializeLegacy()
+            this.initialize()
         }
+    }
+
+    private fun finishOnTearDownEvent(workflowTestContext: WorkflowTestContext) {
         workflowTestContext.subscribe(InitializationStep.TEAR_DOWN) {
             finish()
         }
     }
 
-    private fun initializeLegacy() {
+    private fun initialize() {
         checkAlreadyInitialized()
-        setDelegate(LegacyCoroutinesTestContext())
+        if (configuration.data.useLegacyTestCoroutine) {
+            setDelegate(LegacyCoroutinesTestContext())
+        } else {
+            setDelegate(DefaultCoroutinesTestContext())
+        }
     }
 
     private fun finish() {
@@ -45,6 +64,6 @@ class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) {
     }
 
     private fun checkAlreadyInitialized() {
-        check(delegate == null) { "Already initialized" }
+        check(!isInitialized) { "Can't perform operation, already initialized" }
     }
 }

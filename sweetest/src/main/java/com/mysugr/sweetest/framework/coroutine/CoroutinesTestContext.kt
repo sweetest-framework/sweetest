@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.ContinuationInterceptor
 
 interface CoroutinesTestContext {
+
     val coroutineScope: CoroutineScope
 
     fun finish()
@@ -29,4 +30,3 @@ interface CoroutinesTestContext {
             )
     }
 }
-
