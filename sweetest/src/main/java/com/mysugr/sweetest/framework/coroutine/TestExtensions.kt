@@ -8,16 +8,38 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
+@Deprecated("Please migrate to `runBlockingSweetest`")
 fun BaseJUnitTest.testCoroutine(
     testBlock: suspend CoroutineScope.() -> Unit
 ) {
+    check(accessor.testContext.coroutines.coroutineScope !is TestCoroutineScope) {
+        "You are using the legacy CoroutineScope in this test, therefore `testCoroutine` can't be used. " +
+            "Please use `runBlockingSweetest` instead or add `useLegacyCoroutineScope()` to the test or " +
+            "steps configuration"
+    }
     runBlocking {
         withContext(accessor.testContext.coroutines.coroutineScope.coroutineContext) {
             testBlock()
         }
+    }
+}
+
+/**
+ * Wrapper around [kotlinx.coroutines.test.runBlockingTest] that takes the [TestCoroutineScope] provided by sweetest
+ */
+fun BaseJUnitTest.runBlockingSweetest(
+    testBlock: suspend CoroutineScope.() -> Unit
+) {
+    check(accessor.testContext.coroutines.coroutineScope is TestCoroutineScope) {
+        "You are not using the legacy CoroutineScope in this test, therefore `testCoroutine` can't be used. " +
+            "Please remove `useLegacyCoroutineScope()` from the test or steps configuration."
+    }
+    testCoroutineScope.runBlockingTest {
+        testBlock()
     }
 }
 
@@ -39,7 +61,11 @@ suspend fun Deferred<*>.throwExceptionIfFailed() {
  */
 suspend fun CoroutineScope.yieldForEachJob() {
     val job =
-        coroutineContext[Job.Key] ?: kotlin.error("coroutineContext doesn't have a parent Job.")
+        coroutineContext[Job.Key] ?: error(
+            "coroutineContext doesn't have a parent Job. Probably you are mistakenly using a TestCoroutineScope " +
+                "(these don't have a `Job` by default) or you don't use sweetest's legacy CoroutineScope. Pleas bear " +
+                "in mind that with runBlockingTest/Sweetest and TestCoroutineScope you don't need `yield` usually!"
+        )
     kotlin.repeat(countJobs(job)) { yield() }
 }
 
