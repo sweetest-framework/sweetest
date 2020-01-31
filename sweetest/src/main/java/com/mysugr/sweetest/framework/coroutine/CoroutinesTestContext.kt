@@ -8,7 +8,7 @@ interface CoroutinesTestContext {
 
     val coroutineScope: CoroutineScope
 
-    fun finish()
+    fun cleanupCoroutines()
 
     companion object {
 

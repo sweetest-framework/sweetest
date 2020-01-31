@@ -15,7 +15,7 @@ class LegacyCoroutinesTestContext : CoroutinesTestContext {
 
     override val coroutineScope = CoroutineScope(coroutineDispatcher + supervisorJob + name)
 
-    override fun finish() = runBlocking {
+    override fun cleanupCoroutines() = runBlocking {
         supervisorJob.cancelAndJoin()
     }
 

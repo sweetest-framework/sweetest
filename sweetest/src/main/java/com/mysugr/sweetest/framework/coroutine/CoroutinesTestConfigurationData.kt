@@ -8,7 +8,18 @@ data class CoroutinesTestConfigurationData(
 
     /**
      * Default behavior is that [kotlinx.coroutines.test.setMain] is called with a CoroutineDispatcher from the test's
-     * CoroutineScope for each test. This can be disabled by setting this to false.
+     * CoroutineScope for each test. That behavior can be disabled by setting this to false.
      */
-    val autoSetMainCoroutineDispatcher: Boolean? = null
-)
+    val autoSetMainCoroutineDispatcher: Boolean? = null,
+
+    /**
+     * [kotlinx.coroutines.test.TestCoroutineScope.cleanupTestCoroutines] is called by default after each test. That
+     * behavior can be disabled by setting this to false.
+     */
+    val autoCleanupTestCoroutines: Boolean? = null
+) {
+    object Defaults {
+        val autoSetMainCoroutineDispatcher = true
+        val autoCleanupTestCoroutines = false
+    }
+}

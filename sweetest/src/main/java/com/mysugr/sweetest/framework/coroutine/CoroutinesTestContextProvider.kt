@@ -16,8 +16,14 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
 
     private var delegate: CoroutinesTestContext? = null
     private val isInitialized get() = delegate != null
+
     private val configuration = CoroutinesTestConfiguration()
-    private val autoSetMainCoroutineDispatcherEnabled get() = configuration.data.autoSetMainCoroutineDispatcher ?: true
+    private val autoSetMainCoroutineDispatcherEnabled
+        get() = configuration.data.autoSetMainCoroutineDispatcher
+            ?: CoroutinesTestConfigurationData.Defaults.autoSetMainCoroutineDispatcher
+    private val autoCleanupTestCoroutinesEnabled
+        get() = configuration.data.autoCleanupTestCoroutines
+            ?: CoroutinesTestConfigurationData.Defaults.autoCleanupTestCoroutines
 
     init {
         initializeOnSetUpEvent(workflowTestContext)
@@ -53,7 +59,9 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
 
     private fun finish() {
         try {
-            getDelegate().finish()
+            if (autoCleanupTestCoroutinesEnabled) {
+                getDelegate().cleanupCoroutines()
+            }
         } finally {
             setDelegate(null)
             autoResetMainCoroutineDispatcher()

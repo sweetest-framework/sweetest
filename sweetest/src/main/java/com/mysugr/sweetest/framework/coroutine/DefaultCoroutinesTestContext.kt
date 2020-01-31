@@ -15,7 +15,7 @@ class DefaultCoroutinesTestContext(
 
     override val coroutineScope = TestCoroutineScope(coroutineContext)
 
-    override fun finish() {
+    override fun cleanupCoroutines() {
         // runBlockingTest/Sweetest handles finishing, don't need to do anything here
     }
 }
