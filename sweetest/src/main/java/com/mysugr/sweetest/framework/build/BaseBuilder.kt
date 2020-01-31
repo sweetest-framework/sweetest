@@ -120,6 +120,17 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         }
     }
 
+    /**
+     * By default [kotlinx.coroutines.Dispatchers.Main] is set to the CoroutineScope provided by sweetest before each
+     * test and also reset after. With this function this behavior can be forced to be disabled or enabled so it can't
+     * be changed subsequently anymore.
+     */
+    fun autoSetMainCoroutineDispatcher(value: Boolean) = apply {
+        testContext.coroutines.configure {
+            autoSetMainCoroutineDispatcher(value)
+        }
+    }
+
     // TEST WORKFLOW EVENTS
 
     fun onInitializeDependencies(run: () -> Unit) = apply {

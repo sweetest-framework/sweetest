@@ -2,7 +2,12 @@ package com.mysugr.sweetest.framework.coroutine
 
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.flow.InitializationStep
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import kotlin.coroutines.ContinuationInterceptor
 
 internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestContext) {
 
@@ -12,6 +17,7 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
     private var delegate: CoroutinesTestContext? = null
     private val isInitialized get() = delegate != null
     private val configuration = CoroutinesTestConfiguration()
+    private val autoSetMainCoroutineDispatcherEnabled get() = configuration.data.autoSetMainCoroutineDispatcher ?: true
 
     init {
         initializeOnSetUpEvent(workflowTestContext)
@@ -42,6 +48,7 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
         } else {
             setDelegate(DefaultCoroutinesTestContext())
         }
+        autoSetMainCoroutineDispatcher()
     }
 
     private fun finish() {
@@ -49,6 +56,21 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
             getDelegate().finish()
         } finally {
             setDelegate(null)
+            autoResetMainCoroutineDispatcher()
+        }
+    }
+
+    private fun autoSetMainCoroutineDispatcher() {
+        if (autoSetMainCoroutineDispatcherEnabled) {
+            val dispatcher =
+                getDelegate().coroutineScope.coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
+            Dispatchers.setMain(dispatcher)
+        }
+    }
+
+    private fun autoResetMainCoroutineDispatcher() {
+        if (autoSetMainCoroutineDispatcherEnabled) {
+            Dispatchers.resetMain()
         }
     }
 
