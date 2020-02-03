@@ -40,11 +40,11 @@ suspend fun verifyOrder(block: suspend OrderVerifier.() -> Unit) {
 class OrderVerifier {
     private var currentOrderIndex = 0
 
-    fun order(orderIndex: Int) {
+    fun order(expectedIndex: Int) {
         currentOrderIndex++
 
-        if (orderIndex != currentOrderIndex) {
-            fail("Expected order($currentOrderIndex), but reached order($orderIndex) instead")
+        if (expectedIndex != currentOrderIndex) {
+            fail("Expected order ($expectedIndex), but ($currentOrderIndex) reached instead")
         }
     }
 }
