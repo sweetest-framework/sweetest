@@ -16,10 +16,18 @@ data class CoroutinesTestConfigurationData(
      * [kotlinx.coroutines.test.TestCoroutineScope.cleanupTestCoroutines] is called by default after each test. That
      * behavior can be disabled by setting this to false.
      */
-    val autoCleanupTestCoroutines: Boolean? = null
+    val autoCancelTestCoroutines: Boolean? = null
 ) {
     object Defaults {
         val autoSetMainCoroutineDispatcher = true
-        val autoCleanupTestCoroutines = false
+        val autoCancelTestCoroutines = false
     }
 }
+
+val CoroutinesTestConfigurationData.autoCancelTestCoroutinesEnabled
+    get() = this.autoCancelTestCoroutines
+        ?: CoroutinesTestConfigurationData.Defaults.autoCancelTestCoroutines
+
+val CoroutinesTestConfigurationData.autoSetMainCoroutineDispatcherEnabled
+    get() = this.autoSetMainCoroutineDispatcher
+        ?: CoroutinesTestConfigurationData.Defaults.autoSetMainCoroutineDispatcher

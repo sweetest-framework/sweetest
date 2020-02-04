@@ -18,12 +18,6 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
     private val isInitialized get() = delegate != null
 
     private val configuration = CoroutinesTestConfiguration()
-    private val autoSetMainCoroutineDispatcherEnabled
-        get() = configuration.data.autoSetMainCoroutineDispatcher
-            ?: CoroutinesTestConfigurationData.Defaults.autoSetMainCoroutineDispatcher
-    private val autoCleanupTestCoroutinesEnabled
-        get() = configuration.data.autoCleanupTestCoroutines
-            ?: CoroutinesTestConfigurationData.Defaults.autoCleanupTestCoroutines
 
     init {
         initializeOnSetUpEvent(workflowTestContext)
@@ -33,6 +27,10 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
     fun configure(block: CoroutinesTestConfiguration.() -> Unit) {
         checkAlreadyInitialized()
         block(configuration)
+    }
+
+    fun runTest(testBody: suspend () -> Unit) {
+        getDelegate().runTest(testBody)
     }
 
     private fun initializeOnSetUpEvent(workflowTestContext: WorkflowTestContext) {
@@ -50,26 +48,21 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
     private fun initialize() {
         checkAlreadyInitialized()
         if (configuration.data.useLegacyTestCoroutine) {
-            setDelegate(LegacyCoroutinesTestContext())
+            setDelegate(LegacyCoroutinesTestContext(configuration.data))
         } else {
-            setDelegate(DefaultCoroutinesTestContext())
+            setDelegate(DefaultCoroutinesTestContext(configuration.data))
         }
         autoSetMainCoroutineDispatcher()
     }
 
     private fun finish() {
-        try {
-            if (autoCleanupTestCoroutinesEnabled) {
-                getDelegate().cleanupCoroutines()
-            }
-        } finally {
-            setDelegate(null)
-            autoResetMainCoroutineDispatcher()
-        }
+        getDelegate() // make sure it was initialized before
+        setDelegate(null)
+        autoResetMainCoroutineDispatcher()
     }
 
     private fun autoSetMainCoroutineDispatcher() {
-        if (autoSetMainCoroutineDispatcherEnabled) {
+        if (configuration.data.autoSetMainCoroutineDispatcherEnabled) {
             val dispatcher =
                 getDelegate().coroutineScope.coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
             Dispatchers.setMain(dispatcher)
@@ -77,7 +70,7 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
     }
 
     private fun autoResetMainCoroutineDispatcher() {
-        if (autoSetMainCoroutineDispatcherEnabled) {
+        if (configuration.data.autoSetMainCoroutineDispatcherEnabled) {
             Dispatchers.resetMain()
         }
     }

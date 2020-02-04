@@ -2,13 +2,14 @@ package com.mysugr.sweetest.framework.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlin.coroutines.ContinuationInterceptor
 
 interface CoroutinesTestContext {
 
     val coroutineScope: CoroutineScope
 
-    fun cleanupCoroutines()
+    fun runTest(testBody: suspend () -> Unit)
 
     companion object {
 

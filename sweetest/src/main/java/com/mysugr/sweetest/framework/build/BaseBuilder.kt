@@ -135,9 +135,9 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
      * [kotlinx.coroutines.test.TestCoroutineScope.cleanupTestCoroutines] is called after each test. That ensures that
      * all jobs in the TestCoroutineScope are finished.
      */
-    fun autoCleanupTestCoroutines(value: Boolean) = apply {
+    fun autoCancelTestCoroutines(value: Boolean) = apply {
         testContext.coroutines.configure {
-            autoCleanupTestCoroutines(value)
+            autoCancelTestCoroutines(value)
         }
     }
 

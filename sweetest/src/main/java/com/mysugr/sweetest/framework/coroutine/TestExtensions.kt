@@ -6,25 +6,25 @@ import com.mysugr.sweetest.framework.base.TestingAccessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import kotlin.coroutines.ContinuationInterceptor
 
 @Deprecated("Please migrate to `runBlockingSweetest`")
 fun BaseJUnitTest.testCoroutine(
-    testBlock: suspend CoroutineScope.() -> Unit
+    testBody: suspend CoroutineScope.() -> Unit
 ) {
     check(accessor.testContext.coroutines.coroutineScope !is TestCoroutineScope) {
         "You are using the legacy CoroutineScope in this test, therefore `testCoroutine` can't be used. " +
             "Please use `runBlockingSweetest` instead or add `useLegacyCoroutineScope()` to the test or " +
             "steps configuration"
     }
-    runBlocking {
-        withContext(accessor.testContext.coroutines.coroutineScope.coroutineContext) {
-            testBlock()
-        }
+    accessor.testContext.coroutines.runTest {
+        testBody(coroutineScope)
     }
 }
 
@@ -32,14 +32,15 @@ fun BaseJUnitTest.testCoroutine(
  * Wrapper around [kotlinx.coroutines.test.runBlockingTest] that takes the [TestCoroutineScope] provided by sweetest
  */
 fun BaseJUnitTest.runBlockingSweetest(
-    testBlock: suspend CoroutineScope.() -> Unit
+    testBody: suspend CoroutineScope.() -> Unit
 ) {
-    check(accessor.testContext.coroutines.coroutineScope is TestCoroutineScope) {
+    val scope = accessor.testContext.coroutines.coroutineScope
+    check(scope is TestCoroutineScope) {
         "You are not using the legacy CoroutineScope in this test, therefore `testCoroutine` can't be used. " +
             "Please remove `useLegacyCoroutineScope()` from the test or steps configuration."
     }
-    testCoroutineScope.runBlockingTest {
-        testBlock()
+    accessor.testContext.coroutines.runTest {
+        testBody(scope)
     }
 }
 

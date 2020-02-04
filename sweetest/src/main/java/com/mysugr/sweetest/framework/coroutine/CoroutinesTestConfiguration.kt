@@ -28,13 +28,13 @@ internal class CoroutinesTestConfiguration {
      * This configuration can be set multiple times but not changed. This prevents conflicting expectations in the test
      * system
      */
-    fun autoCleanupTestCoroutines(value: Boolean) {
-        val previousValue = data.autoCleanupTestCoroutines
+    fun autoCancelTestCoroutines(value: Boolean) {
+        val previousValue = data.autoCancelTestCoroutines
         if (previousValue != null && previousValue != value) {
-            error(getCantChangeErrorMessage("autoCleanupTestCoroutines", previousValue))
+            error(getCantChangeErrorMessage("autoCancelTestCoroutines", previousValue))
         } else {
             data = data.copy(
-                autoCleanupTestCoroutines = value
+                autoCancelTestCoroutines = value
             )
         }
     }
