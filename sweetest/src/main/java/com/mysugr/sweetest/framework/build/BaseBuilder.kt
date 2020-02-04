@@ -121,8 +121,12 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     }
 
     /**
-     * By default [kotlinx.coroutines.Dispatchers.Main] is set to the CoroutineScope provided by sweetest before each
-     * test and also reset after. With this function this behavior can be forced to be disabled or enabled.
+     * [kotlinx.coroutines.Dispatchers.Main] can be set to the CoroutineScope provided by sweetest before each
+     * test and also reset it after. This behavior is **enabled by default**, but with this function it can be forced to
+     * be disabled or enabled for a test.
+     *
+     * If there are conflicting calls to this function, an exception is thrown (e.g. in the test `true` is passed, but
+     * in one of the steps `false` is passed).
      */
     fun autoSetMainCoroutineDispatcher(value: Boolean) = apply {
         testContext.coroutines.configure {
@@ -131,9 +135,13 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     }
 
     /**
-     * By enabling this option sweetest can automatically take care that
-     * [kotlinx.coroutines.test.TestCoroutineScope.cleanupTestCoroutines] is called after each test. That ensures that
-     * all jobs in the TestCoroutineScope are finished.
+     * By enabling this option sweetest can automatically take care that all children jobs of the main test coroutine
+     * are cancelled if they are still active after the test. This behavior is **disabled by default** in order to help
+     * you catching failures where some logic does not finish a job as intended. So please use this feature just in
+     * places where you expect jobs to be still open in _every_ case.
+     *
+     * If there are conflicting calls to this function, an exception is thrown (e.g. in the test `true` is passed, but
+     * in one of the steps `false` is passed).
      */
     fun autoCancelTestCoroutines(value: Boolean) = apply {
         testContext.coroutines.configure {

@@ -13,8 +13,9 @@ data class CoroutinesTestConfigurationData(
     val autoSetMainCoroutineDispatcher: Boolean? = null,
 
     /**
-     * [kotlinx.coroutines.test.TestCoroutineScope.cleanupTestCoroutines] is called by default after each test. That
-     * behavior can be disabled by setting this to false.
+     * The [kotlinx.coroutines.Job] that runs the test can still be active in case children jobs exist that are still
+     * running. This option can be enabled to automatically close the parent job including all its children. By default
+     * this is not enabled.
      */
     val autoCancelTestCoroutines: Boolean? = null
 ) {
