@@ -10,7 +10,7 @@ import kotlinx.coroutines.yield
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 
-class TriggerAwaiterSteps(testContext: TestContext) :
+class TriggerAwaiterLegacySteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
 
     private val sut = TriggerAwaiter()
@@ -22,20 +22,23 @@ class TriggerAwaiterSteps(testContext: TestContext) :
             order(1)
 
             val awaitJob = async {
-                order(2)
+                order(3)
                 sut.awaitTrigger()
                 triggerCompleted = true
-                order(4)
+                order(5)
             }
 
-            order(3)
+            order(2)
+            yield() // allow awaitJob to get into awaitTrigger fun
+            order(4)
 
             awaitJob.throwExceptionIfFailed()
         }
     }
 
-    fun trigger() {
+    suspend fun trigger() {
         sut.trigger()
+        yield() // allow awaitJob to complete
     }
 
     fun assertAwaitTriggerCompleted() = assertTrue(triggerCompleted)
