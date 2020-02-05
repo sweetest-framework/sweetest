@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import kotlin.coroutines.ContinuationInterceptor
 
-internal class CoroutinesTestContextWrapper(workflowTestContext: WorkflowTestContext) : CoroutinesTestContext {
+internal class CoroutinesTestContextWrapper(private val workflowTestContext: WorkflowTestContext) : CoroutinesTestContext {
 
     override val coroutineScope: CoroutineScope get() = getDelegate().coroutineScope
 
@@ -19,8 +19,8 @@ internal class CoroutinesTestContextWrapper(workflowTestContext: WorkflowTestCon
     private val configuration = CoroutinesTestConfiguration()
 
     init {
-        initializeOnSetUpEvent(workflowTestContext)
-        finishOnTearDownEvent(workflowTestContext)
+        initializeOnInitializeFrameworkEvent()
+        finishOnTearDownEvent()
     }
 
     fun configure(block: CoroutinesTestConfigurator.() -> Unit) {
@@ -32,13 +32,13 @@ internal class CoroutinesTestContextWrapper(workflowTestContext: WorkflowTestCon
         getDelegate().runTest(testBody)
     }
 
-    private fun initializeOnSetUpEvent(workflowTestContext: WorkflowTestContext) {
-        workflowTestContext.subscribe(InitializationStep.SET_UP) {
+    private fun initializeOnInitializeFrameworkEvent() {
+        workflowTestContext.subscribe(InitializationStep.INITIALIZE_FRAMEWORK) {
             this.initialize()
         }
     }
 
-    private fun finishOnTearDownEvent(workflowTestContext: WorkflowTestContext) {
+    private fun finishOnTearDownEvent() {
         workflowTestContext.subscribe(InitializationStep.TEAR_DOWN) {
             finish()
         }

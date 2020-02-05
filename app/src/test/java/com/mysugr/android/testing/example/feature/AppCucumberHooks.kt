@@ -12,6 +12,7 @@ class AppCucumberHooks(private val testContext: TestContext) {
     @Before(order = HookOrder.INITIALIZE_FRAMEWORK)
     fun initializeFramework() {
         TestEnvironment // force initialization
+        testContext.workflow.proceedTo(InitializationStep.INITIALIZE_FRAMEWORK)
     }
 
     @Before(order = HookOrder.INITIALIZE_STEPS)

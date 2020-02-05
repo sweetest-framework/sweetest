@@ -5,10 +5,11 @@ import com.mysugr.sweetest.framework.flow.InitializationStep.DONE
 import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_DEPENDENCIES
 import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_FRAMEWORK
 import com.mysugr.sweetest.framework.flow.InitializationStep.RUNNING
+import com.mysugr.sweetest.framework.flow.InitializationStep.UNINITIALIZED
 
 class WorkflowTestContext internal constructor(private val steps: StepsTestContext) {
 
-    var currentStep: InitializationStep = INITIALIZE_FRAMEWORK
+    var currentStep: InitializationStep = UNINITIALIZED
         private set
 
     private val stepHandlers =
@@ -25,7 +26,7 @@ class WorkflowTestContext internal constructor(private val steps: StepsTestConte
     fun proceedTo(step: InitializationStep) {
         if (step.isBeforeOrSame(currentStep)) {
             throw IllegalStateException("The workflow is already at $currentStep, can't proceed to $step")
-        } else if (step == DONE || step == INITIALIZE_FRAMEWORK) {
+        } else if (step == DONE || step == UNINITIALIZED) {
             throw IllegalStateException("It's not allowed to proceed to DONE or INITIALIZE_FRAMEWORK")
         }
         runStep(step)
