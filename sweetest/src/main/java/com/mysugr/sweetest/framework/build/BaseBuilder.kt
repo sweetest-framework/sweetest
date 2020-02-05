@@ -110,17 +110,6 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     // COROUTINES
 
     /**
-     * sweetest uses and exposes [kotlinx.coroutines.test.TestCoroutineScope] as a standard way to test with coroutines,
-     * but before that was available sweetest had its own solution which can still be used by enabling this option (see
-     * [com.mysugr.sweetest.framework.coroutine.testCoroutine]).
-     */
-    fun useLegacyCoroutineScope() = apply {
-        testContext.coroutines.configure {
-            useLegacyCoroutineScope()
-        }
-    }
-
-    /**
      * [kotlinx.coroutines.Dispatchers.Main] can be set to the CoroutineScope provided by sweetest before each
      * test and also reset it after. This behavior is **enabled by default**, but with this function it can be forced to
      * be disabled or enabled for a test.

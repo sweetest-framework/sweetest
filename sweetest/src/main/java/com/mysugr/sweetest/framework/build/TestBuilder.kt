@@ -16,4 +16,18 @@ class TestBuilder(moduleTestingConfiguration: ModuleTestingConfiguration) :
         checkNotYetBuilt()
         testContext.workflow.subscribe(INITIALIZE_STEPS, run)
     }
+
+    /**
+     * sweetest uses and exposes [kotlinx.coroutines.test.TestCoroutineScope] as a standard way to test with coroutines,
+     * but before that was available sweetest had its own solution which can still be used by enabling this option (see
+     * [com.mysugr.sweetest.framework.coroutine.testCoroutine]).
+     *
+     * Sidenote: This can just be configured on test level because coroutines capabilities need to be initialized very
+     * early in the initialization process.
+     */
+    fun useLegacyCoroutineScope() = apply {
+        testContext.coroutines.configure {
+            useLegacyCoroutineScope()
+        }
+    }
 }
