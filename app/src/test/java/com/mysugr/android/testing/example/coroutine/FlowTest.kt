@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.UncompletedCoroutinesError
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

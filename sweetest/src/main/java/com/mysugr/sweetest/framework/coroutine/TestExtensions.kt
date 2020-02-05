@@ -6,13 +6,8 @@ import com.mysugr.sweetest.framework.base.TestingAccessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import kotlin.coroutines.ContinuationInterceptor
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 @Deprecated("Please migrate to `runBlockingSweetest`")

@@ -1,6 +1,5 @@
 package com.mysugr.sweetest.framework.coroutine
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async

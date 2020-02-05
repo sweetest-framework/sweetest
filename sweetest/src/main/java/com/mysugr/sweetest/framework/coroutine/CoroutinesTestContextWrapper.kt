@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import kotlin.coroutines.ContinuationInterceptor
 
-internal class CoroutinesTestContextWrapper(workflowTestContext: WorkflowTestContext): CoroutinesTestContext {
+internal class CoroutinesTestContextWrapper(workflowTestContext: WorkflowTestContext) : CoroutinesTestContext {
 
     override val coroutineScope: CoroutineScope get() = getDelegate().coroutineScope
 

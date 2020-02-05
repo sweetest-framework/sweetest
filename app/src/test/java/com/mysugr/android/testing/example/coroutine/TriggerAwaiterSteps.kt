@@ -6,7 +6,6 @@ import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.coroutine.throwExceptionIfFailed
 import com.mysugr.sweetest.framework.coroutine.verifyOrder
 import kotlinx.coroutines.async
-import kotlinx.coroutines.yield
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 
