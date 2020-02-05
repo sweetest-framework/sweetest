@@ -41,7 +41,7 @@ internal class CoroutinesTestConfiguration {
 
     private fun getCantChangeErrorMessage(property: String, previousValue: Boolean): String {
         return "$property was set to $previousValue before somewhere in your test system, " +
-            "it can't be enabled anymore. This error is to ensure consistent expectations throughout " +
+            "it can't be changed anymore. This error is to ensure consistent expectations throughout " +
             "your test system."
     }
 }

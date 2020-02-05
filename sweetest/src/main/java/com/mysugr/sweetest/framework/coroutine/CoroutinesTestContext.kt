@@ -2,7 +2,6 @@ package com.mysugr.sweetest.framework.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.test.TestCoroutineScope
 import kotlin.coroutines.ContinuationInterceptor
 
 interface CoroutinesTestContext {
@@ -25,9 +24,6 @@ interface CoroutinesTestContext {
         }
 
         private fun getCurrentInstance(): CoroutinesTestContext =
-            currentInstance ?: error(
-                "CoroutinesTestContext is not set, please make sure you don't " +
-                    "access coroutineDispatcher or coroutineContext prematurely"
-            )
+            currentInstance ?: throw CoroutinesUninitializedException()
     }
 }

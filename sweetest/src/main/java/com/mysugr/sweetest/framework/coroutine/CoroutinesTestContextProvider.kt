@@ -76,10 +76,7 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
     }
 
     private fun getDelegate(): CoroutinesTestContext =
-        delegate ?: error(
-            "Coroutine support is not initialized, please use sweetest's " +
-                "runBlockingTest extension in your test class!"
-        )
+        delegate ?: throw CoroutinesUninitializedException()
 
     private fun setDelegate(coroutinesTestContext: CoroutinesTestContext?) {
         delegate = coroutinesTestContext
