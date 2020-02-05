@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import kotlin.coroutines.ContinuationInterceptor
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @Deprecated("Please migrate to `runBlockingSweetest`")
 fun BaseJUnitTest.testCoroutine(
     testBody: suspend CoroutineScope.() -> Unit
@@ -31,6 +32,7 @@ fun BaseJUnitTest.testCoroutine(
 /**
  * Wrapper around [kotlinx.coroutines.test.runBlockingTest] that takes the [TestCoroutineScope] provided by sweetest
  */
+@Suppress("EXPERIMENTAL_API_USAGE")
 fun BaseJUnitTest.runBlockingSweetest(
     testBody: suspend CoroutineScope.() -> Unit
 ) {
@@ -46,6 +48,7 @@ fun BaseJUnitTest.runBlockingSweetest(
 
 val TestingAccessor.coroutineScope get() = accessor.testContext.coroutines.coroutineScope
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 val TestingAccessor.testCoroutineScope get() = accessor.testContext.coroutines.coroutineScope as TestCoroutineScope
 
 suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
@@ -60,9 +63,10 @@ suspend fun Deferred<*>.throwExceptionIfFailed() {
  * With multiple child jobs, you may want to yield multiple times to ensure each child can finish.
  * This function counts the number of child jobs and calls [yield] the number of times as jobs are present.
  */
+@Suppress("SuspendFunctionOnCoroutineScope")
 suspend fun CoroutineScope.yieldForEachJob() {
     val job =
-        coroutineContext[Job.Key] ?: error(
+        this.coroutineContext[Job.Key] ?: error(
             "coroutineContext doesn't have a parent Job. Probably you are mistakenly using a TestCoroutineScope " +
                 "(these don't have a `Job` by default) or you don't use sweetest's legacy CoroutineScope. Pleas bear " +
                 "in mind that with runBlockingTest/Sweetest and TestCoroutineScope you don't need `yield` usually!"

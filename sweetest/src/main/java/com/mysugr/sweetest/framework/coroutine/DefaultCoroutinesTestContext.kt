@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.coroutine
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
@@ -11,7 +12,7 @@ import kotlinx.coroutines.test.UncompletedCoroutinesError
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 
-class DefaultCoroutinesTestContext(private val configuration: CoroutinesTestConfigurationData) : CoroutinesTestContext {
+internal class DefaultCoroutinesTestContext(private val configuration: CoroutinesTestConfigurationData) : CoroutinesTestContext {
 
     val job = SupervisorJob()
     override val coroutineScope = TestCoroutineScope(job)

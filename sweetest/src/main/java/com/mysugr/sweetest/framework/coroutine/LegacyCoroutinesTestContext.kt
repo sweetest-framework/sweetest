@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 
-class LegacyCoroutinesTestContext(
+internal class LegacyCoroutinesTestContext(
     private val configuration: CoroutinesTestConfigurationData
 ) : CoroutinesTestContext {
 
