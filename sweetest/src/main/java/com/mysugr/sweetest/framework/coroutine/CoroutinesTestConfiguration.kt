@@ -1,9 +1,28 @@
 package com.mysugr.sweetest.framework.coroutine
 
-internal class CoroutinesTestConfiguration {
-    var data = CoroutinesTestConfigurationData()
+interface CoroutinesTestConfigurator {
 
-    fun useLegacyCoroutineScope() {
+    fun useLegacyCoroutineScope()
+
+    /**
+     * This configuration can be set multiple times but not changed. This prevents conflicting expectations in the test
+     * system
+     */
+    fun autoSetMainCoroutineDispatcher(value: Boolean)
+
+    /**
+     * This configuration can be set multiple times but not changed. This prevents conflicting expectations in the test
+     * system
+     */
+    fun autoCancelTestCoroutines(value: Boolean)
+}
+
+internal class CoroutinesTestConfiguration : CoroutinesTestConfigurator {
+
+    var data = CoroutinesTestConfigurationData()
+        private set
+
+    override fun useLegacyCoroutineScope() {
         data = data.copy(
             useLegacyTestCoroutine = true
         )
@@ -13,7 +32,7 @@ internal class CoroutinesTestConfiguration {
      * This configuration can be set multiple times but not changed. This prevents conflicting expectations in the test
      * system
      */
-    fun autoSetMainCoroutineDispatcher(value: Boolean) {
+    override fun autoSetMainCoroutineDispatcher(value: Boolean) {
         val previousValue = data.autoSetMainCoroutineDispatcher
         if (previousValue != null && previousValue != value) {
             error(getCantChangeErrorMessage("autoSetMainCoroutineDispatcher", previousValue))
@@ -28,7 +47,7 @@ internal class CoroutinesTestConfiguration {
      * This configuration can be set multiple times but not changed. This prevents conflicting expectations in the test
      * system
      */
-    fun autoCancelTestCoroutines(value: Boolean) {
+    override fun autoCancelTestCoroutines(value: Boolean) {
         val previousValue = data.autoCancelTestCoroutines
         if (previousValue != null && previousValue != value) {
             error(getCantChangeErrorMessage("autoCancelTestCoroutines", previousValue))

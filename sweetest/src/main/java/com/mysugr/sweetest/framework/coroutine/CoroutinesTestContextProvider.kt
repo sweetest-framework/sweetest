@@ -24,7 +24,7 @@ internal class CoroutinesTestContextProvider(workflowTestContext: WorkflowTestCo
         finishOnTearDownEvent(workflowTestContext)
     }
 
-    fun configure(block: CoroutinesTestConfiguration.() -> Unit) {
+    fun configure(block: CoroutinesTestConfigurator.() -> Unit) {
         checkAlreadyInitialized()
         block(configuration)
     }
