@@ -34,13 +34,15 @@ internal class CoroutinesTestConfiguration : CoroutinesTestConfigurator {
      */
     override fun autoSetMainCoroutineDispatcher(value: Boolean) {
         val previousValue = data.autoSetMainCoroutineDispatcher
-        if (previousValue != null && previousValue != value) {
-            error(getCantChangeErrorMessage("autoSetMainCoroutineDispatcher", previousValue))
-        } else {
-            data = data.copy(
-                autoSetMainCoroutineDispatcher = value
+        require(previousValue == null || previousValue == value) {
+            getCantChangeErrorMessage(
+                "autoSetMainCoroutineDispatcher",
+                previousValue!!
             )
         }
+        data = data.copy(
+            autoSetMainCoroutineDispatcher = value
+        )
     }
 
     /**
@@ -49,13 +51,12 @@ internal class CoroutinesTestConfiguration : CoroutinesTestConfigurator {
      */
     override fun autoCancelTestCoroutines(value: Boolean) {
         val previousValue = data.autoCancelTestCoroutines
-        if (previousValue != null && previousValue != value) {
-            error(getCantChangeErrorMessage("autoCancelTestCoroutines", previousValue))
-        } else {
-            data = data.copy(
-                autoCancelTestCoroutines = value
-            )
+        require(previousValue == null || previousValue == value) {
+            getCantChangeErrorMessage("autoCancelTestCoroutines", previousValue!!)
         }
+        data = data.copy(
+            autoCancelTestCoroutines = value
+        )
     }
 
     private fun getCantChangeErrorMessage(property: String, previousValue: Boolean): String {
