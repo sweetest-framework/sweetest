@@ -6,7 +6,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
-interface Steps : CoroutineScope
+interface Steps
 
 abstract class BaseSteps(
     private val testContext: TestContext,
@@ -14,13 +14,6 @@ abstract class BaseSteps(
 ) : Steps, TestingAccessor {
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
-
-    @Deprecated(
-        "Don't use steps directly to get a CoroutineScope " +
-            "for testing, use coroutineScope extension instead"
-    )
-    override val coroutineContext: CoroutineContext
-        get() = testContext.coroutines.coroutineScope.coroutineContext
 
     override val accessor = configure().build()
     protected val dependencies = accessor.dependencies

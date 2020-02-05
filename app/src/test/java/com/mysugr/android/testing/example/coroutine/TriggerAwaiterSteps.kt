@@ -3,6 +3,7 @@ package com.mysugr.android.testing.example.coroutine
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.framework.coroutine.coroutineScope
 import com.mysugr.sweetest.framework.coroutine.throwExceptionIfFailed
 import com.mysugr.sweetest.framework.coroutine.verifyOrder
 import kotlinx.coroutines.async
@@ -20,7 +21,7 @@ class TriggerAwaiterSteps(testContext: TestContext) :
         verifyOrder {
             order(1)
 
-            val awaitJob = async {
+            val awaitJob = coroutineScope.async {
                 order(2)
                 sut.awaitTrigger()
                 triggerCompleted = true
