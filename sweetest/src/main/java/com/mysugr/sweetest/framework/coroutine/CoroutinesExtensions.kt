@@ -5,48 +5,45 @@ import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.base.TestingAccessor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.test.UncaughtExceptionCaptor
 import kotlinx.coroutines.yield
 
+/**
+ * Imitates [kotlinx.coroutines.test.runBlockingTest] and uses the [TestCoroutineScope] provided by sweetest. You can
+ * access [TestCoroutineScope] features via [coroutineScope], [delayController] and [uncaughtExceptionCaptor]
+ *
+ * There is a legacy mode that works with the previous sweetest solution (can be enabled by calling
+ * `useLegacyCoroutineScope` on the configuration). You have to use `testCoroutine` from the `legacy` sub-package in
+ * oder for this to work.
+ */
 @Suppress("EXPERIMENTAL_API_USAGE")
-@Deprecated("Please migrate to `runBlockingSweetest`")
 fun BaseJUnitTest.testCoroutine(
-    testBody: suspend CoroutineScope.() -> Unit
+    testBody: suspend TestCoroutineScope.() -> Unit
 ) {
-    check(accessor.testContext.coroutines.coroutineScope !is TestCoroutineScope) {
-        "You are using the legacy CoroutineScope in this test, therefore `testCoroutine` can't be used. " +
-            "Please use `runBlockingSweetest` instead or add `useLegacyCoroutineScope()` to the test or " +
-            "steps configuration"
-    }
     accessor.testContext.coroutines.runTest {
         testBody(coroutineScope)
     }
 }
 
-/**
- * Wrapper around [kotlinx.coroutines.test.runBlockingTest] that takes the [TestCoroutineScope] provided by sweetest
- */
-@Suppress("EXPERIMENTAL_API_USAGE")
-fun BaseJUnitTest.runBlockingSweetest(
-    testBody: suspend CoroutineScope.() -> Unit
-) {
-    val scope = accessor.testContext.coroutines.coroutineScope
-    check(scope is TestCoroutineScope) {
-        "You are not using the legacy CoroutineScope in this test, therefore `testCoroutine` can't be used. " +
-            "Please remove `useLegacyCoroutineScope()` from the test or steps configuration."
-    }
-    accessor.testContext.coroutines.runTest {
-        testBody(scope)
-    }
-}
+@ExperimentalCoroutinesApi
+val TestingAccessor.delayController
+    get() = coroutineScope as DelayController
 
-val TestingAccessor.coroutineScope get() = accessor.testContext.coroutines.coroutineScope
+@ExperimentalCoroutinesApi
+val TestingAccessor.uncaughtExceptionCaptor
+    get() = coroutineScope as UncaughtExceptionCaptor
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-val TestingAccessor.testCoroutineScope
+val TestingAccessor.coroutineScope: TestCoroutineScope
     get() = accessor.testContext.coroutines.coroutineScope as? TestCoroutineScope
-        ?: error("You are using the legacy CoroutineScope in this test, therefore `testCoroutineScope` can't be used.")
+        ?: error(
+            "Legacy CoroutineScope is enabled, so please use the `legacy` sub-package for accessing " +
+                "`coroutineScope` or `testCoroutine`."
+        )
 
 suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
 
