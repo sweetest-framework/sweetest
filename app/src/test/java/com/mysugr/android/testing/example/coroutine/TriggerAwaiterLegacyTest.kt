@@ -3,7 +3,7 @@ package com.mysugr.android.testing.example.coroutine
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.framework.coroutine.testCoroutine
+import com.mysugr.sweetest.framework.coroutine.legacy.testCoroutine
 import com.mysugr.sweetest.framework.coroutine.invoke
 import com.mysugr.sweetest.util.expectException
 import org.junit.Test
@@ -11,7 +11,7 @@ import org.junit.Test
 class TriggerAwaiterLegacyTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
-        .useLegacyCoroutineScope()
+        .useLegacyCoroutineScope(true)
 
     private val triggerAwaiter by steps<TriggerAwaiterLegacySteps>()
 

@@ -3,7 +3,7 @@ package com.mysugr.android.testing.example.coroutine
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.context.TestContext
-import com.mysugr.sweetest.framework.coroutine.coroutineScope
+import com.mysugr.sweetest.framework.coroutine.legacy.coroutineScope
 import com.mysugr.sweetest.framework.coroutine.throwExceptionIfFailed
 import com.mysugr.sweetest.framework.coroutine.verifyOrder
 import kotlinx.coroutines.async

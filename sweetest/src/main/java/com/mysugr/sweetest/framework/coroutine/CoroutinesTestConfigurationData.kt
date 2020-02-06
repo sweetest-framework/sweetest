@@ -4,7 +4,7 @@ data class CoroutinesTestConfigurationData(
     /**
      * Use [LegacyCoroutinesTestContext] instead of [DefaultCoroutinesTestContext]
      */
-    val useLegacyTestCoroutine: Boolean = false,
+    val useLegacyTestCoroutine: Boolean? = null,
 
     /**
      * Default behavior is that [kotlinx.coroutines.test.setMain] is called with a CoroutineDispatcher from the test's
@@ -20,10 +20,15 @@ data class CoroutinesTestConfigurationData(
     val autoCancelTestCoroutines: Boolean? = null
 ) {
     object Defaults {
+        val useLegacyTestCoroutine = false
         val autoSetMainCoroutineDispatcher = true
         val autoCancelTestCoroutines = false
     }
 }
+
+val CoroutinesTestConfigurationData.useLegacyTestCoroutineEnabled
+    get() = this.useLegacyTestCoroutine
+        ?: CoroutinesTestConfigurationData.Defaults.useLegacyTestCoroutine
 
 val CoroutinesTestConfigurationData.autoCancelTestCoroutinesEnabled
     get() = this.autoCancelTestCoroutines

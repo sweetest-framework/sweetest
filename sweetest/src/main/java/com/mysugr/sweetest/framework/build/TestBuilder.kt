@@ -23,11 +23,12 @@ class TestBuilder(moduleTestingConfiguration: ModuleTestingConfiguration) :
      * [com.mysugr.sweetest.framework.coroutine.testCoroutine]).
      *
      * Sidenote: This can just be configured on test level because coroutines capabilities need to be initialized very
-     * early in the initialization process.
+     * early in the initialization process. But it can be put as an expectation in steps so you receive an exception
+     * when the expectations are different from the test.
      */
-    fun useLegacyCoroutineScope() = apply {
+    fun useLegacyCoroutineScope(value: Boolean) = apply {
         testContext.coroutines.configure {
-            useLegacyCoroutineScope()
+            useLegacyCoroutineScopeOnTestLevel(value)
         }
     }
 }

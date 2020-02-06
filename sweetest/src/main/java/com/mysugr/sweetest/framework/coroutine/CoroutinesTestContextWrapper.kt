@@ -46,7 +46,7 @@ internal class CoroutinesTestContextWrapper(private val workflowTestContext: Wor
 
     private fun initialize() {
         checkAlreadyInitialized()
-        if (configuration.data.useLegacyTestCoroutine) {
+        if (configuration.data.useLegacyTestCoroutineEnabled) {
             setDelegate(LegacyCoroutinesTestContext(configuration.data))
         } else {
             setDelegate(DefaultCoroutinesTestContext(configuration.data))
