@@ -52,20 +52,3 @@ suspend fun Deferred<*>.throwExceptionIfFailed() {
         await() // throws exception, if Deferred failed. Does nothing otherwise
     }
 }
-
-/**
- * With multiple child jobs, you may want to yield multiple times to ensure each child can finish.
- * This function counts the number of child jobs and calls [yield] the number of times as jobs are present.
- */
-@Suppress("SuspendFunctionOnCoroutineScope")
-suspend fun CoroutineScope.yieldForEachJob() {
-    val job =
-        this.coroutineContext[Job.Key] ?: error(
-            "coroutineContext doesn't have a parent Job. Probably you are mistakenly using a TestCoroutineScope " +
-                "(these don't have a `Job` by default) or you don't use sweetest's legacy CoroutineScope. Pleas bear " +
-                "in mind that with runBlockingTest/Sweetest and TestCoroutineScope you don't need `yield` usually!"
-        )
-    kotlin.repeat(countJobs(job)) { yield() }
-}
-
-private fun countJobs(job: Job): Int = 1 + job.children.sumBy { countJobs(it) }
