@@ -2,8 +2,8 @@ package com.mysugr.sweetest.coroutine
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.framework.coroutine.runBlockingSweetest
-import com.mysugr.sweetest.framework.coroutine.testCoroutineScope
+import com.mysugr.sweetest.framework.coroutine.coroutineScope
+import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -25,20 +25,20 @@ class FlowTest : BaseJUnitTest(moduleTestingConfiguration()) {
 
         channel.asFlow()
             .onEach { emissions.add(it) }
-            .launchIn(testCoroutineScope)
+            .launchIn(coroutineScope)
         channel.offer(1)
 
         assertEquals(1, emissions.size)
     }
 
     @Test(expected = UncompletedCoroutinesError::class)
-    fun `Hot Flow produces error when not finished`() = runBlockingSweetest {
+    fun `Hot Flow produces error when not finished`() = testCoroutine {
         val channel = BroadcastChannel<Int>(1)
         val emissions = mutableListOf<Int>()
 
         channel.asFlow()
             .onEach { emissions.add(it) }
-            .launchIn(testCoroutineScope)
+            .launchIn(coroutineScope)
 
         channel.offer(1)
         assertEquals(1, emissions.size)
