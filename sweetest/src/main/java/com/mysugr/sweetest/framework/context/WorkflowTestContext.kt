@@ -3,7 +3,6 @@ package com.mysugr.sweetest.framework.context
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import com.mysugr.sweetest.framework.flow.InitializationStep.DONE
 import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_DEPENDENCIES
-import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_FRAMEWORK
 import com.mysugr.sweetest.framework.flow.InitializationStep.RUNNING
 import com.mysugr.sweetest.framework.flow.InitializationStep.UNINITIALIZED
 

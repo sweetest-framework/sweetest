@@ -3,8 +3,6 @@ package com.mysugr.sweetest.framework.base
 import com.mysugr.sweetest.framework.build.StepsBuilder
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
 
 interface Steps
 

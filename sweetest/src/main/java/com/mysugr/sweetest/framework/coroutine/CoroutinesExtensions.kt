@@ -3,14 +3,11 @@ package com.mysugr.sweetest.framework.coroutine
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.base.TestingAccessor
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.UncaughtExceptionCaptor
-import kotlinx.coroutines.yield
 
 /**
  * Imitates [kotlinx.coroutines.test.runBlockingTest] and uses the [TestCoroutineScope] provided by sweetest. You can

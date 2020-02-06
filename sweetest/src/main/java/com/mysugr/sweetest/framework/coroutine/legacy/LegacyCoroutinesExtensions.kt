@@ -17,6 +17,10 @@ import kotlinx.coroutines.yield
  * `useLegacyCoroutineScope` on the configuration).
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
+@Deprecated(
+    "The old way of testing coroutines is deprecated. Please use the new `testCoroutine` which wraps uses " +
+        "coroutine's original TestCoroutineScope and runBlockingtest."
+)
 fun BaseJUnitTest.testCoroutine(
     testBody: suspend CoroutineScope.() -> Unit
 ) {
@@ -32,7 +36,7 @@ val TestingAccessor.coroutineScope get() = accessor.testContext.coroutines.corou
  * This function counts the number of child jobs and calls [yield] the number of times as jobs are present.
  */
 @Suppress("SuspendFunctionOnCoroutineScope")
-@Deprecated("Not needed for tests with TestCoroutineScope anymore")
+@Deprecated("Not needed for tests with TestCoroutineScope anymore, please migrate your tests and disable legacy mode.")
 suspend fun CoroutineScope.yieldForEachJob() {
     val job =
         this.coroutineContext[Job.Key] ?: error(
