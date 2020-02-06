@@ -44,7 +44,9 @@ fun BaseJUnitTest.runBlockingSweetest(
 val TestingAccessor.coroutineScope get() = accessor.testContext.coroutines.coroutineScope
 
 @Suppress("EXPERIMENTAL_API_USAGE")
-val TestingAccessor.testCoroutineScope get() = accessor.testContext.coroutines.coroutineScope as TestCoroutineScope
+val TestingAccessor.testCoroutineScope
+    get() = accessor.testContext.coroutines.coroutineScope as? TestCoroutineScope
+        ?: error("You are using the legacy CoroutineScope in this test, therefore `testCoroutineScope` can't be used.")
 
 suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
 
