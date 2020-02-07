@@ -2,8 +2,6 @@ package com.mysugr.sweetest.framework.coroutine.legacy
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.TestingAccessor
-import com.mysugr.sweetest.framework.coroutine.delayController
-import com.mysugr.sweetest.framework.coroutine.uncaughtExceptionCaptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.TestCoroutineScope

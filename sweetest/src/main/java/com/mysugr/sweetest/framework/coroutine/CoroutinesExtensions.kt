@@ -4,10 +4,7 @@ import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.base.TestingAccessor
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.DelayController
 import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.UncaughtExceptionCaptor
 
 /**
  * Imitates [kotlinx.coroutines.test.runBlockingTest] and uses the [TestCoroutineScope] provided by sweetest. You can
@@ -25,14 +22,6 @@ fun BaseJUnitTest.testCoroutine(
         testBody(coroutineScope)
     }
 }
-
-@ExperimentalCoroutinesApi
-val TestingAccessor.delayController
-    get() = coroutineScope as DelayController
-
-@ExperimentalCoroutinesApi
-val TestingAccessor.uncaughtExceptionCaptor
-    get() = coroutineScope as UncaughtExceptionCaptor
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 val TestingAccessor.coroutineScope: TestCoroutineScope
