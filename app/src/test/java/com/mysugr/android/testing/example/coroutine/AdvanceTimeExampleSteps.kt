@@ -15,7 +15,7 @@ import org.junit.Assert.assertTrue
 class AdvanceTimeExampleSteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
 
-    private lateinit var job : Job
+    private lateinit var job: Job
 
     fun startDelay() {
         job = coroutineScope.launch {
