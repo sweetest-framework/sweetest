@@ -14,7 +14,7 @@ object DependencyFramework {
     val viewModelProviderFactory = object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             @Suppress("UNCHECKED_CAST")
-            return when(modelClass) {
+            return when (modelClass) {
                 LoginViewModel::class.java -> loginViewModel
                 else -> error("$modelClass not supported by factory")
             } as T
