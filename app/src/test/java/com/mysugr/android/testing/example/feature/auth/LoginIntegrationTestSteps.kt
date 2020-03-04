@@ -12,6 +12,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
+import kotlinx.coroutines.test.TestCoroutineScope
 
 class LoginIntegrationTestSteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
@@ -20,6 +21,7 @@ class LoginIntegrationTestSteps(testContext: TestContext) :
         .requireReal<LoginViewModel>()
         .requireReal<AuthManager>()
         .onSetUp {
+            loginViewModel.scope = scope
             loginViewModel.givenStateListenerConnected()
         }
 
@@ -27,6 +29,8 @@ class LoginIntegrationTestSteps(testContext: TestContext) :
     private val sessionStore by steps<SessionStoreSteps>()
     private val backendGateway by steps<BackendGatewaySteps>()
     private val user by steps<UserSteps>()
+
+    private val scope = TestCoroutineScope()
 
     @Before("@login-integration")
     fun dummy() {

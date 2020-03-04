@@ -7,12 +7,17 @@ import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 
 class LoginViewModelSteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
+
+    lateinit var scope: TestCoroutineScope
 
     private val instance by dependency<LoginViewModel>()
     private val user by steps<UserSteps>()
@@ -21,12 +26,14 @@ class LoginViewModelSteps(testContext: TestContext) :
     private val stateChangeSync = Object()
 
     fun givenStateListenerConnected() {
-        instance.stateListener = {
-            recordedStateChanges.add(it)
-            synchronized(stateChangeSync) {
-                stateChangeSync.notify()
+        instance.state
+            .onEach {
+                recordedStateChanges.add(it)
+                synchronized(stateChangeSync) {
+                    stateChangeSync.notify()
+                }
             }
-        }
+            .launchIn(scope)
     }
 
     fun whenLoggingIn() {

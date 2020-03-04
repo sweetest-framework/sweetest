@@ -8,17 +8,23 @@ import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedIn
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
 import com.mysugr.sweetest.framework.base.steps
+import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Test
 
 class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
         .requireReal<LoginViewModel>()
-        .onSetUp { sut.givenStateListenerConnected() }
+        .onSetUp {
+            sut.scope = scope
+            sut.givenStateListenerConnected()
+        }
 
     private val sut by steps<LoginViewModelSteps>()
     private val authManager by steps<AuthManagerMockSteps>()
     private val user by steps<UserSteps>()
+
+    private val scope = TestCoroutineScope()
 
     @Test
     fun `Login with existing email and correct password`() {
