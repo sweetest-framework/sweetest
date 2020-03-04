@@ -2,8 +2,9 @@ package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.app.R
 import kotlin.concurrent.thread
-
 import com.mysugr.android.testing.example.auth.AuthManager
+import com.mysugr.android.testing.example.view.LoginViewModel.State
+import kotlin.concurrent.thread
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
