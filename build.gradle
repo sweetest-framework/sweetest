@@ -7,11 +7,12 @@ buildscript {
             gradlePlugin: '3.1.3',
             kotlin      : '1.3.10',
             coroutines  : '1.3.2',
-            support     : '27.1.1',
+            support     : '1.0.2',
             cucumber    : '2.1.0',
             espresso    : '3.0.2',
             mockito     : '2.19.0',
-            lifecycle   : '2.2.0'
+            lifecycle   : '2.2.0',
+            material    : '1.1.0-rc02'
     ]
     repositories {
         google()

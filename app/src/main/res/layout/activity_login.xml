@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -44,13 +44,13 @@
                     android:maxLines="1"
                     android:singleLine="true" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -62,9 +62,9 @@
                     android:maxLines="1"
                     android:singleLine="true" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
@@ -74,12 +74,15 @@
                 android:textStyle="bold" />
 
         </LinearLayout>
+
     </ScrollView>
-    <TextView
+
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <Button
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/logout_button"
         style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
@@ -88,4 +91,5 @@
         android:text="@string/action_log_out"
         android:textStyle="bold"
         android:visibility="gone" />
+
 </LinearLayout>

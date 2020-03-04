@@ -28,8 +28,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
-    implementation "com.android.support:appcompat-v7:$versions.support"
-    implementation "com.android.support:design:$versions.support"
+    implementation "androidx.appcompat:appcompat:$versions.support"
+    implementation "com.google.android.material:material:$versions.material"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
 

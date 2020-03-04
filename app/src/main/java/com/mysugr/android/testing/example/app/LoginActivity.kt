@@ -1,8 +1,8 @@
 package com.mysugr.android.testing.example.app
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.mysugr.android.testing.example.dependency.DependencyFramework
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State
