@@ -3,22 +3,33 @@ package com.mysugr.android.testing.example.app
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.mysugr.android.testing.example.dependency.DependencyFramework
-import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State
-import com.mysugr.android.testing.example.view.LoginViewModel.State.*
-import kotlinx.android.synthetic.main.activity_login.*
+import com.mysugr.android.testing.example.view.LoginViewModel.State.Busy
+import com.mysugr.android.testing.example.view.LoginViewModel.State.Error
+import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedIn
+import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedOut
+import kotlinx.android.synthetic.main.activity_login.email
+import kotlinx.android.synthetic.main.activity_login.login_form
+import kotlinx.android.synthetic.main.activity_login.login_progress
+import kotlinx.android.synthetic.main.activity_login.logout_button
+import kotlinx.android.synthetic.main.activity_login.message
+import kotlinx.android.synthetic.main.activity_login.password
+import kotlinx.android.synthetic.main.activity_login.sign_in_button
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.util.logging.Level
 import java.util.logging.Logger
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class LoginActivity : AppCompatActivity() {
 
     private val logger = Logger.getLogger(this::class.java.simpleName)
     private val viewModel = DependencyFramework.loginViewModel
-
-    init {
-        viewModel.stateListener = { this.runOnUiThread { onStateChange(it) } }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,15 +38,20 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun wireViewModel() {
+        viewModel.state
+            .onEach { onStateChange(it) }
+            .launchIn(lifecycleScope)
+
         sign_in_button.setOnClickListener {
             viewModel.loginOrRegister(email.text.toString(), password.text.toString())
         }
+
         logout_button.setOnClickListener {
             viewModel.logout()
         }
     }
 
-    private fun onStateChange(state: LoginViewModel.State) {
+    private fun onStateChange(state: State) {
         logger.log(Level.INFO, "State: $state")
         updateView(state)
     }

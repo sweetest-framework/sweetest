@@ -5,40 +5,46 @@ import kotlin.concurrent.thread
 
 import com.mysugr.android.testing.example.view.LoginViewModel.State.*
 import com.mysugr.android.testing.example.auth.AuthManager
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 
-typealias StateListener = (LoginViewModel.State) -> Unit
-
+@FlowPreview
+@ExperimentalCoroutinesApi
 class LoginViewModel(private val authManager: AuthManager) {
 
-    lateinit var stateListener: StateListener
+    val state: Flow<State>
 
-    var state: State = LoggedOut()
-        private set(value) {
-            field = value
-            stateListener(value)
-        }
+    private val stateChannel = ConflatedBroadcastChannel<State>()
+
+    init {
+        state = stateChannel.asFlow()
+    }
 
     fun loginOrRegister(email: String, password: String) {
 
         if (!validateEmail(email)) {
-            state = Error(emailError = R.string.error_invalid_email)
+            stateChannel.offer(Error(emailError = R.string.error_invalid_email))
             return
         }
 
         if (!validatePassword(password)) {
-            state = Error(passwordError = R.string.error_invalid_password)
+            stateChannel.offer(Error(passwordError = R.string.error_invalid_password))
             return
         }
 
-        state = Busy()
+        stateChannel.offer(Busy())
         thread {
-            state = try {
+            val newState = try {
                 val result = authManager.loginOrRegister(email, password)
                 val isNewUser = result == AuthManager.LoginOrRegisterResult.REGISTERED
                 LoggedIn(isNewUser)
             } catch (exception: AuthManager.WrongPasswordException) {
                 Error(passwordError = R.string.error_incorrect_password)
             }
+            stateChannel.offer(newState)
         }
     }
 
@@ -52,7 +58,7 @@ class LoginViewModel(private val authManager: AuthManager) {
 
     fun logout() {
         authManager.logout()
-        state = State.LoggedOut()
+        stateChannel.offer(LoggedOut())
     }
 
     sealed class State(val loggedIn: Boolean) {
