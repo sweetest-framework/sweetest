@@ -1,5 +1,6 @@
 package com.mysugr.android.testing.example.view
 
+import androidx.lifecycle.ViewModel
 import com.mysugr.android.testing.example.app.R
 import kotlin.concurrent.thread
 import com.mysugr.android.testing.example.auth.AuthManager
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.asFlow
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class LoginViewModel(private val authManager: AuthManager) {
+class LoginViewModel(private val authManager: AuthManager) : ViewModel() {
 
     val state: Flow<State>
 
