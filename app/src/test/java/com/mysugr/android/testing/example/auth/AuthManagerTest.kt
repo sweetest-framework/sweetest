@@ -2,7 +2,7 @@ package com.mysugr.android.testing.example.auth
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.feature.auth.UserSteps
-import com.mysugr.android.testing.example.net.BackendGatewaySteps
+import com.mysugr.android.testing.example.net.OldBackendGatewaySteps
 import com.mysugr.android.testing.example.state.SessionStoreSteps
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
@@ -15,7 +15,7 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val user by steps<UserSteps>()
     private val sut by steps<AuthManagerRealSteps>()
     private val sessionStore by steps<SessionStoreSteps>()
-    private val backendGateway by steps<BackendGatewaySteps>()
+    private val backendGateway by steps<OldBackendGatewaySteps>()
 
     @Test
     fun `Login as existing user`() {

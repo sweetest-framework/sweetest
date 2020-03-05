@@ -2,6 +2,7 @@ package com.mysugr.android.testing.example.state
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.net.AuthToken
 import com.mysugr.android.testing.example.user.User
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
@@ -21,9 +22,9 @@ class SessionStoreSteps(testContext: TestContext) :
 
     private val instance by dependency<SessionStore>()
 
-    fun thenSessionIsStarted(email: String? = null) {
+    fun thenSessionIsStarted(email: String? = null, authToken: AuthToken? = null) {
         val expected = User(email ?: user.email)
-        verify(instance).beginSession(user.authToken, expected)
+        verify(instance).beginSession(authToken ?: user.authToken, expected)
     }
 
     fun thenSessionIsNotStarted() {

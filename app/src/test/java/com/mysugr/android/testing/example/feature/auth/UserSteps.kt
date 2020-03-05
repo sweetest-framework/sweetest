@@ -31,7 +31,6 @@ class UserSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTest
         this.password = incorrectPassword
     }
 
-    @Given("^there is a user existing with email address \"([^\"]*)\" and password \"([^\"]*)\"$")
     fun givenRegisteredUser(email: String, password: String) {
         existingEmail = email
         correctPassword = password

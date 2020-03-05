@@ -11,7 +11,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 
-class BackendGatewaySteps(testContext: TestContext) :
+class OldBackendGatewaySteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
@@ -23,21 +23,27 @@ class BackendGatewaySteps(testContext: TestContext) :
     private val user by steps<UserSteps>()
 
     private fun setUp() {
-        `when`(instance.checkEmail(anyString())).then {
-            val email = it.arguments[0] as String
-            user.isUserExisting(email)
-        }
-        `when`(instance.login(anyString(), anyString())).then {
-            val email = it.arguments[0] as String
-            val password = it.arguments[1] as String
-            if (user.isUserExisting(email) && user.isPasswordCorrect(password)) {
-                user.authToken
-            } else {
-                throw UsernameOrPasswordWrongException()
-            }
-        }
-        `when`(instance.register(anyString(), anyString())).then { user.authToken }
-        `when`(instance.getUserData(anyString())).then { User(user.email) }
+        `when`(instance.register(anyString(), anyString())).thenReturn(AUTH_TOKEN)
+    }
+
+    fun givenUserExists() {
+        `when`(instance.checkEmail(anyString())).thenReturn(true)
+    }
+
+    fun givenUserDoesNotExist() {
+        `when`(instance.checkEmail(anyString())).thenReturn(false)
+    }
+
+    fun givenUsernameAndPasswordCorrect() {
+        `when`(instance.login(anyString(), anyString())).thenReturn(AUTH_TOKEN)
+    }
+
+    fun givenUsernameOrPasswordWrong() {
+        `when`(instance.login(anyString(), anyString())).thenThrow(UsernameOrPasswordWrongException())
+    }
+
+    fun givenUser(user: User) {
+        `when`(instance.getUserData(anyString())).thenReturn(user)
     }
 
     fun thenEmailIsChecked() {
@@ -50,5 +56,9 @@ class BackendGatewaySteps(testContext: TestContext) :
 
     fun thenRegistered(email: String? = null, password: String? = null) {
         verify(instance).register(email ?: user.email, password ?: user.password)
+    }
+
+    companion object {
+        const val AUTH_TOKEN = "the_auth_token"
     }
 }
