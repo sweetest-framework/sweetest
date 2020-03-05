@@ -1,4 +1,4 @@
-package com.mysugr.android.testing.example.coroutine
+package com.mysugr.android.testing.coroutine
 
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation

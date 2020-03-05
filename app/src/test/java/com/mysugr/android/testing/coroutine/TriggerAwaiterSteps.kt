@@ -1,4 +1,4 @@
-package com.mysugr.android.testing.example.coroutine
+package com.mysugr.android.testing.coroutine
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
