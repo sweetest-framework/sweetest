@@ -2,10 +2,8 @@ package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -20,12 +18,11 @@ class LoginViewModelSteps(testContext: TestContext) :
     lateinit var scope: TestCoroutineScope
 
     private val instance by dependency<LoginViewModel>()
-    private val user by steps<UserSteps>()
 
     private val recordedStateChanges = mutableListOf<LoginViewModel.State>()
     private val stateChangeSync = Object()
 
-    fun givenStateListenerConnected() {
+    fun whenInitialized() {
         instance.state
             .onEach {
                 recordedStateChanges.add(it)
@@ -36,8 +33,8 @@ class LoginViewModelSteps(testContext: TestContext) :
             .launchIn(scope)
     }
 
-    fun whenLoggingIn() {
-        instance.loginOrRegister(user.email, user.password)
+    fun whenLoggingIn(email: String, password: String) {
+        instance.loginOrRegister(email, password)
     }
 
     fun <R> whenWaitForState(ofType: Class<R>) = whenWaitForState(ofType, false)
@@ -47,7 +44,7 @@ class LoginViewModelSteps(testContext: TestContext) :
 
         var resultState: R? = null
         val startedAtMillis = System.currentTimeMillis()
-        val maxTimeMillis = 1000L
+        val maxTimeMillis = 1000000L
 
         fun checkLastState() =
             if (recordedStateChanges.size == 0) {

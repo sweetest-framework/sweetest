@@ -24,7 +24,7 @@ class LoginIntegrationTestSteps(testContext: TestContext) :
         .requireReal<AuthManager>()
         .onSetUp {
             loginViewModel.scope = scope
-            loginViewModel.givenStateListenerConnected()
+            loginViewModel.whenInitialized()
         }
 
     private val loginViewModel by steps<LoginViewModelSteps>()
@@ -45,15 +45,7 @@ class LoginIntegrationTestSteps(testContext: TestContext) :
 
     @When("^trying to login or register with email address \"([^\"]*)\" and password \"([^\"]*)\"$")
     fun whenLoginOrRegister(email: String, password: String) {
-        user.email = email
-        user.password = password
-        loginViewModel.whenLoggingIn()
-    }
-
-    @When("^trying to login or register with email address \"([^\"]*)\"$")
-    fun whenLoginOrRegister(email: String) {
-        user.email = email
-        loginViewModel.whenLoggingIn()
+        loginViewModel.whenLoggingIn(email, password)
     }
 
     @Then("^a new user with email \"([^\"]*)\" and password \"([^\"]*)\" is registered$")

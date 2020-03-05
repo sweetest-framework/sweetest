@@ -14,7 +14,7 @@ Feature: Login, registration and logout
     Then the user can't enter the app
 
   Scenario Outline: Invalid email address
-    When trying to login or register with email address "<email>"
+    When trying to login or register with email address "<email>" and password "something"
     Then the user can't enter the app
     Examples:
       | email       |

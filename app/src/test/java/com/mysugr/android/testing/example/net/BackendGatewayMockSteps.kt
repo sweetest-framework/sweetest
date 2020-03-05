@@ -34,6 +34,7 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
             val email = it.arguments[0] as String
             val password = it.arguments[1] as String
             val newUser = FakeBackendUser(email, password)
+            backendUsers.add(newUser)
             newUser.authToken
         }
         `when`(instance.getUserData(anyString())).then {
@@ -47,6 +48,10 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
 
     fun givenUsers(vararg backendUsers: FakeBackendUser) {
         this.backendUsers = backendUsers.toMutableList()
+    }
+
+    fun thenEmailIsChecked(email: String) {
+        verify(instance).checkEmail(email)
     }
 
     fun thenLoginAttempted(email: String, password: String) {
