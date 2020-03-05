@@ -4,12 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
+import com.mysugr.android.testing.example.coroutine.DispatcherProvider
+import com.mysugr.android.testing.example.coroutine.DefaultDispatcherProvider
 import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.net.DummyBackendGateway
 import com.mysugr.android.testing.example.state.DummySessionStore
 import com.mysugr.android.testing.example.state.SessionStore
 
 object DependencyFramework {
+
+    var _dispatcherProvider: DispatcherProvider? = null
+    var dispatcherProvider: DispatcherProvider
+        get() {
+            if (_dispatcherProvider == null) {
+                _dispatcherProvider = DefaultDispatcherProvider()
+            }
+            return _dispatcherProvider!!
+        }
+        set(value) {
+            _dispatcherProvider = value
+        }
 
     val viewModelProviderFactory = object : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -24,7 +38,7 @@ object DependencyFramework {
     var loginViewModel: LoginViewModel
         get() {
             if (_loginViewModel == null) {
-                _loginViewModel = LoginViewModel(authManager)
+                _loginViewModel = LoginViewModel(authManager, dispatcherProvider)
             }
             return _loginViewModel!!
         }

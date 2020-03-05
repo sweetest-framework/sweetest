@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.auth.AuthManager
-import kotlinx.coroutines.Dispatchers
+import com.mysugr.android.testing.example.coroutine.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -14,7 +14,10 @@ import kotlinx.coroutines.launch
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-class LoginViewModel(private val authManager: AuthManager) : ViewModel() {
+class LoginViewModel(
+    private val authManager: AuthManager,
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel() {
     val state: Flow<State>
     private val stateChannel = ConflatedBroadcastChannel<State>()
 
@@ -35,7 +38,7 @@ class LoginViewModel(private val authManager: AuthManager) : ViewModel() {
 
         stateChannel.offer(State.Busy)
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             val newState = try {
                 val result = authManager.loginOrRegister(email, password)
                 val isNewUser = (result == AuthManager.LoginOrRegisterResult.REGISTERED)
