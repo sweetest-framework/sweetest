@@ -2,7 +2,6 @@ package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManagerMockSteps
-import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.net.FakeBackendUser
 import com.mysugr.android.testing.example.view.LoginViewModel.State.Error
 import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedIn

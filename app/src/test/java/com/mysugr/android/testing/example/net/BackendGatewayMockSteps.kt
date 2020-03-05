@@ -68,5 +68,7 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
 }
 
 data class FakeBackendUser(
-    val email: String, val password: String, val authToken: AuthToken = UUID.randomUUID().toString()
+    val email: String,
+    val password: String,
+    val authToken: AuthToken = UUID.randomUUID().toString()
 )

@@ -1,11 +1,10 @@
 package com.mysugr.android.testing.coroutine
 
-import com.mysugr.android.testing.coroutine.TriggerAwaiterSteps
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import com.mysugr.sweetest.framework.coroutine.invoke
+import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import com.mysugr.sweetest.util.expectException
 import org.junit.Test
 
