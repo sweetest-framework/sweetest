@@ -50,28 +50,28 @@ class LoginIntegrationTestSteps(testContext: TestContext) :
 
     @Then("^a new user with email \"([^\"]*)\" and password \"([^\"]*)\" is registered$")
     fun thenRegisteredNewUser(email: String, password: String) {
-        loginViewModel.whenWaitForState(LoginViewModel.State.LoggedIn::class.java)
+        loginViewModel.thenLastStateIs(LoginViewModel.State.LoggedIn(isNewUser = true))
         backendGateway.thenRegistered(email, password)
     }
 
     @Then("^the user \"([^\"]*)\" is logged in as an existing user$")
     fun thenLoggedInExistingUser(email: String) {
         val authToken = backendGateway.getUser(email).authToken
-        loginViewModel.whenWaitForState(LoginViewModel.State.LoggedIn::class.java)
+        loginViewModel.thenLastStateIs(LoginViewModel.State.LoggedIn(isNewUser = false))
         loginViewModel.thenStateIsLoggedInAsExistingUser()
         sessionStore.thenSessionIsStarted(email, authToken)
     }
 
     @Then("^the user \"([^\"]*)\" is logged in as a new user$")
     fun thenLoggedInNewUser(email: String) {
-        loginViewModel.whenWaitForState(LoginViewModel.State.LoggedIn::class.java)
+        loginViewModel.thenLastStateIs(LoginViewModel.State.LoggedIn(isNewUser = true))
         loginViewModel.thenStateIsLoggedInAsNewUser()
         sessionStore.thenSessionIsStarted(email)
     }
 
     @Then("^the user can't enter the app$")
     fun thenLoginFailed() {
-        loginViewModel.whenWaitForStateNot(LoginViewModel.State.LoggedIn::class.java)
+        loginViewModel.thenLastStateIs(LoginViewModel.State.LoggedOut)
         loginViewModel.thenStateIsNotLoggedIn()
     }
 }
