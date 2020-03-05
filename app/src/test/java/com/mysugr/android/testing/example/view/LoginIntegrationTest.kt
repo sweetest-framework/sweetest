@@ -34,8 +34,7 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
         loginViewModel {
             whenInitialized()
             whenLoggingIn(existingUser.email, existingUser.password)
-            // TODO check for isNewUser
-            whenWaitForState(LoginViewModel.State.LoggedIn::class.java)
+            thenLastStateIs(LoginViewModel.State.LoggedIn(isNewUser = false))
         }
         sessionStore.thenSessionIsStarted(existingUser.email, existingUser.authToken)
         backendGateway {
@@ -49,8 +48,7 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
         loginViewModel {
             whenInitialized()
             whenLoggingIn(newUser.email, newUser.password)
-            // TODO check for isNewUser
-            whenWaitForState(LoginViewModel.State.LoggedIn::class.java)
+            thenLastStateIs(LoginViewModel.State.LoggedIn(isNewUser = true))
             newUser = backendGateway.getUser(newUser.email)
         }
         sessionStore.thenSessionIsStarted(newUser.email, newUser.authToken)

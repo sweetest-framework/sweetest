@@ -3,9 +3,11 @@ package com.mysugr.android.testing.example
 
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
+import com.mysugr.android.testing.example.coroutine.FakeDispatcherProvider
 import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.state.SessionStore
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
+import kotlinx.coroutines.CoroutineDispatcher
 
 val appModuleTestingConfiguration = moduleTestingConfiguration {
 
@@ -32,5 +34,9 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
      * that uses it as a mock. Here we tell the framework explicitly how the dependency is
      * initialized.
      */
-    dependency realOnly initializer { LoginViewModel(instanceOf()) }
+    dependency realOnly initializer { LoginViewModel(instanceOf(), instanceOf()) }
+
+    dependency mockOnly initializer { FakeDispatcherProvider(instanceOf()) }
+
+    dependency any of<CoroutineDispatcher>()
 }
