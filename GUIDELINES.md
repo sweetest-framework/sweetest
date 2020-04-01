@@ -101,6 +101,75 @@ Apparently both test classes test the same physical entity (`DeviceSelectionView
 
 **Summary:** Strive for organizing by logical groups of functionality instead of classes, but stay in the same package as the production code.
 
+After having the test class you need to:
+
+* define a "SuT" steps class
+* define eventual other steps classes that abstract access to or mock/fake behavior of production classes
+* flesh out the test functions (test should be compilable then); and finally
+* flesh out the steps classes (the tests should be runnable and failing then); and eventually
+* make the tests green (if you apply behavior-driven development)
+
+## Creating a "SuT" steps class
+
+The first steps class you create should act as a "master", defining the system under test (SuT) as well as the test system for it.
+
+* Almost all calls you do from the test class should go to or via this steps class.
+* The steps class should define which production classes are to be be put under test
+* And how the test system for it looks like
+
+To explain this let's create an example with a simple dependency tree:
+
+```
+LoginViewModel      <-- handles requests from/to UI, uses AuthManager
+  AuthManager       <-- business logic for authentication
+    SessionStore    <-- persistance logic that servces the AuthManager
+    BackendGateway  <-- enabling AuthManager to communicate with backend
+```
+
+To make an integration test we could consider configuring the test like that:
+
+```
+LoginViewModel      <-- real instance
+  AuthManager       <-- real instance
+    SessionStore    <-- fake
+    BackendGateway  <-- mock
+```
+
+To do this manually we would probably have a setup code like this:
+
+```
+val backendGateway = mock<BackendGateway>()
+val sessionStore = mock<SessionStore>()
+val authManager = AuthManager(backendGateway, sessionStore)
+val sut = LoginViewModel(authManager)
+```
+
+But with _sweetest_ you don't have to do that, which comes in handy especially for more complex structures.
+
+So first let's create the steps class:
+
+```
+class LoginViewModelIntegrationSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration)
+```
+
+As we see here the name of the class is rather technical – what is not OK for tests is OK here for steps classes! What does the name tell us?
+
+* the `LoginViewModel` is the basic entity under test and
+* that we test it on an integration level
+
+If you want to know exactly what the view model is integrated with you just have to have a look at the configuration of the steps class. Let's add a configuration to the class:
+
+```
+override fun configure() = super.configure()
+    .requireReal<LoginViewModel>()
+    .requireReal<AuthManager>()
+
+```
+
+That means that we do exactly what is stated in the code block above, just that sweetest now wires up the dependencies for us. We'll learn later how we then work with these dependencies.
+
+In my opinion now is the right time to go back to the test class, include the steps class and go on with fleshing out the test itself.
+
 
 * Create a steps class for the feature under test (e.g. `LoginSteps`) which will contain all the `given`, `when` and `then` functions as well as dependency configuration and setup code
   * The steps class should know about the setup of the test, so for example if the steps class tailored to test the integration of multiple classes, it should also be called something like `LoginIntegrationSteps` which tests a broad stack of classes (e.g. a `LoginViewModel` talking to an `AuthManager` and a `SessionStore`)
