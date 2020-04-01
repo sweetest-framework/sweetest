@@ -170,6 +170,28 @@ That means that we do exactly what is stated in the code block above, just that 
 
 In my opinion now is the right time to go back to the test class, include the steps class and go on with fleshing out the test itself.
 
+## Adding access to the steps class
+
+If you want to use the steps class in your test class you have to define that in your test like so:
+
+```
+private val sut by steps<LoginViewModelIntegrationSteps>()
+```
+
+Using `sut` as a name is both convenient and outlines the importance of this variable (as it's also the only steps class referenced). And by using the `LoginViewModelIntegrationSteps` it becomes apparent that this test is going to act on the `LoginViewModel` which is somehow integrated with its underlying dependencies.
+
+### Requiring steps without defining a variable
+
+In some cases you might need to reference a steps class but you don't need to have any variable that holds an instance to it. In cases like these simply use the `requireSteps` function in the configuration:
+
+```
+override fun configure() = super.configure()
+    .requireSteps<LoginViewModelIntegrationSteps>()
+```
+
+You might need this when you don't call any functions or properties of the steps class, but the steps class adds configuration and/or behavior to the test system.
+
+## WIP:
 
 * Create a steps class for the feature under test (e.g. `LoginSteps`) which will contain all the `given`, `when` and `then` functions as well as dependency configuration and setup code
   * The steps class should know about the setup of the test, so for example if the steps class tailored to test the integration of multiple classes, it should also be called something like `LoginIntegrationSteps` which tests a broad stack of classes (e.g. a `LoginViewModel` talking to an `AuthManager` and a `SessionStore`)
