@@ -5,36 +5,107 @@ After some time working with sweetest we came up to the conclusion that it leave
 ## Content
 
 * [Goals](#goals)
-* [One-by-one steps](#one-by-one-steps)
+* [One-by-one: creating a module](#one-by-one-creating-a-module)
+* [One-by-one: creating a test](#one-by-one-creating-a-test)
 * [Principles](#principles)
 * [Links](#links)
 
 ## Goals
 
 * Put a **layer of abstraction** on the system under test: we call these abstractions _steps_ (as derived from Cucumber)
-  * so if the system under test changes, the test system doesn't need to change
-  * so the test just tells _what_ is tested, not _how_ (tests become more business-centric, whenever possible, all the details are in the steps)
-  * so you can reuse test code
-  * to sum up, there is a proper separation of concerns (separation of business rules, workflow and technical implementation) and the ability to reuse test code
+  * so if the system under test changes, most parts of the test system don't need to change
+  * so the test just tells _what_ is tested, not _how_ (tests become more business-centric; whenever possible, all _technical implementation_ is in the steps)
+  * so test code can be reused
 * **Simplify dependency tree creation** by using configuration and automatic dependency resolution
-* That **simplifies test setup** which makes it **cheaper to have bigger integration tests**
-* With that in mind it becomes worth to **invest more in integration tests** instead of unit tests
+* **Test setup is simplified** so **integration tests become default**
   * which **reduces the use of mocks** and
   * leads to **more realistic tests**
 
-## One-by-one steps
+## One-by-one: creating a module
 
-* Create a module testing configuration in the test sources for each module in your project (e.g. for a module `app` create a file `AppModuleTestingConfiguration` with the following code: `val appModuleTestingConfiguration = moduleTestingConfiguration { ... }`; see below for more info on how to add dependencies to the configuration)
-  * Always use the same package structure for test sources, e.g. if you app resides in a module `app` and has a base package `org.myorg.product.app` then put the module test configuration in exactly in the same package
-  * If there is a class `org.myorg.product.app.view.LoginViewModel` then the test class `LoginViewModelTest` and `LoginViewModelSteps` would reside in the exact same package, too
-  * If you have a dedicated module for test sources you should still stick to the same package structure, e.g. if the module is `:app:test` _don't_ add `test` to the package structure for test sources
-  * If modules depend on each other the module testing configuration should do the same, e.g. `val appModuleTestingConfiguration = moduleTestingConfiguration(dependentConfig1, dependentConfig2, ...) { ... }`, this automatically imports all dependent configurations
-* Create a test class for the _feature under test_ (e.g. `LoginTest`), so the test is agnostic of the underlying structures (classes, models, views, data structures, ...)
-  * Should it be that a test really just tests _one_ class, feel free to name it exactly like that (`LoginViewModelTest`)
+Whenever a new module is created in your project (or when you introduce sweetest in a module) there needs to be a configuration created for that module:
+
+```
+val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
+```
+
+Where should this configuration go?
+
+* **Name** the file exactly as the configuration val (e.g. `AppModuleTestingConfiguration.kt`)
+* and put it in the same **package** as the respective module's root package (e.g. `com.example.app`)
+
+Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test resources (including steps classes and module testing configurations) need to be put into extra modules called `test-shared` inside the respective production code module:
+
+```
+/
+  app
+    test-shared <-- contains test resources for app
+  module1
+    test-shared <-- contains test resources for module1 
+  module2
+    test-shared <-- contains test resources for module2
+      
+```
+
+If modules depend on each other the same is true for the module testing configuration. So add all dependencies of a test configuration in the argument list for `moduleTestingConfiguration`:
+
+
+```
+val appModuleTestingConfiguration = moduleTestingConfiguration(
+    module1ModuleTestingConfiguration,
+    dependentConfig2, ...)
+{    
+    ...
+}
+```
+
+This makes sure that configurations exist just once in the whole test system.
+
+### One-by-one: creating a test
+
+#### Where to put code?
+
+It is common to put tests on production classes, but tests in sweetest should strive for being independent of the concrete solution. That means that you should rather test blocks of features instead of classes.
+
+**Bad example:**
+
+```
+DeviceSelectionViewModelTest
+   Has correct options
+   Has correct title
+   Has correct color
+   When selecting device A, it's not persisted
+   When selecting device A and clicking save it's persisted
+   When selecting device A and then B, and then click save just B is persisted
+   When not selecting anything, you can't save
+```
+
+This is the old "one test per class" approach. But we want to go beyond that...
+
+**Good example:**
+
+```
+DeviceSelectionInfoTest
+   Has correct options
+   Has correct title
+   Has correct color
+   
+DeviceSelectionTest
+   When selecting device A, it's not persisted
+   When selecting device A and clicking save it's persisted
+   When selecting device A and then B, and then click save just B is persisted
+   When not selecting anything, you can't save
+```
+
+Apparently both test classes test the same physical entity (`DeviceSelectionViewModel`), but logically a separation makes sense. Also we can observe that the tests are now concerned about blocks of functionality, not classes. By which means we achieve the wanted behavior is not of any concern of the test class anymore. The physical link should be maintained by using the same package as the production class, though!
+
+**Summary:** Strive for organizing by logical groups of functionality instead of classes, but stay in the same package as the production code.
+
+
 * Create a steps class for the feature under test (e.g. `LoginSteps`) which will contain all the `given`, `when` and `then` functions as well as dependency configuration and setup code
   * The steps class should know about the setup of the test, so for example if the steps class tailored to test the integration of multiple classes, it should also be called something like `LoginIntegrationSteps` which tests a broad stack of classes (e.g. a `LoginViewModel` talking to an `AuthManager` and a `SessionStore`)
   * Should it be that a steps class really just tests _one_ class, feel free to name it exactly like that (`LoginViewModelSteps`)
-  * In case the steps class' aim is purely to offer and act on a fake implementation of a class, name it with a `FakeSteps` suffix (e.g. `BackendGatewayFakeSteps` or `SessionStoreFakeSteps`)
+  * In case the steps class' aim is purely to offer and act on a mock or fake implementation of a class, name it with a `MockSteps` or `FakeSteps` suffix (e.g. `BackendGatewayFakeSteps` or `SessionStoreMockSteps`)
 * Start with the test
   * In the test class you created add reference to the steps class with the `steps` function (e.g. `val sut by steps<LoginSteps>`) and call the value `sut` (system under test)
   * Fill up the test with `@Test`-annotated test functions
