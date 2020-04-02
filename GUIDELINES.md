@@ -180,16 +180,20 @@ private val sut by steps<LoginViewModelIntegrationSteps>()
 
 Using `sut` as a name is both convenient and outlines the importance of this variable (as it's also the only steps class referenced). And by using the `LoginViewModelIntegrationSteps` it becomes apparent that this test is going to act on the `LoginViewModel` which is somehow integrated with its underlying dependencies.
 
-### Requiring steps without defining a variable
+This of course only makes sense when there is just one steps class in the test class. We'll follow up on other cases when there are multiple steps classes.
 
-In some cases you might need to reference a steps class but you don't need to have any variable that holds an instance to it. In cases like these simply use the `requireSteps` function in the configuration:
+#### Requiring steps without defining a variable:
+
+In some cases you might want to include a steps class but don't need to have any variable that holds an instance to it. In cases like these simply use the `requireSteps` function in the configuration:
 
 ```
 override fun configure() = super.configure()
     .requireSteps<LoginViewModelIntegrationSteps>()
 ```
 
-You might need this when you don't call any functions or properties of the steps class, but the steps class adds configuration and/or behavior to the test system.
+Might be useful when you don't call any functions or properties of the steps class, but just want the steps class to add some configuration and/or behavior to the test system.
+
+
 
 ## WIP:
 
