@@ -192,6 +192,8 @@ Might be useful when you don't call any functions or properties of the steps cla
 
 ## Writing steps classes
 
+### Scope and name
+
 There are multiple options how steps classes can be named and scoped; some examples:
 
 1. As abstraction of a class (`LoginViewModelSteps`): use this if a steps class solely concentrates on interacting with or mocking/faking a single specific class or interface
@@ -199,6 +201,47 @@ There are multiple options how steps classes can be named and scoped; some examp
 3. As abstraction of a feature or subsystem (`LoginSteps`): in cases where the inner structure of a feature should be further hidden from the test
 
 It's apparent that the last option is the one that gives the system under test the highest flexibility, as changes made to the feature or subsystem optimally only force the steps class to change, not the test. In comparison, the first two options make the production code harder to change, e.g. if a class is added in between or some are merged some steps and test classes possibly need to be completely changed.
+
+#### Regarding mocks/fakes
+
+As already discussed, there may be two modes a dependency can be acted on by a steps class: as mock (or fake) or real instance:
+
+1. **Mock/fake:** in this case the steps classes' job is to let it's user control the behavior of the mock or do verifications on it
+2. **Real instance:** in this case the steps classes' job is to route calls from the test to the object under test
+
+In principle both modes could be accomodated in one steps class like this:
+
+```
+// When instance is mock
+fun givenNextReturnsTrue() = `when`(instance.next()).thenReturn(true)
+
+// When instance is real
+fun whenClickingNext() = instance.next()
+
+// When instance is mock or spy
+fun thenNextIsCalled() = verify(instance).next()
+```
+
+Also one can react to whether an instance is a mock or real in the setup block:
+
+```
+override fun configure() = super.configure()
+    .onSetUp {
+        if (MockUtil.isMock(instance)) {
+            doTheStubbing()
+        }
+    }
+```
+
+While both modes can be accomodated in one steps class in accordance to which mode a certain dependency is configured, it should be avoided in order to prevent ambiguity and confusion. So if it's possible for a dependency to be real or mocked depending on the configuration, there should be two different steps classes for that.
+
+And if a steps classes' job is to provide access to a mock or fake of a certain feature, subsystem or class, that should be made clear in the class name; some examples:
+
+1. `AuthManagerMockSteps`: this steps class can be used by the `LoginSteps` class so the `AuthManager`; the test can use `AuthManagerSteps` to define the mock's behavior and do verifications
+2. `BackendGatewayFakeSteps`: this steps class provides a fake version of the `BackendGateway` interface
+3. `BackendFakeSteps`: this steps class does the same without caring about the structure of the production code
+
+Same as before the last option is preferred over the others. When concepts or interfaces are abstracted instead of concrete implementations it's way easier for the system to change without breaking the tests or test classes.
 
 ## WIP:
 
