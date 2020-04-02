@@ -20,6 +20,7 @@ After some time working with sweetest we came up to the conclusion that it leave
 * **Test setup is simplified** so **integration tests become default**
   * which **reduces the use of mocks** and
   * leads to **more realistic tests**
+* It is not the goal to overcomplicate tests
 
 ## One-by-one: creating a module
 
@@ -206,13 +207,13 @@ Might be useful when you don't call any functions or properties of the steps cla
   * Fill up the test with `@Test`-annotated test functions
     * The test function can be named after a _scenario_ (e.g. `New user trying to log in`, `Weather condition is cloudy`)
     * Only if necessary to distinguish test cases, also add more context like what's roughly expected (e.g. `New user trying to login - welcome to the app message shown`, `Existing user trying to login - welcome back message shown`)
-    * Don't use names like `givenNewUser_whenLoggingIn_thenShowWelcomeToAppMessage` because
-      * The test code in the test functions should already be easy enough to understand preconditions, actions and assumptions
-      * The more text you use the harder to distinguish test cases
-      * The less spaces you use the harder to read
-      * So please just use the test function names to make a meaningful distinctions to properly navigate between and understand test scenarios and cases
+    * Think twice if you see a test named `givenNewUser_whenLoggingIn_thenShowWelcomeToAppMessage`
+      * Test code how you write it with sweetest should already contribute a lot to support a good understanding of preconditions, actions and assumptions, so maybe you can go for shorter test names
+      * The more text you use in the function name the harder to read and distinguish test cases become
+      * On the other hand, the less text you use the harder to get a grasp on the meaning of the test
+      * To sum up, try to find a compromise to have a sufficient information value
   * For each test case, call functions that would reside in the steps class and prefix these functions with `given`, `when` or `then`
-    * Functions starting with `given` should set up the environment, as these define the assumptions that are made (e.g. `givenUser(email = "test@test.com", password = "supersecure")` indicating that the fake backend should act as if there was that user saved in the database). For the naming choose present tense (e.g. `givenUser` as a short form of "there is a user" or `givenInternetConnected`)
+    * Functions starting with `given` should set up the environment, as these define the assumptions that are made (e.g. `givenUserExists(email = "test@test.com", password = "supersecure")` indicating that the fake backend should act as if there was that user saved in the database). For the naming choose present tense (e.g. `givenUserExists`  or `givenInternetConnected`)
     * Functions starting with `when` should perform actions, therefore they are named in progressive form (e.g. `whenGoingOffline`, `whenInitializing`, `whenLoggingInWith(email, password)`)
     * Functions starting with `then` should perform assertions (e.g. `thenIsLoggedIn()`, `thenIsBusy()` or `thenUserIsCreated(user: User)`)
     * By starting at the test to define which functions are needed in the steps you are more focused and get a faster overview of that's needed instead of getting into details too early
@@ -221,11 +222,11 @@ Might be useful when you don't call any functions or properties of the steps cla
 * Now think about which dependencies (classes or interfaces) will be under test and add new steps classes
   * You can add a steps classs per class under test (e.g. `AuthManagerSteps`)
   * As stated above (just to repeat)
-    * the steps classes' job is to know "how this class is to be tested"
+    * the steps classes' job is to know "how this class is to be tested"; it can also be considered as a test API over the production code
     * these will contain the `given`, `when` and `then` functions
     * and if reasonable you can split steps classes by responsibility rather than classes, as in generally it's considered a better approach to test against concepts under test, not concrete classes; but in practice this turns out to be very hard to achieve. Testing against interfaces instead of concrete classes would be a good compromise between ease of test implementation and concern separation.
     * If the steps class is purely here for faking or mocking the real behavior of a class you should name it accordingly (e.g. `AuthManagerMockSteps` or `BackendGatewayFakeSteps`)
-    * To conclude, a steps class usually can be considered responsible for inetracting with or mocking/faking the behavior of a class or interface under test
+    * To conclude, a steps class usually can be considered responsible for interacting with or mocking/faking the behavior of a class or interface under test
   * You also need to think of dependencies
     * A dependency in sweetest can be considered as an object that is needed by another or multiple other objects and usually contains logic
     * Dependencies in sweetest are considered singletons
@@ -233,7 +234,7 @@ Might be useful when you don't call any functions or properties of the steps cla
     * So when you request a dependency of a specific type it's automatically constructed and further dependencies in the constructor are automatically initialized as well (that relieves you of the burden of putting together huge test setups when having a lot of dependencies, which is even more cumbersome when writing integration tests)
     * In essence, sweetest has an own small dependency injection framework included
   * A dependency can be either mocked or real
-    * By default in sweetest all dependencies are considered mocks
+    * If not configured otherwise, a dependency falls back to become a mock (generated by Mockito)
     * If you want to put a class e.g. the `LoginViewModel` under test you need to tell sweetest (see below)
     * By doing so sweetest will create an instance of `LoginViewModel` and on the way examines the constructor
     * sweetest is trying to create and inject all dependencies `LoginViewModel` needs by doing the same for all of these dependencies (so e.g. if the constructor of `LoginViewModel` looks like `constructor(private val authManager: AuthManager)` then sweetest will try to create `AuthManager`, too)
@@ -294,6 +295,9 @@ Might be useful when you don't call any functions or properties of the steps cla
   * The the test functions are named after scenarios
 
 ## Principles
+
+* Don't use sweetest if it makes no sense (e.g. classes which will never be tested in an integrated fashion)
+* Expose properties of steps classes publicly only in cases where abstract domain-specific functionality is offered that is very unlikely to change (e.g. a fake backend might be exposed as "backend" and offer functions like "givenUserExists", so the test can simply call "users.givenUserExists(...)")
 
 ## Links
 
