@@ -150,13 +150,9 @@ But with _sweetest_ you don't have to do that, which comes in handy especially f
 So first let's create the steps class:
 
 ```
-class LoginViewModelIntegrationSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration)
+class LoginIntegrationSteps(testContext: TestContext)
+    : BaseSteps(testContext, appModuleTestingConfiguration)
 ```
-
-As we see here the name of the class is rather technical – what is not OK for tests is OK here for steps classes! What does the name tell us?
-
-* the `LoginViewModel` is the basic entity under test and
-* that we test it on an integration level
 
 If you want to know exactly what the view model is integrated with you just have to have a look at the configuration of the steps class. Let's add a configuration to the class:
 
@@ -194,7 +190,15 @@ override fun configure() = super.configure()
 
 Might be useful when you don't call any functions or properties of the steps class, but just want the steps class to add some configuration and/or behavior to the test system.
 
+## Writing steps classes
 
+There are multiple options how steps classes can be named and scoped; some examples:
+
+1. As abstraction of a class (`LoginViewModelSteps`): use this if a steps class solely concentrates on interacting with or mocking/faking a single specific class or interface
+2. As abstraction of an integration of classes (`LoginViewModelIntegrationSteps`): in cases where the class or interface is tested in integration with other classes
+3. As abstraction of a feature or subsystem (`LoginSteps`): in cases where the inner structure of a feature should be further hidden from the test
+
+It's apparent that the last option is the one that gives the system under test the highest flexibility, as changes made to the feature or subsystem optimally only force the steps class to change, not the test. In comparison, the first two options make the production code harder to change, e.g. if a class is added in between or some are merged some steps and test classes possibly need to be completely changed.
 
 ## WIP:
 
