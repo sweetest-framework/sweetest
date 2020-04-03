@@ -5,10 +5,16 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.mysugr.android.testing.example.app.databinding.ActivityLoginBinding
 import com.mysugr.android.testing.example.dependency.DependencyFramework
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State
+import kotlinx.android.synthetic.main.activity_login.email
+import kotlinx.android.synthetic.main.activity_login.login_form
+import kotlinx.android.synthetic.main.activity_login.login_progress
+import kotlinx.android.synthetic.main.activity_login.logout_button
+import kotlinx.android.synthetic.main.activity_login.message
+import kotlinx.android.synthetic.main.activity_login.password
+import kotlinx.android.synthetic.main.activity_login.sign_in_button
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
@@ -22,15 +28,12 @@ class LoginActivity : AppCompatActivity() {
 
     private val logger = Logger.getLogger(this::class.java.simpleName)
     private lateinit var viewModel: LoginViewModel
-    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
 
         viewModel = ViewModelProvider(this, DependencyFramework.viewModelProviderFactory)[LoginViewModel::class.java]
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         attachViewModel()
     }
 
@@ -39,11 +42,11 @@ class LoginActivity : AppCompatActivity() {
             .onEach { onStateChange(it) }
             .launchIn(lifecycleScope)
 
-        binding.signInButton.setOnClickListener {
-            viewModel.loginOrRegister(binding.email.text.toString(), binding.password.text.toString())
+        sign_in_button.setOnClickListener {
+            viewModel.loginOrRegister(email.text.toString(), password.text.toString())
         }
 
-        binding.logoutButton.setOnClickListener {
+        logout_button.setOnClickListener {
             viewModel.logout()
         }
     }
@@ -54,17 +57,15 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateView(state: State) {
-        with(binding) {
-            loginProgress.visibility = if (state is State.Busy) View.VISIBLE else View.GONE
-            loginForm.visibility = if (state is State.LoggedOut || state is Error) View.VISIBLE else View.GONE
-            logoutButton.visibility = if (state.loggedIn) View.VISIBLE else View.GONE
-            email.error = (state as? State.Error)?.emailError?.let { resources.getString(it) }
-            password.error = (state as? State.Error)?.passwordError?.let { resources.getString(it) }
-            if (state is State.LoggedIn) {
-                message.setText(if (state.isNewUser) R.string.login_new_user else R.string.login_existing_user)
-            } else {
-                message.text = ""
-            }
+        login_progress.visibility = if (state is State.Busy) View.VISIBLE else View.GONE
+        login_form.visibility = if (state is State.LoggedOut || state is Error) View.VISIBLE else View.GONE
+        logout_button.visibility = if (state.loggedIn) View.VISIBLE else View.GONE
+        email.error = (state as? State.Error)?.emailError?.let { this.resources.getString(it) }
+        password.error = (state as? State.Error)?.passwordError?.let { this.resources.getString(it) }
+        if (state is State.LoggedIn) {
+            message.setText(if (state.isNewUser) R.string.login_new_user else R.string.login_existing_user)
+        } else {
+            message.text = ""
         }
     }
 }
