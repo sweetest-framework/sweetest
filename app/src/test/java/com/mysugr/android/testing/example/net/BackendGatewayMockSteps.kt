@@ -8,7 +8,6 @@ import com.mysugr.sweetest.framework.context.TestContext
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import java.util.UUID
 
 class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
 
@@ -66,9 +65,3 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
         return backendUsers.find { it.email == email } ?: error("User $email not found")
     }
 }
-
-data class FakeBackendUser(
-    val email: String,
-    val password: String,
-    val authToken: AuthToken = UUID.randomUUID().toString()
-)
