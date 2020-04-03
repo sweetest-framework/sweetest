@@ -5,8 +5,8 @@ After some time working with sweetest we came up to the conclusion that it leave
 ## Content
 
 * [Goals](#goals)
-* [One-by-one: creating a module](#one-by-one-creating-a-module)
-* [One-by-one: creating a test](#one-by-one-creating-a-test)
+* [Introduction](#introduction)
+* [Reference](#reference)
 * [Principles](#principles)
 * [Links](#links)
 
@@ -22,7 +22,76 @@ After some time working with sweetest we came up to the conclusion that it leave
   * leads to **more realistic tests**
 * It is not the goal to overcomplicate tests
 
-## One-by-one: creating a module
+## Introduction
+
+This introduction guides you through the setup of a typical sweetest test. It's goal is to be as comprehensive as possible for people not yet familiar with sweetest. Further details are outlined in the [Reference](#reference) chapter of this guidelines document.
+
+### Add a module configuration
+
+Given you have a module `app` you can create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
+
+```
+val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
+```
+
+### Add dependencies to the configuration
+
+sweetest puts dependencies together for you by configuration. So if you have a complex system under test you don't have to create the dependencies manually. If a type is required by your test the internal dependency management of sweetest examines the constructor of the dependency and tries to satisfy all constructor parameters. So this is a recursive process that goes on until all dependencies are created.
+
+sweetest treats dependencies as singletons, so if in a test system a certain type of dependency is retrieved, it will always be the same instance. So don't put types under dependency management if there is more than one instance in the system while testing.
+
+That's how you add dependencies to your test:
+
+```
+val appModuleTestingConfiguration = moduleTestingConfiguration {
+    dependency any of<LoginViewModel>()
+    dependency any of<AuthManager>()
+    dependency any of<BackendGateway>()
+    dependency any of<SessionStore>()
+}
+```
+
+For more about the different options you have for configuring dependencies see the reference down below.
+
+### Create a steps class
+
+```
+class LoginSteps(testContext: TestContext)
+    : BaseSteps(testContext, appModuleTestingConfiguration) {
+```
+
+### Create a test class
+
+```
+class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
+```
+
+### Adding access to the steps class
+
+If you want to use the steps class in your test class you have to define that in your test like so:
+
+```
+private val sut by steps<LoginViewModelIntegrationSteps>()
+```
+
+Using `sut` as a name is both convenient and outlines the importance of this variable (as it's also the only steps class referenced). And by using the `LoginViewModelIntegrationSteps` it becomes apparent that this test is going to act on the `LoginViewModel` which is somehow integrated with its underlying dependencies.
+
+This of course only makes sense when there is just one steps class in the test class. We'll follow up on other cases when there are multiple steps classes.
+
+#### Requiring steps without defining a variable:
+
+In some cases you might want to include a steps class but don't need to have any variable that holds an instance to it. In cases like these simply use the `requireSteps` function in the configuration:
+
+```
+override fun configure() = super.configure()
+    .requireSteps<LoginViewModelIntegrationSteps>()
+```
+
+Might be useful when you don't call any functions or properties of the steps class, but just want the steps class to add some configuration and/or behavior to the test system.
+
+## Reference
+
+### Module testing configuration
 
 Whenever a new module is created in your project (or when you introduce sweetest in a module) there needs to be a configuration created for that module:
 
@@ -35,26 +104,29 @@ Where should this configuration go?
 * **Name** the file exactly as the configuration val (e.g. `AppModuleTestingConfiguration.kt`)
 * and put it in the same **package** as the respective module's root package (e.g. `com.example.app`)
 
-Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test resources (including steps classes and module testing configurations) need to be put into extra modules called `test-shared` inside the respective production code module:
+### Modularizing test sources
+
+Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test sources (including steps classes and module testing configurations) should be put into extra modules called `test-shared` inside the respective production code module:
 
 ```
 /
-  app
-    test-shared <-- contains test resources for app
-  module1
-    test-shared <-- contains test resources for module1 
-  module2
-    test-shared <-- contains test resources for module2
+  :app
+  :module1
+    :test-shared <-- contains test resources for module1 
+  :module2
+    :test-shared <-- contains test resources for module2
       
 ```
 
-If modules depend on each other the same is true for the module testing configuration. So add all dependencies of a test configuration in the argument list for `moduleTestingConfiguration`:
+It is apparent that the `app` depends on code in module1 and module2, so the same is true for the test sources: tests in `app` would rely on test sources in `:module1:test-shared` and `:module2:test-shared`. That leads to a proper separation of concerns, so for example the sources in `:module1:test-shared` are responsible for offering steps classes responsible for features implemented in `:module1` (more about steps classes below).
+
+Also the module testing configuration needs to reflect the dependencies between modules. So don't forget to list all dependent configurations of a test configuration in the argument list of `moduleTestingConfiguration`:
 
 
 ```
 val appModuleTestingConfiguration = moduleTestingConfiguration(
     module1ModuleTestingConfiguration,
-    dependentConfig2, ...)
+    module2ModuleTestingConfiguration, ...)
 {    
     ...
 }
@@ -62,11 +134,11 @@ val appModuleTestingConfiguration = moduleTestingConfiguration(
 
 This makes sure that configurations exist just once in the whole test system.
 
-### One-by-one: creating a test
+### Writing test classes
 
-#### Where to put code?
+#### Scope
 
-It is common to put tests on production classes, but tests in sweetest should strive for being independent of the concrete solution. That means that you should rather test blocks of features instead of classes.
+It is a common proctice to create a tests class per production classes, but tests in sweetest should strive for being independent of the concrete solution. That means that you should rather test blocks of features or subsystems instead of classes.
 
 **Bad example:**
 
@@ -110,7 +182,7 @@ After having the test class you need to:
 * flesh out the steps classes (the tests should be runnable and failing then); and eventually
 * make the tests green (if you apply behavior-driven development)
 
-## Creating a "SuT" steps class
+### Creating a "SuT" steps class
 
 The first steps class you create should act as a "master", defining the system under test (SuT) as well as the test system for it.
 
@@ -167,32 +239,9 @@ That means that we do exactly what is stated in the code block above, just that 
 
 In my opinion now is the right time to go back to the test class, include the steps class and go on with fleshing out the test itself.
 
-## Adding access to the steps class
+### Writing steps classes
 
-If you want to use the steps class in your test class you have to define that in your test like so:
-
-```
-private val sut by steps<LoginViewModelIntegrationSteps>()
-```
-
-Using `sut` as a name is both convenient and outlines the importance of this variable (as it's also the only steps class referenced). And by using the `LoginViewModelIntegrationSteps` it becomes apparent that this test is going to act on the `LoginViewModel` which is somehow integrated with its underlying dependencies.
-
-This of course only makes sense when there is just one steps class in the test class. We'll follow up on other cases when there are multiple steps classes.
-
-#### Requiring steps without defining a variable:
-
-In some cases you might want to include a steps class but don't need to have any variable that holds an instance to it. In cases like these simply use the `requireSteps` function in the configuration:
-
-```
-override fun configure() = super.configure()
-    .requireSteps<LoginViewModelIntegrationSteps>()
-```
-
-Might be useful when you don't call any functions or properties of the steps class, but just want the steps class to add some configuration and/or behavior to the test system.
-
-## Writing steps classes
-
-### Scope and name
+#### Scope and name
 
 There are multiple options how steps classes can be named and scoped; some examples:
 
@@ -343,7 +392,14 @@ Same as before the last option is preferred over the others. When concepts or in
 
 ## Principles
 
+Where the introduction and reference gives a broad overview of test design and how it is implemented using sweetest, this is a condensed list of principles you should thrive for:
+
+#### General
+
 * Don't use sweetest if it makes no sense (e.g. classes which will never be tested in an integrated fashion)
+
+#### Steps
+
 * Expose properties of steps classes publicly only in cases where abstract domain-specific functionality is offered that is very unlikely to change (e.g. a fake backend might be exposed as "backend" and offer functions like "givenUserExists", so the test can simply call "users.givenUserExists(...)")
 
 ## Links
