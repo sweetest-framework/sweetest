@@ -158,18 +158,45 @@ private val backendGateway by dependency<BackendGateway>()
 So now let's have a look at the functions the class needs to have. As we did the design of the tests themselves first we already know we need the following functions in the steps class:
 
 ```kotlin
-fun whenLoggingIn(email: String, password: String) = TODO()
-
 fun givenExistingUser(email: String, password: String, authToken: AuthToken) = TODO()
+
+fun whenLoggingIn(email: String, password: String) = TODO()
 
 fun thenEmailWasCheckedAtBackend(email: String) = TODO()
 ```
+
+#### Add the `given` function
+
+Let's start with the `givenExistingUser` function. `given` is used for setting up preconditions. In the prototypical sequence of "arrange", "act", "assert", this is the first step. The naming makes that apparent.
+
+In most cases `given` will define the behavior of the system before we really start interacting with the production system (the "acting") and thus controls the behavior of the mocks or fakes we have in our test system:
+
+```kotlin
+fun givenExistingUser(email: String, password: String, authToken: AuthToken) {
+    `when`(backendGateway.checkEmail(email)).thenReturn(true)
+    `when`(backendGateway.login(email, password)).thenReturn(authToken)
+}
+```
+
+Obviously in this case the state of a user being existent is achieved by setting up the backend gateway so it responds with specific answers.
+
+#### Add the `when` function
 
 Mostly functions starting with `when` interact directly with the system, so let's wire the test to the production code:
 
 ```kotlin
 fun whenLoggingIn(email: String, password: String) {
     viewModel.loginOrRegister(email, password)
+}
+```
+
+#### Add the `then` function
+
+Functions starting with `then` should solely do assertions:
+
+```kotlin
+fun thenEmailWasCheckedAtBackend(email: String) {
+    verify(backendGateway).checkEmail(email)
 }
 ```
 
