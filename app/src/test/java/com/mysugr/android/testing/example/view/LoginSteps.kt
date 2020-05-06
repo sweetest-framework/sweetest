@@ -23,13 +23,13 @@ class LoginSteps(testContext: TestContext) :
         .requireReal<LoginViewModel>()
         .requireReal<AuthManager>()
 
-    fun whenLoggingIn(email: String, password: String) {
-        viewModel.loginOrRegister(email, password)
-    }
-
     fun givenExistingUser(email: String, password: String, authToken: AuthToken) {
         `when`(backendGateway.checkEmail(email)).thenReturn(true)
         `when`(backendGateway.login(email, password)).thenReturn(authToken)
+    }
+
+    fun whenLoggingIn(email: String, password: String) {
+        viewModel.loginOrRegister(email, password)
     }
 
     fun thenEmailWasCheckedAtBackend(email: String) {
