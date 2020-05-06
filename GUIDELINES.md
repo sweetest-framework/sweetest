@@ -1,6 +1,6 @@
 # sweetest test development guidelines
 
-After some time working with sweetest we came up to the conclusion that it leaves a lot of freedom to design tests as we want. But on the other side there is an increasing need for alignment. These guidelines are here for reaching an appropriate level of alignment. Feel free to challenge the current state and to contribute!
+After some time working with sweetest we came up to the conclusion there is a lot of freedom as to how to design tests. But on the other side there is an increasing need for alignment. These guidelines are here for reaching an appropriate level of alignment. Feel free to challenge the current state and to contribute!
 
 ## Content
 
@@ -15,12 +15,11 @@ After some time working with sweetest we came up to the conclusion that it leave
 * Put a **layer of abstraction** on the system under test: we call these abstractions _steps_ (as derived from Cucumber)
   * so if the system under test changes, most parts of the test system don't need to change
   * so the test just tells _what_ is tested, not _how_ (tests become more business-centric; whenever possible, all _technical implementation_ is in the steps)
-  * so test code can be reused
+  * so test code, especially its technical implementation (steps classes), can be reused
 * **Simplify dependency tree creation** by using configuration and automatic dependency resolution
 * **Test setup is simplified** so **integration tests become default**
   * which **reduces the use of mocks** and
   * leads to **more realistic tests**
-* It is not the goal to overcomplicate tests
 
 ## Introduction
 
@@ -40,6 +39,8 @@ sweetest puts dependencies together for you by configuration. So if you have a c
 
 sweetest treats dependencies as singletons, so if in a test system a certain type of dependency is retrieved, it will always be the same instance. So don't put types under dependency management if there is more than one instance in the system while testing.
 
+For isolation's sake of course all dependencies are purged after each test function run.
+
 That's how you add dependencies to your test:
 
 ```kotlin
@@ -50,6 +51,8 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
     dependency any of<SessionStore>()
 }
 ```
+
+Basically put all dependencies in there that you plan to be auto-created by sweetest. E.g. if `LoginViewModel` required `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
 
 ### Create a steps class
 
@@ -87,13 +90,11 @@ From that it becomes clearer that the test and steps class have totally differen
 
 ### Define test cases
 
-Especially if you work test-driven it makes sense to write the tests first and then make the steps classes and production interfaces work and just then the behavior under test.
-
 So let's add a test case (see [final class](https://github.com/mysugr/sweetest/blob/example-upgrade/app/src/test/java/com/mysugr/android/testing/example/view/LoginTest.kt) ):
 
 ```kotlin
 @Test
-fun `Logging in successfully`() {
+fun `Login with correct credentials is successful`() {
     sut {
         givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
         whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
@@ -110,11 +111,11 @@ companion object {
 
 `sut { ... }` is used in order to get inside the scope of the steps class and call some functions there. As you can see the test is quite expressive and could as well be read by non-technical people. That's exactly as it should be. All the technical implementation is happening in the steps class then.
 
-**Tip:** you can write all your test cases like that in the test class first and then let the IDE create the missing functions in the respective steps class (e.g. in IntelliJ: Option + Enter, select "Create member function" and select the target class, in this case the steps class).
+**Tip:** you can write all your test cases like that in the test class first and then let the IDE create the missing functions in the respective steps class (e.g. in IntelliJ: Option + Enter, select "Create member function" and select the target class, in this case the steps class). That way you can flesh out the tests TDD-style without needing to care about the technical implementation in the steps class yet.
 
-### Flesh out the steps class
+### Add configuration in the steps class
 
-In order to know how we set up the test we should first quickly get a grasp of the system we want to test:
+In order to know how we set up the test we should first quickly get a grasp of the system we want to test. Here is an outline of the example with a typical Android architecture:
 
 ```
 ┏━━━━━━━━━━━━━━━┓
@@ -135,7 +136,7 @@ In order to know how we set up the test we should first quickly get a grasp of t
 * = mocked
 ```
 
-In order to achieve that you have to add a configuration that reflects the wanted setup:
+In order to achieve that you have to add a configuration that reflects the wanted setup in the steps file:
 
 ```kotlin
 override fun configure() = super.configure()
@@ -143,7 +144,9 @@ override fun configure() = super.configure()
     .requireReal<AuthManager>()
 ```
 
-This would be enough as sweetest provides Mockito mocks automatically if the dependency isn't configured otherwise.
+This would be already enough in terms of configuration to get the dependency graph created automatically! sweetest will provide Mockito mocks automatically if the dependency isn't configured otherwise, that means that `LoginViewModel` and `AuthManager` will be instantiated and the rest of the dependencies (`BackendGateway` and `SessionStore`) will be Mockito mocks.
+
+### Add access to the dependencies in the steps class
 
 When we look at the test case we've written above we can see that we want to put something into the top of the system under test (the view model) and see what comes out at the bottom (backend gateway). So let's add members to the class that enable us to interact with them:
 
@@ -162,36 +165,13 @@ fun givenExistingUser(email: String, password: String, authToken: AuthToken) = T
 fun thenEmailWasCheckedAtBackend(email: String) = TODO()
 ```
 
-Mostly functions starting with `when` interact directly interact with the system, so let's wire the test to the production code:
+Mostly functions starting with `when` interact directly with the system, so let's wire the test to the production code:
 
 ```kotlin
 fun whenLoggingIn(email: String, password: String) {
     viewModel.loginOrRegister(email, password)
 }
 ```
-
-### Adding access to the steps class
-
-If you want to use the steps class in your test class you have to define that in your test like so:
-
-```
-private val sut by steps<LoginViewModelIntegrationSteps>()
-```
-
-Using `sut` as a name is both convenient and outlines the importance of this variable (as it's also the only steps class referenced). And by using the `LoginViewModelIntegrationSteps` it becomes apparent that this test is going to act on the `LoginViewModel` which is somehow integrated with its underlying dependencies.
-
-This of course only makes sense when there is just one steps class in the test class. We'll follow up on other cases when there are multiple steps classes.
-
-#### Requiring steps without defining a variable:
-
-In some cases you might want to include a steps class but don't need to have any variable that holds an instance to it. In cases like these simply use the `requireSteps` function in the configuration:
-
-```
-override fun configure() = super.configure()
-    .requireSteps<LoginViewModelIntegrationSteps>()
-```
-
-Might be useful when you don't call any functions or properties of the steps class, but just want the steps class to add some configuration and/or behavior to the test system.
 
 ## Reference
 
