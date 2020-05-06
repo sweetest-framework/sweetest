@@ -4,10 +4,8 @@ import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
 import com.mysugr.sweetest.framework.base.steps
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import org.junit.Test
-import kotlin.coroutines.ContinuationInterceptor
 
 class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
@@ -15,7 +13,7 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val scope = TestCoroutineScope()
 
     override fun configure() = super.configure()
-        .offerMockRequired { scope.coroutineContext[ContinuationInterceptor] as CoroutineDispatcher }
+        .offerMockRequired { scope }
         .onSetUp { sut.scope = scope }
 
     @Test
