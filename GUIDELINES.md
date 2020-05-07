@@ -483,38 +483,58 @@ val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 
 Where should this configuration go?
 
-* **Name** the file exactly as the configuration val (e.g. `AppModuleTestingConfiguration.kt`)
+* **Name** the file exactly as the configuration val but with starting with upper-case (e.g. `AppModuleTestingConfiguration.kt`)
 * and put it in the same **package** as the respective module's root package (e.g. `com.example.app`)
 
-### Modularizing test sources
+#### Organization by modules
 
-Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test sources (including steps classes and module testing configurations) should be put into extra modules called `test-shared` inside the respective production code module:
+Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test sources (including steps classes and module testing configurations) should be put into extra modules inside the respective production code module. We suggest calling them `test` or `sweetest`:
 
 ```
 /
   :app
-  :module1
-    :test-shared <-- contains test resources for module1 
-  :module2
-    :test-shared <-- contains test resources for module2
+  :a
+    :sweetest <-- contains test resources for A
+  :b
+    :sweetest <-- contains test resources for B
       
 ```
 
-It is apparent that the `app` depends on code in module1 and module2, so the same is true for the test sources: tests in `app` would rely on test sources in `:module1:test-shared` and `:module2:test-shared`. That leads to a proper separation of concerns, so for example the sources in `:module1:test-shared` are responsible for offering steps classes responsible for features implemented in `:module1` (more about steps classes below).
+If `app` depends on code in A and B, the same is true for the test sources: tests in `app` would rely on test sources in `:a:test-shared` and `:b:test-shared`. That leads to a proper separation of concerns, so for example the sources in `:a:sweetest` are responsible for offering steps classes for features implemented in `:a`.
 
 Also the module testing configuration needs to reflect the dependencies between modules. So don't forget to list all dependent configurations of a test configuration in the argument list of `moduleTestingConfiguration`:
 
-
 ```
 val appModuleTestingConfiguration = moduleTestingConfiguration(
-    module1ModuleTestingConfiguration,
-    module2ModuleTestingConfiguration, ...)
+    aModuleTestingConfiguration,
+    bModuleTestingConfiguration, ...)
 {    
     ...
 }
 ```
 
-This makes sure that configurations exist just once in the whole test system.
+Never forget to adapt the module testing configurations to changes in your module structure!
+
+#### Adding dependencies
+
+All dependencies need to be listed in the module testing configuration:
+
+```kotlin
+val appModuleTestingConfiguration = moduleTestingConfiguration {
+    dependency any of<LoginViewModel>()
+    dependency any of<AuthManager>()
+    dependency any of<BackendGateway>()
+    dependency any of<SessionStore>()
+}
+```
+
+Whenever a dependency is used like e.g. `val instance by dependency<LoginViewModel>` it has to be added in the configuration exactly once in one module testing configuration (because the type can only be present in one module likewise).
+
+That also means that if you decide to move a type to a different module the dependency declaration needs to move to the configuration of the respective module!
+
+#### Deprecation
+
+Module testing configuration in its current form is likely to be deprecated in the long run. So in this guidelines just the `any` keyword is documented. This gives the user the freedom to do the configuration of dependencies on a steps class (and eventually test class) level. If you already wrote configurations using other keywords than `any` please convert it in any case possible so the deprecation of the global dependency configuration will affect you in the least impacting way possible.
 
 ### Writing test classes
 
