@@ -733,9 +733,7 @@ But for the sake of completness here are the other possibilities:
 * `dependency realOnly of<AuthManager>()` hard-wires sweetest to always create a real instance for `AuthManager` (so an exception is thrown if somewhere `requireMock<AuthManager>` or `offerMockRequired<AuthManager> { ... }` is called)
 * `dependency [any | realOnly | mockOnly] initializer { ... }` provides an initializer of a certain type which is called when the type is requested somewhere in the test system
 
-### Structuring tests
-
-#### Test classes
+### Structuring test classes
 
 It's a quite common practice to create a tests class per production class; that's fair for many cases! But tests in sweetest should strive for being independent of the concrete solution. That means that you should rather test blocks of features or subsystems instead of classes in a business-facing manner wherever possible.
 
@@ -771,11 +769,16 @@ DeviceSelectionTest
 
 Apparently both test classes test the same physical entity (`DeviceSelectionViewModel`), but logically a separation makes sense. Also we can observe that the tests are now concerned about chunks of functionality, not technical implementation. The classes should be placed in the same package as the implementation classes, though!
 
-#### Steps classes
+#### Summing up naming
 
-The principle applies not only to the top-level acceptance and/or integration tests, also steps classes should adhere whenever possible. This is especially true for the `BackendFakeSteps` class shown in the introduction part of this guidelines.
+1. Business-facing test (`LoginTest`): just name the test after the feature or business concept (`Login`) under test
+2. Technology-facing test (`LoginViewModelTest`): in this case it's fair to use the specific component under test
 
-In the example we create this steps class `BackendFakeSteps` by whose name we can already tell it rather aims at the concept of a backend rather the concrete implementation of a `BackendGateway`. So the steps class is abstracting a backend on a very high level. This is good because by that it's API (which is used by the test) becomes as independent as possible from the classes and data types used below. And by that we can feel fairly safe using this steps class in many places throughout our test suite without needing to fear future changes.
+### Structuring steps classes
+
+The principle from the previous chapter don't only apply to the top-level acceptance and/or integration test classes, also steps classes should adhere whenever possible. This is especially true for the `BackendFakeSteps` class shown in the introduction part of this guidelines.
+
+In the example we create this steps class `BackendFakeSteps` by whose name we can already tell it rather aims at the concept of a backend rather the concrete implementation of a `BackendGateway`. So the steps class is abstracting a backend on a very high level. This is good because by that it's API becomes as independent as possible from the concrete classes and data types. And by that we can feel fairly safe using this steps class in many places throughout our test suite without needing to fear future changes.
 
 Also steps classes should be placed in the same package as the implementation classes.
 
@@ -862,9 +865,7 @@ A further improvement step could be to extract all code that interacts with the 
 
 For the `AuthManagerSteps` it makes sense because you can reuse a lot of code and configuration for the `LoginTest` and `AuthManagerTest`, but the `LoginSteps` class in this case is already designed to be in most cases the only steps class ever needed in order to test the `LoginViewModel`.
 
-### Naming and scoping
-
-#### Steps classes
+#### Summing up naming
 
 Depending on what a steps class does the naming should show it as clear as possible:
 
@@ -875,15 +876,15 @@ Depending on what a steps class does the naming should show it as clear as possi
 
 As already discussed, 3 and 4 should be preferred as much as possible or feasible.
 
-In most cases steps should revolve around real instances. So when there is an `AuthManagerSteps` it should be clear by convention that this the `AuthManager` will be configured to be "real" (instead of mock or fake) inside the steps class. For `LoginSteps` it's similar: at least a portion of the test system is expected to be resembled by real instances. Of course underlying dependencies can still be mocks or fakes. But in general, in these cases the naming of such steps classes should be straightforward.
+In most cases steps should revolve around real instances. So when there is an `AuthManagerSteps` it should be clear by convention that the `AuthManager` will be configured to be "real" (instead of mock or fake) inside the steps class. For `LoginSteps` it's similar: at least a portion of the test system is expected to be real instances. Of course underlying dependencies can still be mocks or fakes. But in general, in these cases the naming of such steps classes should be straightforward.
 
-For steps classes which introduce mocks or fakes make sure the name of the steps class reflects that! Examples:
+But for steps classes which introduce mocked or fake behavior make sure the name of the steps class reflects that! Examples:
 
 * `BackendFakeSteps` show that the backend will be faked
-* `AuthManagerSteps` shows that `AuthManager` as configured as real
 * `AuthManagerMockSteps` shows that `AuthManager` will be configured as mock (which could be a viable way of unit-testing the view model, for example)
+* in contrast to `AuthManagerSteps`, where `AuthManager` is configured as real
 
-It is possible to have code for interaction with a real instance _and_ mock (e.g. stubbing) in one steps class, but then it's hard from the outside or by the name to see what the purpose of the steps class is.
+It is possible to have code for interaction with a real instance _and_ a mock (e.g. stubbing) in one steps class, but then it's hard to tell the purpose of the steps class from the name, so it's better to separate the steps classes, as you will never need them both in the same test system, too.
 
 ## Links
 
