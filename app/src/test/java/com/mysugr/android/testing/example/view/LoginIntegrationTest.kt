@@ -3,7 +3,7 @@ package com.mysugr.android.testing.example.view
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGatewayMockSteps
-import com.mysugr.android.testing.example.net.FakeBackendUser
+import com.mysugr.android.testing.example.net.BackendFakeUser
 import com.mysugr.android.testing.example.state.SessionStoreSteps
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
@@ -18,8 +18,8 @@ class LoginIntegrationTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val backendGateway by steps<BackendGatewayMockSteps>()
     private val scope = TestCoroutineScope()
 
-    private val existingUser = FakeBackendUser("existing@test.com", "supersecure1")
-    private var newUser = FakeBackendUser("new@test.com", "supersecure2")
+    private val existingUser = BackendFakeUser("existing@test.com", "supersecure1")
+    private var newUser = BackendFakeUser("new@test.com", "supersecure2")
 
     override fun configure() = super.configure()
         .requireReal<LoginViewModel>()
