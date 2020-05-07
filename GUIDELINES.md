@@ -206,10 +206,9 @@ fun thenEmailWasCheckedAtBackend(email: String) {
 class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     private val sut by steps<LoginSteps>()
-    private val scope = TestCoroutineScope()
 
     @Test
-    fun `Logging in successfully`() {
+    fun `Logging in checks email at backend`() {
         sut {
             givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
             whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
@@ -361,6 +360,106 @@ As we anticipate that the fake backend and the `SessionStore` will be needed aft
 There is only one `requireReal` call (`requireReal<AuthManager>()`), which clearly indicates that this steps class is indeed about unit-testing just the `AuthManager`.
 
 But why is `backend` just called `backend` and not `backendGateway`? And why is it public? Shouldn't a steps class be a full abstraction of what's going on under the hood or encapsulate everything needed for the test class using it? Generally yes. Usually we should avoid offering internals ([Law of Demeter](https://en.wikipedia.org/wiki/Law_of_Demeter)). Access to internals should be done through public accessors in order to avoid tying code to details which are prone to change. But anyway, the key here is "prone to change": if you group and define systems around abstract business concepts these are very unlikely to change (contrary to technical implementation). This makes the fake backend a better candidate for being used and shared among various tests. So in this case it is reasonable to call the member after the abstract concept of a "backend" _and_ offering it via the steps classes' API for direct use in test classes.
+
+#### Create the test class
+
+```kotlin
+class AuthManagerTest2 : BaseJUnitTest(appModuleTestingConfiguration) {
+
+    private val sut by steps<AuthManagerSteps>()
+
+    @Test
+    fun `Login as existing user, attempts login`() = sut {
+        backend.givenExistingUser(USER_A)
+        whenPassingCredentials(USER_A.email, USER_A.password)
+        backend.thenLoginWasAttempted(USER_A.email, USER_A.password)
+    }
+
+    @Test
+    fun `Login as existing user, starts session`() = sut {
+        backend.givenExistingUser(USER_A)
+        whenPassingCredentials(USER_A.email, USER_A.password)
+        thenSessionWasStarted()
+    }
+}
+```
+
+As you can see, `backend` is directly used and this will allow for a lot of code reuse. So let's see how that simplifies the integration test we've created in the beginning:
+
+#### Use the fake backend in the integration test
+
+Let's alter the steps class for the login test so it uses the fake backend:
+
+```kotlin
+class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
+
+    val backend by steps<BackendFakeSteps>() // <-- added
+
+    private val viewModel by dependency<LoginViewModel>()
+    private val backendGateway by dependency<BackendGateway>()
+
+    override fun configure() = super.configure()
+        .requireReal<LoginViewModel>()
+//      .requireReal<AuthManager>() <-- instead of configuring it here, we just...
+        .requireSteps<AuthManagerSteps>() // <-- ...include the steps class which does the configuration
+
+    fun whenLoggingIn(email: String, password: String) {
+        viewModel.loginOrRegister(email, password)
+    }
+
+// Not needed anymore:
+
+//  fun givenExistingUser(email: String, password: String, authToken: AuthToken) {
+//      `when`(backendGateway.checkEmail(email)).thenReturn(true)
+//      `when`(backendGateway.login(email, password)).thenReturn(authToken)
+//  }
+
+
+//  fun thenEmailWasCheckedAtBackend(email: String) {
+//      verify(backendGateway).checkEmail(email)
+//  }
+
+}
+```
+As you can see, all the details regarding how `AuthManager` is being tested can go to the `AuthManagerSteps`, including configuration.
+
+On top of that we add access to `backend` and again offer it as a public member so it can be used in the test. Also we use `BackendFakeUser.USER_A` in order to not only reuse test code and configuration but also test _data_! Here's the result:
+
+```kotlin
+class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
+
+    private val sut by steps<LoginSteps>()
+
+    @Test
+    fun `Logging in checks email at backend`() {
+        sut {
+            backend.givenExistingUser(USER_A)
+            whenLoggingIn(USER_A.email, USER_A.password)
+            backend.thenEmailWasChecked(USER_A.email)
+        }
+    }
+
+// Before:
+
+//  @Test
+//  fun `Logging in checks email at backend`() {
+//      sut {
+//          givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
+//          whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
+//          thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
+//      }
+//  }
+
+// Not needed anymore:
+
+//  companion object {
+//      const val EXISTING_EMAIL = "existing@test.com"
+//      const val EXISTING_PASSWORD = "supersecure1"
+//      const val EXISTING_AUTH_TOKEN = "auth_token"
+//  }
+    
+}
+```
 
 ## Reference
 
