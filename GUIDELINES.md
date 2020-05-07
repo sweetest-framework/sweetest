@@ -396,7 +396,7 @@ class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTes
     val backend by steps<BackendFakeSteps>() // <-- added
 
     private val viewModel by dependency<LoginViewModel>()
-    private val backendGateway by dependency<BackendGateway>()
+//  private val backendGateway by dependency<BackendGateway>() <-- removed
 
     override fun configure() = super.configure()
         .requireReal<LoginViewModel>()
@@ -682,13 +682,13 @@ Where should this configuration go?
 Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test sources (including steps classes and module testing configurations) should be put into extra modules inside the respective production code module. We suggest calling them `test` or `sweetest`:
 
 ```
-/
   :app
+  
   :a
     :sweetest <-- contains test resources for A
+    
   :b
-    :sweetest <-- contains test resources for B
-      
+    :sweetest <-- contains test resources for B  
 ```
 
 If `app` depends on code in A and B, the same is true for the test sources: tests in `app` would rely on test sources in `:a:test-shared` and `:b:test-shared`. That leads to a proper separation of concerns, so for example the sources in `:a:sweetest` are responsible for offering steps classes for features implemented in `:a`.
@@ -725,7 +725,7 @@ That also means that if you decide to move a type to a different module the depe
 
 #### Deprecation
 
-Module testing configuration in its current form is likely to be deprecated in the long run. So in this guidelines just the `any` keyword is documented. This gives the user the freedom to do the configuration of dependencies on a steps class (and eventually test class) level. If you already wrote configurations using other keywords than `any` please convert it in any case possible so the deprecation of the global dependency configuration will affect you in the least impacting way possible.
+Module testing configuration in its current form is likely to be deprecated in the long run. So the focus in this guidelines is on the `any` keyword. This gives the user the freedom to do the configuration of dependencies on a steps class (and eventually test class) level. If you already wrote configurations using other keywords than `any` please convert it in any case possible so the deprecation of the global dependency configuration will affect you in the least impacting way possible.
 
 But for the sake of completness here are the other possibilities:
 
@@ -733,11 +733,11 @@ But for the sake of completness here are the other possibilities:
 * `dependency realOnly of<AuthManager>()` hard-wires sweetest to always create a real instance for `AuthManager` (so an exception is thrown if somewhere `requireMock<AuthManager>` or `offerMockRequired<AuthManager> { ... }` is called)
 * `dependency [any | realOnly | mockOnly] initializer { ... }` provides an initializer of a certain type which is called when the type is requested somewhere in the test system
 
-### Writing test classes
+### Structuring tests
 
-#### Scope
+#### Test classes
 
-It is a common proctice to create a tests class per production classes, but tests in sweetest should strive for being independent of the concrete solution. That means that you should rather test blocks of features or subsystems instead of classes.
+It's a quite common practice to create a tests class per production class; that's fair for many cases! But tests in sweetest should strive for being independent of the concrete solution. That means that you should rather test blocks of features or subsystems instead of classes in a business-facing manner wherever possible.
 
 **Bad example:**
 
@@ -769,27 +769,27 @@ DeviceSelectionTest
    When not selecting anything, you can't save
 ```
 
-Apparently both test classes test the same physical entity (`DeviceSelectionViewModel`), but logically a separation makes sense. Also we can observe that the tests are now concerned about blocks of functionality, not classes. By which means we achieve the wanted behavior is not of any concern of the test class anymore. The physical link should be maintained by using the same package as the production class, though!
+Apparently both test classes test the same physical entity (`DeviceSelectionViewModel`), but logically a separation makes sense. Also we can observe that the tests are now concerned about chunks of functionality, not technical implementation. The classes should be placed in the same package as the implementation classes, though!
 
-**Summary:** Strive for organizing by logical groups of functionality instead of classes, but stay in the same package as the production code.
+#### Steps classes
 
-After having the test class you need to:
+The principle applies not only to the top-level acceptance and/or integration tests, also steps classes should adhere whenever possible. This is especially true for the `BackendFakeSteps` class shown in the introduction part of this guidelines.
 
-* define a "SuT" steps class
-* define eventual other steps classes that abstract access to or mock/fake behavior of production classes
-* flesh out the test functions (test should be compilable then); and finally
-* flesh out the steps classes (the tests should be runnable and failing then); and eventually
-* make the tests green (if you apply behavior-driven development)
+In the example we create this steps class `BackendFakeSteps` by whose name we can already tell it rather aims at the concept of a backend rather the concrete implementation of a `BackendGateway`. So the steps class is abstracting a backend on a very high level. This is good because by that it's API (which is used by the test) becomes as independent as possible from the classes and data types used below. And by that we can feel fairly safe using this steps class in many places throughout our test suite without needing to fear future changes.
 
-### Creating a "SuT" steps class
+Also steps classes should be placed in the same package as the implementation classes.
 
-The first steps class you create should act as a "master", defining the system under test (SuT) as well as the test system for it.
+#### Starting at the "SuT" steps class
 
-* Almost all calls you do from the test class should go to or via this steps class.
-* The steps class should define which production classes are to be be put under test
-* And how the test system for it looks like
+A good way of explaining how to structure steps classes is to start with a "master" steps class.
 
-To explain this let's create an example with a simple dependency tree:
+The SuT steps class plays a special role. It aims at...
+
+* Being the main touch point for the test
+* Defining the setup of the test
+* Resembling multiple other steps classes as needed
+
+To explain this let's refresh our memory with the example from the introduction above:
 
 ```
 LoginViewModel      <-- handles requests from/to UI, uses AuthManager
@@ -804,55 +804,63 @@ To make an integration test we could consider configuring the test like that:
 LoginViewModel      <-- real instance
   AuthManager       <-- real instance
     SessionStore    <-- fake
-    BackendGateway  <-- mock
+    BackendGateway  <-- fake
 ```
 
-### Writing steps classes
+To mirror this in a steps class let's create it step-by-step:
 
-#### Scope and name
+Most times a test puts testing clamps on the top and the bottom of a stack of classes to see whether what is put in at the top renders the correct results at the bottom and the other way round. So it's fair to have direct access to the `LoginViewModel` dependency at first:
 
-There are multiple options how steps classes can be named and scoped; some examples:
-
-1. As abstraction of a class (`LoginViewModelSteps`): use this if a steps class solely concentrates on interacting with or mocking/faking a single specific class or interface
-2. As abstraction of an integration of classes (`LoginViewModelIntegrationSteps`): in cases where the class or interface is tested in integration with other classes
-3. As abstraction of a feature or subsystem (`LoginSteps`): in cases where the inner structure of a feature should be further hidden from the test
-
-It's apparent that the last option is the one that gives the system under test the highest flexibility, as changes made to the feature or subsystem optimally only force the steps class to change, not the test. In comparison, the first two options make the production code harder to change, e.g. if a class is added in between or some are merged some steps and test classes possibly need to be completely changed.
-
-#### Regarding mocks/fakes
-
-As already discussed, there may be two modes a dependency can be acted on by a steps class: as mock (or fake) or real instance:
-
-1. **Mock/fake:** in this case the steps classes' job is to let it's user control the behavior of the mock or do verifications on it
-2. **Real instance:** in this case the steps classes' job is to route calls from the test to the object under test
-
-In principle both modes could be accomodated in one steps class like this:
-
-```
-// When instance is mock
-fun givenNextReturnsTrue() = `when`(instance.next()).thenReturn(true)
-
-// When instance is real
-fun whenClickingNext() = instance.next()
-
-// When instance is mock or spy
-fun thenNextIsCalled() = verify(instance).next()
+```kotlin
+private val viewModel by dependency<LoginViewModel>()
 ```
 
-Also one can react to whether an instance is a mock or real in the setup block:
+Next in the row comes the `AuthManager`: if we did a good job using sweetest we already have the `AuthManagerSteps` lying around, so we just include it:
 
+```kotlin
+requireSteps<AuthManagerSteps>() // <-- caution: this is added to `override fun configure()`
 ```
-override fun configure() = super.configure()
-    .onSetUp {
-        if (MockUtil.isMock(instance)) {
-            doTheStubbing()
-        }
+
+The `AuthManagerSteps` class takes care of the configuration and potentially what its dependencies (`SessionStore` and `BackendGateway`) should be.
+
+So let's again go one step deeper to `SessionStore` and `BackendGateway`: in our test design we already have these set as fakes. But as this is already configured in the `AuthManagerSteps` this is already encapsulated there, so nothing needs to be done regarding the `LoginSteps`. The neat thing is, that the `AuthManagerTest` (unit test) uses exactly the same `AuthManagerSteps` - lots of duplicated code saved!
+
+But let's again look at the whole picture: When we add testing clamps on the top (`LoginViewModel`) we definitely also want to do that at the bottom (`SessionStore` and `BackendGateway`) in order to control the "environment" of the test setup. So let's add these, too:
+
+```kotlin
+val backend by steps<BackendFakeSteps>()
+val session by steps<SessionFakeSteps>()
+```
+
+These two guys encapsulate the abstract concepts of a backend and a session (as talked about above already).
+
+So now let's look at the final result:
+
+```kotlin
+class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
+
+    val backend by steps<BackendFakeSteps>()
+    val session by steps<SessionFakeSteps>()
+
+    private val viewModel by dependency<LoginViewModel>()
+
+    override fun configure() = super.configure()
+        .requireReal<LoginViewModel>()
+        .requireSteps<AuthManagerSteps>()
+    
+    // here we can add functions that communicate with the production or test system...
+    
+    fun whenLoggingIn(email: String, password: String) {
+        viewModel.loginOrRegister(email, password)
     }
+}
 ```
 
-While both modes can be accomodated in one steps class in accordance to which mode a certain dependency is configured, it should be avoided in order to prevent ambiguity and confusion. So if it's possible for a dependency to be real or mocked depending on the configuration, there should be two different steps classes for that.
+#### Can there be too much abstraction?
 
-And if a steps classes' job is to provide access to a mock or fake of a certain feature, subsystem or class, that should be made clear in the class name; some examples:
+A further improvement step could be to extract all code that interacts with the `LoginViewModel` to a `LoginViewModelSteps` class. That seems obvious, but be aware that abstraction can be taken too far, too. The more we organize steps classes around classes (`LoginViewModel`) instead of abstract concepts (`Login`) the more we also tie tests to the technical implementation.
+
+For the `AuthManagerSteps` it makes sense because you can reuse a lot of code and configuration for the `LoginTest` and `AuthManagerTest`, but the `LoginSteps` class in this case is already designed to be in most cases the only steps class ever needed in order to test the `LoginViewModel`.
 
 1. `AuthManagerMockSteps`: this steps class can be used by the `LoginSteps` class so the `AuthManager`; the test can use `AuthManagerSteps` to define the mock's behavior and do verifications
 2. `BackendGatewayFakeSteps`: this steps class provides a fake version of the `BackendGateway` interface
