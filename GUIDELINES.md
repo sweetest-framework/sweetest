@@ -473,6 +473,146 @@ But experience shows that this is a matter of training and can become second nat
 
 ## Reference
 
+### Dependencies
+
+sweetest is tailored for systems where dependency injection is used. As you most likely have no DI during unit testing sweetest makes good for that by offering its own simple way of doing it.
+
+In sweetest all dependencies are treated as singletons, so there will be only one instance of a certain type. So it can only be used in these cases. In all other cases you have to fall back to managing object creation on your own. The automated way should cater for the very most cases, though.
+
+#### Dependency modes
+
+For each dependency type there are two possibilities: either it's configured to be mock or real. Unless you tell sweetest otherwise, all dependencies are set to the "mock" mode by default.
+
+##### Mock
+
+If a dependency is set to the "mock" mode, a Mockito mock is created for the dependency.
+
+* The mock is created lazily on demand
+* The same instance is cached for cases some class needs the same type
+* The cache is cleared after each test function run
+
+##### Real
+
+What does it mean if you define a type as "real"?
+
+Instance creation is different from "mock" here: the constructor of the _real_ class will be called. In case there are parameters they will be satisfied with arguments by sweetest automatically. All the arguments will be handled as dependencies exactly the same way in a recursive manner until the dependency graph is built up.
+
+Of course dependencies of dependencies can have different modes. E.g. the `LoginViewModel` can have mode "real", but the underlying dependencies can have mode "mock".
+
+##### Configuring and requiring modes
+
+You should configure dependencies mostly in steps classes (but in very rare cases you might also need to do it in test classes). You can do that by calling `requireX` in the overriden `configure` function:
+
+```kotlin
+override fun configure() = super.configure()
+    .requireReal<LoginViewModel>()
+```
+
+"require" here means that that you expect the type (in this case `LoginViewModel`) in its real form, not as a mock. So if the configuration says `mockOnly of<LoginViewModel>` or in another steps or test class you declare `requireMock<LoginViewModel>` there's a conflict and sweetest will throw an exception. Expectations about dependencies need to be unanbiguous in a test system.
+
+##### Offering instances
+
+If the standard mock and real instance creation does not work out for you feel free to use the `offerX` class of functions:
+
+```kotlin
+offerReal { AuthManager(myBackendGateway, mySessionStore) }
+```
+
+It might make sense to satisfy the constructor of `AuthManager` this way, but in most cases you should not circumvent sweetest's dependency management. So you can use `instanceOf()` which is available within the scope of the `offerX` function:
+
+```kotlin
+offerReal { AuthManager(instanceOf(), instanceOf()) }
+```
+
+You might also use a more specific type of a certain argument:
+
+```kotlin
+offerReal { AuthManager(instanceOf<CustomBackendGateway>(), instanceOf()) }
+```
+
+That way you tell sweetest's dependency management to retrieve a dependency of type `CustomBackendGateway` rather the one directly specified in `AuthManager`'s constructor.
+
+##### Distinguish mock and real correctly
+
+Please make sure you distinguish mock and real correctly: when you're using the production type as it's used in your product, please consider it real. Everything else is "mock" (also "spy" or "fake" is a kind of mock).
+
+#### Special case: abstract types and type hierarchies
+
+When consuming or configuring dependencies sweetest tries to find a dependency declaration for the type in the module configurations:
+
+```kotlin
+// in the configuration:
+
+dependency any of<BackendGateway>()
+
+// e.g. in the steps class
+
+private val instance by dependency<BackendGateway>() // <-- here
+
+override fun configure() = super.configure()
+    .requireReal<BackendGateway>() // <-- here 
+```
+
+But consuming or configuring a sub-classed dependency won't work (sweetest will complain that the type was not found in the module configuration):
+
+```kotlin
+private val instance by dependency<FakeBackendGateway>() // <-- doesn't work
+
+override fun configure() = super.configure()
+    .requireReal<FakeBackendGateway>() // <-- doesn't work 
+```
+
+In cases of abstract types (abstract classes or interfaces) or when there are different types of an inheritance hierarchy under test you have to declare the top-most level type only in the module configuration! You should never declare multiple types of the same type hierarchy because sweetest currently has troubles picking the right type currently (unfortunately the picked type can be indeterministic leading to hard to debug failing tests, but this will be fixed in one of the upcoming releases)!
+
+##### Lazy-initialized approach
+
+The most preferred workaround for now looks like this:
+
+```kotlin
+private val _instance by dependency<BackendGateway>()
+private val instance get() = _instance as FakeBackendGateway
+
+override fun configure() = super.configure()
+    .offerMockRequired<BackendGateway> { FakeBackendGateway() }
+```
+
+It's important to have `<BackendGateway>` in `dependency` and `offerMockRequired`, because that directs sweetest to the right dependency configuration.
+
+The solution is obviously clunky, but it preserves the lazy behavior of dependency initializations. The lazy behavior helps in situations where initialization code in production classes get in the way during the initialization of the test.
+
+##### Immediate initialization approach
+
+ ```kotlin
+private val instance = FakeBackendGateway()
+
+override fun configure() = super.configure()
+    .offerMockRequired<BackendGateway> { instance }
+```
+
+This is easier but requires the class (in this case `FakeBackendGateway`) being compatible with it being initialized that early during creation of the steps classes.
+
+#### Special case: spy
+
+The approach described above is also of value if you need to create a spy on a class:
+
+```kotlin
+private val instance = spy(FakeBackendGateway())
+
+override fun configure() = super.configure()
+    .offerMockRequired<BackendGateway> { instance }
+```
+
+But it's also possible to create Mockito spies like so:
+
+```kotlin
+private val instance by dependency<AuthManager>()
+
+override fun configure() = super.configure()
+    .requireSpy<AuthManager>()
+```
+
+The downside using `requireSpy` is that you have no control over the creation of the underlying class that is spied on. So if you need that, as it's the case with the `FakeBackendGateway` above, you should stick to that approach instead.
+
 ### Module testing configuration
 
 Whenever a new module is created in your project (or when you introduce sweetest in a module) there needs to be a configuration created for that module:
@@ -535,6 +675,12 @@ That also means that if you decide to move a type to a different module the depe
 #### Deprecation
 
 Module testing configuration in its current form is likely to be deprecated in the long run. So in this guidelines just the `any` keyword is documented. This gives the user the freedom to do the configuration of dependencies on a steps class (and eventually test class) level. If you already wrote configurations using other keywords than `any` please convert it in any case possible so the deprecation of the global dependency configuration will affect you in the least impacting way possible.
+
+But for the sake of completness here are the other possibilities:
+
+* `dependency mockOnly of<AuthManager>()` hard-wires sweetest to always create a mock for `AuthManager` (so an exception is thrown if somewhere `requireReal<AuthManager>` or `offerRealRequired<AuthManager> { ... }` is called)
+* `dependency realOnly of<AuthManager>()` hard-wires sweetest to always create a real instance for `AuthManager` (so an exception is thrown if somewhere `requireMock<AuthManager>` or `offerMockRequired<AuthManager> { ... }` is called)
+* `dependency [any | realOnly | mockOnly] initializer { ... }` provides an initializer of a certain type which is called when the type is requested somewhere in the test system
 
 ### Writing test classes
 
