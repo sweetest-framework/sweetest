@@ -18,7 +18,7 @@ class LoginTest2 : BaseJUnitTest(appModuleTestingConfiguration) {
         .onSetUp { sut.scope = scope }
 
     @Test
-    fun `Logging in successfully`() {
+    fun `Logging in checks email at backend`() {
         sut {
             backend.givenExistingUser(USER_A)
             whenLoggingIn(USER_A.email, USER_A.password)
