@@ -461,6 +461,16 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 }
 ```
 
+### Summing up
+
+In this journey it becomes apparent that having integration tests can be simplified a lot when there is already a steps class that tests a smaller unit (`AuthManagerSteps`): it basically requires just using (`... by steps<AuthManagerSteps>()`) or including (`requireSteps<AuthManagerSteps>`) the respective steps class and as a result instead of using a mock there is suddenly a real instance of the class (`AuthManager`) in the test system with just very low effort.
+
+The fake backend example also shows how code reuse can work very easily. In this example we were able to reduce the test code by more or less a half.
+
+All this of course comes with a cost: steps classes have to be set up and very well thought through and preferably be modelled around abstract business models (`BackendFakeSteps`, `LoginSteps`), but that's not always possible or even reasonable (e.g. the `AuthManagerSteps` is a direct reference to a class, which is OK as it serves as an abstraction layer in two test classes).
+
+But experience shows that this is a matter of training and can become second nature after some time.
+
 ## Reference
 
 ### Module testing configuration
