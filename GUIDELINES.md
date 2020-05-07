@@ -862,23 +862,28 @@ A further improvement step could be to extract all code that interacts with the 
 
 For the `AuthManagerSteps` it makes sense because you can reuse a lot of code and configuration for the `LoginTest` and `AuthManagerTest`, but the `LoginSteps` class in this case is already designed to be in most cases the only steps class ever needed in order to test the `LoginViewModel`.
 
-1. `AuthManagerMockSteps`: this steps class can be used by the `LoginSteps` class so the `AuthManager`; the test can use `AuthManagerSteps` to define the mock's behavior and do verifications
-2. `BackendGatewayFakeSteps`: this steps class provides a fake version of the `BackendGateway` interface
-3. `BackendFakeSteps`: this steps class does the same without caring about the structure of the production code
+### Naming and scoping
 
-Same as before the last option is preferred over the others. When concepts or interfaces are abstracted instead of concrete implementations it's way easier for the system to change without breaking the tests or test classes.
+#### Steps classes
 
-## Principles
+Depending on what a steps class does the naming should show it as clear as possible:
 
-Where the introduction and reference gives a broad overview of test design and how it is implemented using sweetest, this is a condensed list of principles you should thrive for:
+1. Abstraction of a class (`LoginViewModelSteps`): use this if a steps class solely concentrates on interacting with or mocking/faking a single specific class or interface
+2. Abstraction of an integration of classes (`LoginViewModelIntegrationSteps`): in cases where the class or interface is tested in integration with other classes
+3. Abstraction of a feature (`LoginSteps`): in cases of business-facing tests
+4. Abstraction of other subsystems (`BackendFakeSteps`): in cases where a subsystem is abstracted in business terms
 
-#### General
+As already discussed, 3 and 4 should be preferred as much as possible or feasible.
 
-* Don't use sweetest if it makes no sense (e.g. classes which will never be tested in an integrated fashion)
+In most cases steps should revolve around real instances. So when there is an `AuthManagerSteps` it should be clear by convention that this the `AuthManager` will be configured to be "real" (instead of mock or fake) inside the steps class. For `LoginSteps` it's similar: at least a portion of the test system is expected to be resembled by real instances. Of course underlying dependencies can still be mocks or fakes. But in general, in these cases the naming of such steps classes should be straightforward.
 
-#### Steps
+For steps classes which introduce mocks or fakes make sure the name of the steps class reflects that! Examples:
 
-* Expose properties of steps classes publicly only in cases where abstract domain-specific functionality is offered that is very unlikely to change (e.g. a fake backend might be exposed as "backend" and offer functions like "givenUserExists", so the test can simply call "users.givenUserExists(...)")
+* `BackendFakeSteps` show that the backend will be faked
+* `AuthManagerSteps` shows that `AuthManager` as configured as real
+* `AuthManagerMockSteps` shows that `AuthManager` will be configured as mock (which could be a viable way of unit-testing the view model, for example)
+
+It is possible to have code for interaction with a real instance _and_ mock (e.g. stubbing) in one steps class, but then it's hard from the outside or by the name to see what the purpose of the steps class is.
 
 ## Links
 
