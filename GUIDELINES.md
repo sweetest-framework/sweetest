@@ -473,6 +473,57 @@ But experience shows that this is a matter of training and can become second nat
 
 ## Reference
 
+### Tests
+
+In order to create a test class with sweetest you have to derive from `BaseJUnitTest`:
+
+```kotlin
+class LoginTest : BaseJUnitTest(appModuleTestingConfiguration)
+```
+
+You have to reference the module testing configuration (in this case `appModuleTestingConfiguration`) of the module the component under test lies in.
+
+### Steps
+
+Steps classes are means of **organizing and abstracting test code**. The easiest way to implement steps is to extract all technical implementation of tests into steps classes, leaving just business-facing function calls to the steps classes in the test class. This allows the test to look like this:
+
+```kotlin
+@Test
+fun `Logging in checks email at backend`() {
+    sut {
+        givenExistingUser(USER_A)
+        whenLoggingIn(USER_A.email, USER_A.password)
+        thenEmailWasCheckedAtBackend(USER_A.email)
+    }
+} 
+```
+
+The steps class is then only concerned with implementing the functions referenced in the test.
+
+The second aim of steps classes is to abstract not only the test code but also **configuration**. In order for the test class mostly being concerned with business-facing function calling, also the test setup should go to steps classes.
+
+An instance of a steps class can only exist once during the whole test. So if the same type of steps class is retrieved, always the same instance is used.
+
+Steps classes are initialized during a specific phase in the initialization of the framework and of course purged after each test function run to avoid side effects.
+
+By the way: the name "steps class" is taken from Cucumber, a behavior-driven acceptance testing tool. Also there workflows are broken down into simple "steps" which can be called from the outside. sweetest of course takes this a little further by allowing for interdependent steps classes and dependency management, where dependencies can be consumed across steps classes, and was in fact designed with interoperability with Cucumber in mind.
+
+#### Using steps classes
+
+To create a steps class you have to derive from the `BaseSteps` class:
+
+```kotlin
+class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration)
+```
+
+You have to reference the module testing configuration (in this case `appModuleTestingConfiguration`) of the module the component under test lies in.
+
+To consume a steps class you have to use the `steps` function inside a test or steps class:
+
+```kotlin
+val sut by steps<LoginSteps>()
+```
+
 ### Dependencies
 
 sweetest is tailored for systems where dependency injection is used. As you most likely have no DI during unit testing sweetest makes good for that by offering its own simple way of doing it.
@@ -755,37 +806,6 @@ LoginViewModel      <-- real instance
     SessionStore    <-- fake
     BackendGateway  <-- mock
 ```
-
-To do this manually we would probably have a setup code like this:
-
-```
-val backendGateway = mock<BackendGateway>()
-val sessionStore = mock<SessionStore>()
-val authManager = AuthManager(backendGateway, sessionStore)
-val sut = LoginViewModel(authManager)
-```
-
-But with _sweetest_ you don't have to do that, which comes in handy especially for more complex structures.
-
-So first let's create the steps class:
-
-```
-class LoginIntegrationSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration)
-```
-
-If you want to know exactly what the view model is integrated with you just have to have a look at the configuration of the steps class. Let's add a configuration to the class:
-
-```
-override fun configure() = super.configure()
-    .requireReal<LoginViewModel>()
-    .requireReal<AuthManager>()
-
-```
-
-That means that we do exactly what is stated in the code block above, just that sweetest now wires up the dependencies for us. We'll learn later how we then work with these dependencies.
-
-In my opinion now is the right time to go back to the test class, include the steps class and go on with fleshing out the test itself.
 
 ### Writing steps classes
 
