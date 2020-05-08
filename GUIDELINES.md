@@ -2,12 +2,54 @@
 
 After some time working with sweetest we came up to the conclusion there is a lot of freedom as to how to design tests. But on the other side there is an increasing need for alignment. These guidelines are here for reaching an appropriate level of alignment. Feel free to challenge the current state and to contribute!
 
-## Content
+## Contents
 
-* [Goals](#goals)
-* [Introduction](#introduction)
-* [Reference](#reference)
-* [Links](#links)
+- [Goals](#goals)
+- [Introduction](#introduction)
+    - [Use the live templates!](#use-the-live-templates)
+    - [Add a module configuration](#add-a-module-configuration)
+    - [Add dependencies to the configuration](#add-dependencies-to-the-configuration)
+    - [Create a steps class](#create-a-steps-class)
+    - [Create a test class](#create-a-test-class)
+    - [Define test cases](#define-test-cases)
+    - [Add configuration in the steps class](#add-configuration-in-the-steps-class)
+    - [Add access to the dependencies in the steps class](#add-access-to-the-dependencies-in-the-steps-class)
+      - [Add the `given` function](#add-the-given-function)
+      - [Add the `when` function](#add-the-when-function)
+      - [Add the `then` function](#add-the-then-function)
+    - [Current state](#current-state)
+    - [Improving structure by reusing test code](#improving-structure-by-reusing-test-code)
+      - [The fake backend](#the-fake-backend)
+      - [Create the steps class for the unit test](#create-the-steps-class-for-the-unit-test)
+      - [Create the test class](#create-the-test-class)
+      - [Use the fake backend in the integration test](#use-the-fake-backend-in-the-integration-test)
+    - [Summing up](#summing-up)
+- [Reference](#reference)
+    - [Tests](#tests)
+    - [Steps](#steps)
+      - [Using steps classes](#using-steps-classes)
+    - [Dependencies](#dependencies)
+      - [Dependency modes](#dependency-modes)
+        - [Mock](#mock)
+        - [Real](#real)
+        - [Configuring and requiring modes](#configuring-and-requiring-modes)
+        - [Offering instances](#offering-instances)
+        - [Distinguish mock and real correctly](#distinguish-mock-and-real-correctly)
+      - [Special case: abstract types and type hierarchies](#special-case-abstract-types-and-type-hierarchies)
+        - [Lazy-initialized approach](#lazy-initialized-approach)
+        - [Immediate initialization approach](#immediate-initialization-approach)
+      - [Special case: spy](#special-case-spy)
+    - [Module testing configuration](#module-testing-configuration)
+      - [Organization by modules](#organization-by-modules)
+      - [Adding dependencies](#adding-dependencies)
+      - [Deprecation](#deprecation)
+    - [Structuring test classes](#structuring-test-classes)
+      - [Summing up naming](#summing-up-naming)
+    - [Structuring steps classes](#structuring-steps-classes)
+      - [Starting at the "SuT" steps class](#starting-at-the-sut-steps-class)
+      - [Can there be too much abstraction?](#can-there-be-too-much-abstraction)
+      - [Summing up naming](#summing-up-naming-2)
+- [Links](#links)
 
 ## Goals
 
@@ -876,7 +918,7 @@ A further improvement step could be to extract all code that interacts with the 
 
 For the `AuthManagerSteps` it makes sense because you can reuse a lot of code and configuration for the `LoginTest` and `AuthManagerTest`, but the `LoginSteps` class in this case is already designed to be in most cases the only steps class ever needed in order to test the `LoginViewModel`.
 
-#### Summing up naming
+#### Summing up naming<a name="summing-up-naming-2" />
 
 Depending on what a steps class does the naming should show it as clear as possible:
 
