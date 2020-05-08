@@ -143,12 +143,10 @@ So let's add a test case:
 
 ```kotlin
 @Test
-fun `Login with correct credentials is successful`() {
-    sut {
-        givenExistingUser(email = "existing@test.com", password = "supersecure1", authToken = "auth_token")
-        whenLoggingIn(email = "existing@test.com", password = "supersecure1")
-        thenEmailWasCheckedAtBackend("existing@test.com")
-    }
+fun `Login with correct credentials is successful`() = sut {
+    givenExistingUser(email = "existing@test.com", password = "supersecure1", authToken = "auth_token")
+    whenLoggingIn(email = "existing@test.com", password = "supersecure1")
+    thenEmailWasCheckedAtBackend("existing@test.com")
 }
 ```
 
@@ -251,12 +249,10 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val sut by steps<LoginSteps>()
 
     @Test
-    fun `Logging in checks email at backend`() {
-        sut {
-            givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
-            whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
-            thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
-        }
+    fun `Logging in checks email at backend`() = sut {
+        givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
+        whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
+        thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
     }
 
     companion object {
@@ -498,23 +494,19 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val sut by steps<LoginSteps>()
 
     @Test
-    fun `Logging in checks email at backend`() {
-        sut {
-            backend.givenExistingUser(USER_A)
-            whenLoggingIn(USER_A.email, USER_A.password)
-            backend.thenEmailWasChecked(USER_A.email)
-        }
+    fun `Logging in checks email at backend`() = sut {
+        backend.givenExistingUser(USER_A)
+        whenLoggingIn(USER_A.email, USER_A.password)
+        backend.thenEmailWasChecked(USER_A.email)
     }
 
 // Before:
 
 //  @Test
-//  fun `Logging in checks email at backend`() {
-//      sut {
-//          givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
-//          whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
-//          thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
-//      }
+//  fun `Logging in checks email at backend`() = sut {
+//      givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
+//      whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
+//      thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
 //  }
 
 // Not needed anymore:
@@ -548,7 +540,7 @@ In order to create a test class with sweetest you have to derive from `BaseJUnit
 class LoginTest : BaseJUnitTest(appModuleTestingConfiguration)
 ```
 
-You have to reference the module testing configuration (in this case `appModuleTestingConfiguration`) of the module the component under test lies in.
+You have to reference the [module testing configuration](#module-testing-configuration) (in this case `appModuleTestingConfiguration`) of the module the component under test lies in.
 
 ### Steps
 
@@ -556,24 +548,22 @@ Steps classes are means of **organizing and abstracting test code**. The easiest
 
 ```kotlin
 @Test
-fun `Logging in checks email at backend`() {
-    sut {
-        givenExistingUser(USER_A)
-        whenLoggingIn(USER_A.email, USER_A.password)
-        thenEmailWasCheckedAtBackend(USER_A.email)
-    }
-} 
+fun `Logging in checks email at backend`() = sut {
+    givenExistingUser(USER_A)
+    whenLoggingIn(USER_A.email, USER_A.password)
+    thenEmailWasCheckedAtBackend(USER_A.email)
+}
 ```
 
-The steps class is then only concerned with implementing the functions referenced in the test.
+The steps class is then only concerned with implementing the functions referenced in the test, basically containing all the **technical implementation**.
 
 The second aim of steps classes is to abstract not only the test code but also **configuration**. In order for the test class mostly being concerned with business-facing function calling, also the test setup should go to steps classes.
 
-An instance of a steps class can only exist once during the whole test. So if the same type of steps class is retrieved, always the same instance is used.
+An instance of a steps class can only exist once during the whole test. So if the same type of steps class is requested multiple times always the same instance is returned.
 
 Steps classes are initialized during a specific phase in the initialization of the framework and of course purged after each test function run to avoid side effects.
 
-By the way: the name "steps class" is taken from Cucumber, a behavior-driven acceptance testing tool. Also there workflows are broken down into simple "steps" which can be called from the outside. sweetest of course takes this a little further by allowing for interdependent steps classes and dependency management, where dependencies can be consumed across steps classes, and was in fact designed with interoperability with Cucumber in mind.
+By the way: the name "steps class" is taken from [Cucumber](https://cucumber.io/), a [behavior-driven testing](https://en.wikipedia.org/wiki/Behavior-driven_development) tool. Also there workflows are broken down into simple "steps" and grouped into steps classes. sweetest was in fact designed with interoperability with Cucumber in mind and takes the concepts further by allowing for interdependent steps classes and dependency management, where dependencies can be consumed across steps classes.
 
 #### Using steps classes
 
@@ -591,9 +581,16 @@ To consume a steps class you have to use the `steps` function inside a test or s
 val sut by steps<LoginSteps>()
 ```
 
+By using the variable you have access to the members of the steps class. But if you don't need any access to the members and just want the steps class to load you can consider using `requireSteps` in the configuration:
+
+```kotlin
+override fun configure() = super.configure()
+    .requireSteps<LoginSteps>()
+```
+
 ### Dependencies
 
-sweetest is tailored for systems where dependency injection is used. As you most likely have no DI during unit testing sweetest makes good for that by offering its own simple way of doing it.
+sweetest is tailored for systems where [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) is used. As you most likely have no DI during unit testing sweetest makes good for that by offering its own simple way of doing it.
 
 In sweetest all dependencies are treated as singletons, so there will be only one instance of a certain type. So it can only be used in these cases. In all other cases you have to fall back to managing object creation on your own. The automated way should cater for the very most cases, though.
 
@@ -606,7 +603,7 @@ For each dependency type there are two possibilities: either it's configured to 
 If a dependency is set to the "mock" mode, a Mockito mock is created for the dependency.
 
 * The mock is created lazily on demand
-* The same instance is cached for cases some class needs the same type
+* The same instance is cached when the same type is needed elsewhere
 * The cache is cleared after each test function run
 
 ##### Real
@@ -634,15 +631,18 @@ If the standard mock and real instance creation does not work out for you feel f
 
 ```kotlin
 offerReal { AuthManager(myBackendGateway, mySessionStore) }
+offerMock { FakeAuthManager() }
 ```
 
-It might make sense to satisfy the constructor of `AuthManager` this way, but in most cases you should not circumvent sweetest's dependency management. So you can use `instanceOf()` which is available within the scope of the `offerX` function:
+This effectively tells sweetest how a certain type is initialized.
+
+It might make sense to satisfy the constructor of `AuthManager` the way it's shown above, but in most cases you should not circumvent sweetest's dependency management. So you can use `instanceOf()` which is available in the receiver scope of the lambda you pass to the `offerX` functions:
 
 ```kotlin
 offerReal { AuthManager(instanceOf(), instanceOf()) }
 ```
 
-You might also use a more specific type of a certain argument:
+You might also want to retrieve a more specific type of a certain argument:
 
 ```kotlin
 offerReal { AuthManager(instanceOf<CustomBackendGateway>(), instanceOf()) }
@@ -650,16 +650,29 @@ offerReal { AuthManager(instanceOf<CustomBackendGateway>(), instanceOf()) }
 
 That way you tell sweetest's dependency management to retrieve a dependency of type `CustomBackendGateway` rather the one directly specified in `AuthManager`'s constructor.
 
+##### Offering _and_ requiring at the same time
+
+Offering is a different concept than requiring: that you offer the framework how to come to a certain dependency type doesn't mean it's configured to deliver it. E.g. you may `offerReal<AuthManager> { ... }` but forget to call `requireReal<AuthManager>()` somewhere in your test system. As a consequence you'll end up with a mock nevertheless.
+
+To avoid this in most cases you might just use the `offerXRequired` family of functions:
+
+```kotlin
+offerRealRequired<AuthManager> { AuthManager(myBackendGateway, mySessionStore) }
+offerMockRequired<AuthManager> { FakeAuthManager() }
+```
+
+The reason for being able to just "offer" something without actually putting it to use is that steps classes can also be seen as libraries which define how to create a real or mocked version of a type, where the decision what to pick finally can happen elsewhere. To keep things simple, in most cases `offerMockRequired` and `offerRealRequired` should do the trick though.
+
 ##### Distinguish mock and real correctly
 
-Please make sure you distinguish mock and real correctly: when you're using the production type as it's used in your product, please consider it real. Everything else is "mock" (also "spy" or "fake" is a kind of mock).
+Please make sure you distinguish mock and real correctly: when you're using the production type as it's used in your product, please consider it real. Everything else that is specific to your test system like mocks, spies and fakes should fall under the "mock" category for sweetest.
 
 #### Special case: abstract types and type hierarchies
 
 When consuming or configuring dependencies sweetest tries to find a dependency declaration for the type in the module configurations:
 
 ```kotlin
-// in the configuration:
+// in the module configuration:
 
 dependency any of<BackendGateway>()
 
@@ -694,9 +707,9 @@ override fun configure() = super.configure()
     .offerMockRequired<BackendGateway> { FakeBackendGateway() }
 ```
 
-It's important to have `<BackendGateway>` in `dependency` and `offerMockRequired`, because that directs sweetest to the right dependency configuration.
+It's important to have `<BackendGateway>` in `dependency` and `offerMockRequired` unchanged, because that directs sweetest to the right dependency configuration.
 
-The solution is obviously clunky, but it preserves the lazy behavior of dependency initializations. The lazy behavior helps in situations where initialization code in production classes get in the way during the initialization of the test.
+The solution is obviously clunky, but it works in all cases as it preserves the lazy behavior of dependency initializations. The lazy behavior helps in situations where initialization code in production classes get in the way during the initialization of the test.
 
 ##### Immediate initialization approach
 
@@ -707,11 +720,13 @@ override fun configure() = super.configure()
     .offerMockRequired<BackendGateway> { instance }
 ```
 
-This is easier but requires the class (in this case `FakeBackendGateway`) being compatible with it being initialized that early during creation of the steps classes.
+This is easier but requires the class (in this case `FakeBackendGateway`) being compatible with it being initialized that early during creation of the steps classes. Feel free to use that approach when suitable.
 
 #### Special case: spy
 
-The approach described above is also of value if you need to create a spy on a class:
+The approach described above is also of value if you need to create a spy on a class.
+
+**Approach A:**
 
 ```kotlin
 private val instance = spy(FakeBackendGateway())
@@ -719,6 +734,8 @@ private val instance = spy(FakeBackendGateway())
 override fun configure() = super.configure()
     .offerMockRequired<BackendGateway> { instance }
 ```
+
+**Approach B:**
 
 But it's also possible to create Mockito spies like so:
 
@@ -729,7 +746,9 @@ override fun configure() = super.configure()
     .requireSpy<AuthManager>()
 ```
 
-The downside using `requireSpy` is that you have no control over the creation of the underlying class that is spied on. So if you need that, as it's the case with the `FakeBackendGateway` above, you should stick to that approach instead.
+The downside using `requireSpy` is that you have no control over the creation of the underlying class that is spied on: an `AuthManager` will be created and wrapped by a spy.
+
+In contrast to that, for the `FakeBackendGateway` we _need_ to use **approach A** as we need more control over the spy creation (we don't need a spy on `BackendGateway` but rather on `FakeBackendGateway`).
 
 ### Module testing configuration
 
@@ -741,12 +760,12 @@ val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 
 Where should this configuration go?
 
-* **Name** the file exactly as the configuration val but with starting with upper-case (e.g. `AppModuleTestingConfiguration.kt`)
+* **Name** the file exactly as the configuration val but starting with upper-case (e.g. `AppModuleTestingConfiguration.kt`)
 * and put it in the same **package** as the respective module's root package (e.g. `com.example.app`)
 
 #### Organization by modules
 
-Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test sources (including steps classes and module testing configurations) should be put into extra modules inside the respective production code module. We suggest calling them `test` or `sweetest`:
+Whenever you add modules which depend on each other, also the test sources will depend on each other. Therefore you might decide to also modularize test sources. All test sources (including steps classes and module testing configurations) should be put into extra modules inside the respective production code module then. We suggest calling them `test` or `sweetest`:
 
 ```
   :app
@@ -758,7 +777,7 @@ Whenever you add modules which depend on each other, also the test sources will 
     :sweetest <-- contains test resources for B  
 ```
 
-If `app` depends on code in A and B, the same is true for the test sources: tests in `app` would rely on test sources in `:a:test-shared` and `:b:test-shared`. That leads to a proper separation of concerns, so for example the sources in `:a:sweetest` are responsible for offering steps classes for features implemented in `:a`.
+If `app` depends on code in A and B, the same is true for the test sources: tests in `app` would rely on test sources in `:a:sweetest` and `:b:sweetest`. That leads to a proper separation of concerns, so for example the sources in `:a:sweetest` are responsible for offering steps classes for features implemented in `:a` only; and the same goes for B.
 
 Also the module testing configuration needs to reflect the dependencies between modules. So don't forget to list all dependent configurations of a test configuration in the argument list of `moduleTestingConfiguration`:
 
