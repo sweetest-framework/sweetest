@@ -64,7 +64,7 @@ After some time working with sweetest we came up to the conclusion there is a lo
 
 ## Introduction
 
-This introduction guides you through the setup of a typical sweetest test. It's goal is to be as comprehensive as possible for people not yet familiar with sweetest. Further details are outlined in the [Reference](#reference) chapter of this guidelines document.
+This introduction guides you through the setup of a typical sweetest test. It's goal is to be as comprehensive and reduced as possible for people not yet familiar with sweetest. We recommend reading through the [reference section](#reference) too in order to deepen your understanding of sweetest and generally using it any time you need during development.
 
 ### Use the live templates!
 
@@ -80,7 +80,7 @@ You can use the templates by beginning to type the abbreviations as shown in the
 
 ### Add a module configuration
 
-Given you have a module `app` you can create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
+Given you have a module `app` you should create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
 
 ```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
@@ -88,11 +88,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 
 ### Add dependencies to the configuration
 
-sweetest puts dependencies together for you by configuration. So if you have a complex system under test you don't have to create the dependencies manually. If a type is required by your test, the internal dependency management of sweetest examines the constructor of the dependency and tries to satisfy all parameters. So this is a recursive process that goes on until all dependencies are created.
-
-sweetest treats dependencies as singletons, so if in a test system a certain type of dependency is retrieved, it will always be the same instance. So don't put types under dependency management if there is more than one instance in the system while testing.
-
-For isolation's sake of course all dependencies are purged after each test function run.
+sweetest puts dependencies together for you by configuration. So if you have a complex system under test you don't have to create the dependencies manually. If a type is required by your test, the internal dependency management of sweetest examines the constructors of the dependencies and tries to satisfy all parameters. So this is a recursive process that goes on until all dependencies are created.
 
 That's how you add dependencies to your test:
 
@@ -105,7 +101,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
 }
 ```
 
-Basically put all dependencies in there that you plan to be auto-created by sweetest. E.g. if `LoginViewModel` required `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
+Basically put all dependencies in there that you plan to be auto-created by sweetest. E.g. if `LoginViewModel` requires `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
 
 ### Create a steps class
 
@@ -118,9 +114,9 @@ class LoginSteps(testContext: TestContext)
     : BaseSteps(testContext, appModuleTestingConfiguration)
 ```
 
-You should put that class in the same package as the class with the highest abstraction level (`LoginViewModel`), in this case `com.example.app.view``
+You should put that class in the same package as the class with the highest abstraction level (`LoginViewModel`), in this case `com.example.app.view`.
 
-From the package and class name you can already that this steps class is not concerned about the exact types under test, but rather evolves around the idea of testing a certain feature (in this case "logging in").
+From the package and class name you can already tell that this steps class is not concerned about the exact types under test, but rather evolves around the idea of testing a certain feature (in this case simply "login").
 
 You can also see that our formerly created `appModuleTestingConfiguration` is referenced. You should always reference the configuration of the module the steps class resides in.
 
@@ -134,45 +130,39 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
 As you can see also the test class references the `appModuleTestingConfiguration` as it's apparently in the same module.
 
-By using `val sut by steps<LoginSteps>` in your test class you get access to the steps class. The variable is simply called "sut" (system under test) because it's the only steps class we reference in the test.
+By using `val sut by steps<LoginSteps>` in your test class you get access to the steps class. The variable is simply called "sut" (system under test) because it's the main touch point for the test.
 
-From that it becomes clearer that the test and steps class have totally different responsibilities:
+From that you can already predict that there will be a seperation of concern between the steps and test class:
 
-1. The **test class** should define **WHAT** is tested (the "login" feature, test cases, ...)
-2. The **steps class** should define **HOW** it is tested (technically, which classes are involved, where we put mocks, ...)
+1. The **test class** should define **WHAT** is tested (basically the test cases, etc.)
+2. The **steps class** should define **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, where mocks are used, and so on...)
 
 ### Define test cases
 
-So let's add a test case (see [final class](https://github.com/mysugr/sweetest/blob/example-upgrade/app/src/test/java/com/mysugr/android/testing/example/view/LoginTest.kt) ):
+So let's add a test case:
 
 ```kotlin
 @Test
 fun `Login with correct credentials is successful`() {
     sut {
-        givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
-        whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
-        thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
+        givenExistingUser(email = "existing@test.com", password = "supersecure1", authToken = "auth_token")
+        whenLoggingIn(email = "existing@test.com", password = "supersecure1")
+        thenEmailWasCheckedAtBackend("existing@test.com")
     }
-}
-
-companion object {
-    const val EXISTING_EMAIL = "existing@test.com"
-    const val EXISTING_PASSWORD = "supersecure1"
-    const val EXISTING_AUTH_TOKEN = "auth_token"
 }
 ```
 
-`sut { ... }` is used in order to get inside the scope of the steps class and call some functions there. As you can see the test is quite expressive and could as well be read by non-technical people. That's exactly as it should be. All the technical implementation is happening in the steps class then.
+`sut { ... }` is used in order to get inside the scope of the steps class and callint its functions. As you can see the test is quite expressive and could as well be read by non-technical or business people. That's exactly as it should be.
 
-**Tip:** you can write all your test cases like that in the test class first and then let the IDE create the missing functions in the respective steps class (e.g. in IntelliJ: Option + Enter, select "Create member function" and select the target class, in this case the steps class). That way you can flesh out the tests TDD-style without needing to care about the technical implementation in the steps class yet.
+**Tip:** you can write all your test cases like that in the test class first and then let the IDE create the missing functions in the respective steps class (e.g. in IntelliJ: Option + Enter, select "Create member function" and the target class, in this case the steps class - and done!). That way you can flesh out the tests first and make the sources compilable very fast.
 
 ### Add configuration in the steps class
 
-In order to know how we set up the test we should first quickly get a grasp of the system we want to test. Here is an outline of the example with a typical Android architecture:
+In order to know how to set up the test system we should first quickly get a grasp of the system we want to test. Here is an outline of the example with a typical MVVM architecture:
 
 ```
 ┏━━━━━━━━━━━━━━━┓
-┃ LoginActivity ┃  ⟵ Android view
+┃ LoginActivity ┃  ⟵ view
 ┗━━━━━━━━━━━━━━━┛
 
 ━━━ ᐁ UNDER TEST ᐁ ━━━
@@ -197,7 +187,7 @@ override fun configure() = super.configure()
     .requireReal<AuthManager>()
 ```
 
-This would be already enough in terms of configuration to get the dependency graph created automatically! sweetest will provide Mockito mocks automatically if the dependency isn't configured otherwise, that means that `LoginViewModel` and `AuthManager` will be instantiated and the rest of the dependencies (`BackendGateway` and `SessionStore`) will be Mockito mocks.
+This would be already enough in terms of configuration to get the dependency graph created automatically! sweetest will provide Mockito mocks if the dependency isn't configured otherwise. So ultimately that means that `LoginViewModel` and `AuthManager` will be instantiated and the rest of the dependencies (`BackendGateway` and `SessionStore`) will be Mockito mocks.
 
 ### Add access to the dependencies in the steps class
 
@@ -208,7 +198,7 @@ private val viewModel by dependency<LoginViewModel>()
 private val backendGateway by dependency<BackendGateway>()
 ```
 
-So now let's have a look at the functions the class needs to have. As we did the design of the tests themselves first we already know we need the following functions in the steps class:
+So now let's have a look at the functions the class needs to have. As we did the design of the test case first we already know we need the following functions in the steps class:
 
 ```kotlin
 fun givenExistingUser(email: String, password: String, authToken: AuthToken) = TODO()
@@ -220,9 +210,9 @@ fun thenEmailWasCheckedAtBackend(email: String) = TODO()
 
 #### Add the `given` function
 
-Let's start with the `givenExistingUser` function. `given` is used for setting up preconditions. In the prototypical sequence of "arrange", "act", "assert", this is the first step. The naming makes that apparent.
+Let's start with the `givenExistingUser` function. `given` is used for setting up preconditions. In the prototypical sequence of "arrange", "act", "assert", this is the first step. The prefix makes that apparent and easy to look up.
 
-In most cases `given` will define the behavior of the system before we really start interacting with the production system (the "acting") and thus controls the behavior of the mocks or fakes we have in our test system:
+In most cases `given` will define the behavior of the system before we really start interacting with the production system (the "acting" part) and thus controls the behavior of the mocks or fakes we have in our test system:
 
 ```kotlin
 fun givenExistingUser(email: String, password: String, authToken: AuthToken) {
@@ -231,11 +221,11 @@ fun givenExistingUser(email: String, password: String, authToken: AuthToken) {
 }
 ```
 
-Obviously in this case the state of a user being existent is achieved by setting up the backend gateway so it responds with specific answers.
+In this case the state of a user being existent is achieved by setting up the backend gateway so it responds with specific answers.
 
 #### Add the `when` function
 
-Mostly functions starting with `when` interact directly with the system, so let's wire the test to the production code:
+Functions starting with `when` should take care of the "acting" part in "arrange", "act", "assert" and would hence interact directly with the production system; so let's wire the test to the production code:
 
 ```kotlin
 fun whenLoggingIn(email: String, password: String) {
@@ -303,32 +293,32 @@ class LoginSteps(testContext: TestContext) :
 
 ### Improving structure by reusing test code
 
-What if we want to create a simple unit test for `AuthManager`? We can't want to use the `LoginTestSteps` because it configures sweetest to integrate with `LoginViewModel`, which is not necessary now. Also the integration test is more business-facing, where an `AuthManagerTest` might really be just focused to do very technical things instead. Also the backend gateway mock might not always cater for all scenarios we want to test. So how can we come up with a generic structure that will accomodate more sophisticated future setups?
+What if we want to create a simple unit test for `AuthManager`? We probably shouldn't use the `LoginTestSteps` because it configures sweetest to integrate with the `LoginViewModel` and offers functionality to interact with this component, too, and that is not really necessary here. Also the integration test is more business-facing, where an `AuthManagerTest` might really be just focused on very technical things instead. Also the backend gateway mock might not always cater for all scenarios we want to test. So how can we come up with a prototypical approach that will accomodate more sophisticated future setups?
 
-1. We can create a steps which resembles a fake version of the backend gateway that is capable of more sophisticated tasks like having fake users and acting upon that data
-3. We can create a test and steps class pair which focuses on unit-testing the `AuthManager` that uses the fake backend steps class
-4. We can re-wire the previous integration test to use the same fake backend steps class
+1. We can create a steps which resembles a fake version of the backend gateway that is capable of handling tasks like having fake users and acting upon that data.
+3. We can create a test and steps class pair which focuses on unit-testing the `AuthManager` that uses the fake backend.
+4. We can re-wire the previous integration test to use the same fake backend steps class.
 
-So in one word: we're going to show sweetest's strengths by reusing test code.
+So in one word: we're going to show sweetest's strengths by reusing test code and working with dependencies distributed among multiple steps classes.
 
 #### The fake backend
 
-The concept of steps classes is that they include everything needed to add a piece to the test system. In this example that will be:
+The concept of steps classes is that they encapsulate everything needed to add a piece to the test system. In this example that will be:
 
-* Configuration
-* A fake implementation of a production interface
+* Offering a fake implementation of a production interface
+* Configuration (providing the fake to dependency management)
 * Code to set up the fake
-* Code to assert calls on the fake
+* Code to verify calls on the fake
 
 Therefore this is how our `BackendFakeSteps` class looks like:
 
 ```kotlin
 class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
 
-    // The steps class creates a fake and creates a Mockito spy from it (for the sake of being able to use `verify`)
+    // Creates a fake instance and wrap it with a Mockito spy (for the sake of being able to use `verify`)
     private val instance = spy(FakeBackendGateway())
 
-    // Here we provide an instance of `BackendGateway` to sweetest's dependency management
+    // Provide an instance of `BackendGateway` to sweetest's dependency management
     override fun configure() = super.configure()
         .offerMockRequired<BackendGateway> { instance }
 
@@ -337,7 +327,7 @@ class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appMod
         instance.users += backendFakeUser
     }
 
-    // This verifies the expected call to the fake
+    // This verifies an expected call to the fake
     fun thenEmailWasChecked(email: String) {
         verify(instance).checkEmail(email)
     }
@@ -347,10 +337,10 @@ class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appMod
         verify(instance).login(email, password)
     }
 
-    // The fake is private as a steps classes' aim is to abstract the technical implementation of test code.
+    // The fake is private as a steps classes' aim is to abstract the technical implementation of test code
     private class FakeBackendGateway : BackendGateway {
 
-        // We leave the internals open to the outside class for simplicity's sake
+        // We leave the internals public for the outside class for simplicity's sake
         val users = mutableListOf<BackendFakeUser>()
 
         override fun checkEmail(email: String): Boolean = users.find { it.email == email } != null
@@ -372,7 +362,11 @@ class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 }
 ```
 
-Maybe you noticed that the naming `BackendFakeSteps` doesn't refer to the `BackendGateway` whose behavior it tries to mimic. This is intentional: this ties it more to the abstract concept of a "backend" than to how its access is technically implemented. So if we decide to come up with a different way of accessing the backend in the future, the steps classes' API and the tests using it can remain unchanged. Therefore also the steps classes' API doesn't reveal much about the technicalities.
+Maybe you noticed that the name `BackendFakeSteps` doesn't reference the `BackendGateway` directly, whose behavior it implements. This is intentional: this ties it more to the abstract concept of a "backend" than to how its access is technically implemented. So if we decide to come up with a different way of accessing the backend in the future, the steps classes' API and the tests using it can remain unchanged. That is the reason why...
+
+* the steps classes' API doesn't reveal much about the technicalities
+* we keep the fake implementation private
+* the naming in the API is evolving around business terms as much as possible
 
 If you're wondering how the `BackendFakeUser` looks like, here it is:
 
@@ -389,7 +383,7 @@ data class BackendFakeUser(
 }
 ```
 
-It also contains predefined data `USER_A` and `USER_B` so it can be reused by multiple tests without the need to define constants each time. Maybe you noticed that this class is outside the steps class; that is intentional: its use reaches beyond the steps class as it is handy for various test scenarios, no matter you decide to use the fake backend or not.
+It also contains predefined data `USER_A` and `USER_B` so it can be reused by multiple tests without the need to define constants individually each time. Maybe you noticed that this class is outside the steps class; that is intentional too: its use reaches beyond the steps class as it can be handy for various test scenarios, no matter you decide to use the fake backend or not.
 
 #### Create the steps class for the unit test
 
@@ -721,7 +715,7 @@ The downside using `requireSpy` is that you have no control over the creation of
 
 Whenever a new module is created in your project (or when you introduce sweetest in a module) there needs to be a configuration created for that module:
 
-```
+```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 ```
 
@@ -748,7 +742,7 @@ If `app` depends on code in A and B, the same is true for the test sources: test
 
 Also the module testing configuration needs to reflect the dependencies between modules. So don't forget to list all dependent configurations of a test configuration in the argument list of `moduleTestingConfiguration`:
 
-```
+```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration(
     aModuleTestingConfiguration,
     bModuleTestingConfiguration, ...)
