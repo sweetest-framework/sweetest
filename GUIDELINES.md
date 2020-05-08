@@ -402,16 +402,19 @@ class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 }
 ```
 
-As we anticipate that the fake backend and the `SessionStore` will be needed afterwards (they are the two direct dependencies of `AuthManager` which are consumed by its constructor).
+The `AuthManager` type in in the game of course, but also `SessionStore` and `BackendGateway` have to be considered, as they are two direct dependencies of `AuthManager`; so somehow that should be reflected in the steps class:
 
-There is only one `requireReal` call (`requireReal<AuthManager>()`), which clearly indicates that this steps class is indeed about unit-testing just the `AuthManager`.
+* `AuthManager` is configured to be  a real instance (`requireReal<AuthManager>()`) as it's obviously the class under test.
+* Access to `AuthManager` is added (`val instance by dependency<AuthManager>()`) as there needs to be interaction with the instance.
+* The `BackendGateway` is implemented as a fake by adding `val backend by steps<BackendFakeSteps>()`.
+* As writing the test you might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): even though it's just a mock (as it's not configured otherwise) you still can perform verifications with it.
 
 But why is `backend` just called `backend` and not `backendGateway`? And why is it public? Shouldn't a steps class be a full abstraction of what's going on under the hood or encapsulate everything needed for the test class using it? Generally yes. Usually we should avoid offering internals ([Law of Demeter](https://en.wikipedia.org/wiki/Law_of_Demeter)). Access to internals should be done through public accessors in order to avoid tying code to details which are prone to change. But anyway, the key here is "prone to change": if you group and define systems around abstract business concepts these are very unlikely to change (contrary to technical implementation). This makes the fake backend a better candidate for being used and shared among various tests. So in this case it is reasonable to call the member after the abstract concept of a "backend" _and_ offering it via the steps classes' API for direct use in test classes.
 
 #### Create the test class
 
 ```kotlin
-class AuthManagerTest2 : BaseJUnitTest(appModuleTestingConfiguration) {
+class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     private val sut by steps<AuthManagerSteps>()
 
@@ -433,9 +436,25 @@ class AuthManagerTest2 : BaseJUnitTest(appModuleTestingConfiguration) {
 
 As you can see, `backend` is directly used and this will allow for a lot of code reuse. So let's see how that simplifies the integration test we've created in the beginning:
 
+#### Add the respective steps functions
+
+Still two functions are missing which sould be added to the `AuthManagerSteps` class to make the test run:
+
+```kotlin
+// Interact with the class under test
+fun whenPassingCredentials(email: String, password: String) {
+    instance.loginOrRegister(email, password)
+}
+
+// Verify the call to the SessionStore mock
+fun thenSessionWasStarted() {
+    verify(sessionStore).beginSession(anyString().nonNullable, any<User>().nonNullable)
+}
+```
+
 #### Use the fake backend in the integration test
 
-Let's alter the steps class for the login test so it uses the fake backend:
+So currently the integration test we created in the beginning still uses it's own backend mock. Let's adapt the `LoginSteps` class to use the same fake backend created previously:
 
 ```kotlin
 class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
@@ -468,9 +487,10 @@ class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTes
 
 }
 ```
-As you can see, all the details regarding how `AuthManager` is being tested can go to the `AuthManagerSteps`, including configuration.
 
-On top of that we add access to `backend` and again offer it as a public member so it can be used in the test. Also we use `BackendFakeUser.USER_A` in order to not only reuse test code and configuration but also test _data_! Here's the result:
+As you can see, all the details regarding how `AuthManager` is being tested can go to the `AuthManagerSteps`, including configuration. And the integration test is still an integration test as `AuthManagerSteps` configures the `AuthManager` to be a real instance.
+
+Additionally, we add access to `backend` and again offer it as a public member so it can be used in the test. Also we use `BackendFakeUser.USER_A` in order to not only reuse test code and configuration but also test _data_! Here's the result:
 
 ```kotlin
 class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
@@ -514,7 +534,7 @@ In this journey it becomes apparent that having integration tests can be simplif
 
 The fake backend example also shows how code reuse can work very easily. In this example we were able to reduce the test code by more or less a half.
 
-All this of course comes with a cost: steps classes have to be set up and very well thought through and preferably be modelled around abstract business models (`BackendFakeSteps`, `LoginSteps`), but that's not always possible or even reasonable (e.g. the `AuthManagerSteps` is a direct reference to a class, which is OK as it serves as an abstraction layer in two test classes).
+All this of course comes with a cost: steps classes have to be set up and very well thought through and preferably be modelled around abstract business models (`BackendFakeSteps`, `LoginSteps`), but that's not always possible or even reasonable (e.g. the `AuthManagerSteps`'s scope is a concrete class, which is OK as it serves as an abstraction layer in two test classes).
 
 But experience shows that this is a matter of training and can become second nature after some time.
 
