@@ -7,7 +7,6 @@ After some time working with sweetest we came up to the conclusion there is a lo
 * [Goals](#goals)
 * [Introduction](#introduction)
 * [Reference](#reference)
-* [Principles](#principles)
 * [Links](#links)
 
 ## Goals
@@ -24,6 +23,18 @@ After some time working with sweetest we came up to the conclusion there is a lo
 ## Introduction
 
 This introduction guides you through the setup of a typical sweetest test. It's goal is to be as comprehensive as possible for people not yet familiar with sweetest. Further details are outlined in the [Reference](#reference) chapter of this guidelines document.
+
+### Use the live templates!
+
+If you use [IntelliJ IDEA](https://www.jetbrains.com/idea) (respectively [Android Studio](https://developer.android.com/studio)) as IDE you should use these [live templates](https://www.jetbrains.com/help/idea/using-live-templates.html) to speed up development with sweetest:
+
+<img src="readme/live-remplates-ssteps.gif">
+
+To make use of them please [download these exported IntelliJ settings](raw/master/tools/live-templates.jar) and import them into your IDE with `File / Import settings`. After the import you can see them in the settings at `Editor / Live Templates`:
+
+<img src="readme/live-templates-settings.png">
+
+You can use the templates by beginning to type the abbreviations as shown in the image above and hitting enter.
 
 ### Add a module configuration
 
