@@ -54,7 +54,7 @@ In this example you can see that
 * Setup, mocking/stubbing, interaction with the system under test and
   assertion is abstracted away to "steps" classes
 
-```
+```kotlin
 class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
@@ -112,7 +112,7 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 In order to tell the framework about all dependencies which can be put under test or can act as
 mocks you have to specify them in the testing configuration:
 
-```
+```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration {
 
     /**
@@ -146,7 +146,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
 
 The test implementation code is abstracted into a class:
 
-```
+```kotlin
 class AuthManagerSteps(testContext: TestContext)
     : BaseSteps(testContext, appModuleTestingConfiguration) {
 
@@ -193,7 +193,9 @@ In this class you can see mocking/stubbing, interaction (`when...`) and assertio
 
 In your module's Gradle file please add the following line in the `dependencies` section:
 
-```testImplementation 'com.mysugr.sweetest:sweetest:1.0.1'```
+```
+testImplementation 'com.mysugr.sweetest:sweetest:1.0.1'
+```
 
 If the dependency can't be found make sure you have `jcenter()` in the `repositories` section.
 
