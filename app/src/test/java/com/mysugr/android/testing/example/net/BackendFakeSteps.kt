@@ -3,6 +3,7 @@ package com.mysugr.android.testing.example.net
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.user.User
 import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.context.TestContext
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
@@ -11,6 +12,8 @@ class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 
     // The steps class creates a fake and creates a Mockito spy from it (for the sake of being able to use `verify`)
     private val instance = spy(FakeBackendGateway())
+
+    private val instance2 by dependency<FakeBackendGateway>()
 
     // Here we provide an instance of `BackendGateway` to sweetest's dependency management
     override fun configure() = super.configure()

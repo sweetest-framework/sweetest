@@ -17,12 +17,10 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
         .onSetUp { sut.scope = scope }
 
     @Test
-    fun `Logging in checks email at backend`() {
-        sut {
-            givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
-            whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
-            thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
-        }
+    fun `Logging in checks email at backend`() = sut {
+        givenExistingUser(email = EXISTING_EMAIL, password = EXISTING_PASSWORD, authToken = EXISTING_AUTH_TOKEN)
+        whenLoggingIn(email = EXISTING_EMAIL, password = EXISTING_PASSWORD)
+        thenEmailWasCheckedAtBackend(EXISTING_EMAIL)
     }
 
     companion object {
