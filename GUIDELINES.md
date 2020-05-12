@@ -1,6 +1,6 @@
 # sweetest test development guidelines
 
-After some time working with sweetest we came up to the conclusion there is a lot of freedom as to how to design tests. But on the other side there is an increasing need for alignment. These guidelines are here for reaching an appropriate level of alignment. Feel free to challenge the current state and to contribute!
+After some time working with sweetest we came to the conclusion there are a lot of different ways to design tests but also an increasing need for alignment. These guidelines are here to reach an appropriate level of such alignment. Feel free to challenge the current state and to contribute!
 
 ## Contents
 
