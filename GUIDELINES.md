@@ -80,7 +80,7 @@ You can use the templates by beginning to type the abbreviations as shown in the
 
 ### Add a module configuration
 
-Given you have a module `app` you should create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
+Given you have a module `app` you have to create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
 
 ```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
