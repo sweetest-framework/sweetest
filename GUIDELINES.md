@@ -103,7 +103,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
 }
 ```
 
-Put all dependencies in there as you need them to be auto-created by sweetest. E.g. if `LoginViewModel` requires `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
+Put all dependencies in there if you need them to be auto-created by sweetest. E.g. if `LoginViewModel` requires `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
 
 ### Create a steps class
 
