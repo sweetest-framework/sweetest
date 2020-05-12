@@ -179,7 +179,7 @@ In order to know how to set up the test system we should first quickly get a gra
 * = mocked
 ```
 
-In order to achieve that you have to add a configuration that reflects the wanted setup in the steps file:
+To achieve this test setup you have to add a configuration that reflects the wanted setup in the steps class:
 
 ```kotlin
 override fun configure() = super.configure()
