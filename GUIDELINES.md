@@ -124,6 +124,8 @@ You can also see that our formerly created `appModuleTestingConfiguration` is re
 
 ### Create a test class
 
+All test classes in sweetest need to derive from `BaseJUnitTest`:
+
 ```kotlin
 class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
     val sut by steps<LoginSteps>
@@ -136,8 +138,8 @@ By using `val sut by steps<LoginSteps>` in your test class you get access to the
 
 From that you can already predict that there will be a seperation of concern between the steps and test class:
 
-1. The **test class** should define **WHAT** is tested (essentially the definition of the test cases)
-2. The **steps class** should define **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, where mocks are used, and so on...)
+1. The **test class** defines **WHAT** is tested (essentially the definition of the test cases)
+2. The **steps class** defines **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, if and which mocks are used, and so on...)
 
 ### Define test cases
 
