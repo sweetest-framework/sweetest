@@ -134,7 +134,7 @@ As you can see also the test class references the `appModuleTestingConfiguration
 
 By using `val sut by steps<LoginSteps>` in your test class you get access to the steps class. The variable is simply called "sut" (system under test) because it's the main touch point for the test.
 
-From that you can already predict that there will be a seperation of concern between the steps and test class:
+This already shows the separation of concern between the steps and test class:
 
 1. The **test class** should define **WHAT** is tested (essentially the definition of the test cases)
 2. The **steps class** should define **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, where mocks are used, and so on...)
