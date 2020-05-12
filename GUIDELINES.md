@@ -1,6 +1,6 @@
 # sweetest test development guidelines
 
-After some time working with sweetest we came up to the conclusion there is a lot of freedom as to how to design tests. But on the other side there is an increasing need for alignment. These guidelines are here for reaching an appropriate level of alignment. Feel free to challenge the current state and to contribute!
+After some time working with sweetest we came to the conclusion there are a lot of different ways to design tests but also an increasing need for alignment. These guidelines are here to reach an appropriate level of such alignment. Feel free to challenge the current state and to contribute!
 
 ## Contents
 
@@ -80,7 +80,7 @@ You can use the templates by beginning to type the abbreviations as shown in the
 
 ### Add a module configuration
 
-Given you have a module `app` you should create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
+Given you have a module `app` you have to create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
 
 ```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
@@ -90,7 +90,7 @@ To learn more about the module testing configuration have a look at the [respect
 
 ### Add dependencies to the configuration
 
-sweetest puts dependencies together for you by configuration. If you have a complex system under test you don't have to create the dependencies manually. In case a type is required by your test, the internal dependency management of sweetest examines the constructors of the dependencies and tries to satisfy all parameters. This is a recursive process that goes on until all dependencies are created.
+sweetest provides necessary test dependencies for you through the configuration you provided within the above mentioned module configuration file. If you have a complex system under test you don't have to create the dependencies manually. In case a type is required by your test, the internal dependency management of sweetest examines the constructors of the dependencies and tries to satisfy all parameters. This is a recursive process that continues until all dependencies are created.
 
 That's how you declare dependencies in sweetest:
 
