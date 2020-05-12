@@ -191,7 +191,7 @@ This would be already enough in terms of configuration to get the dependency gra
 
 ### Add access to the dependencies in the steps class
 
-When we look at the test case we've written above we can see that we want to put something into the top of the system under test (the view model) and see what comes out at the bottom (backend gateway). So let's add members to the class that enable us to interact with them:
+When we look at the test case we've written above we can see that we want to start off by putting something into the system under test (the view model) and finally check the returned result in the end (backend gateway). Therefore, let's add members to the class that enable us to interact with them:
 
 ```kotlin
 private val viewModel by dependency<LoginViewModel>()
