@@ -103,7 +103,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
 }
 ```
 
-Put all dependencies in there as you need them to be auto-created by sweetest. E.g. if `LoginViewModel` requires `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
+Put all dependencies in there if you need them to be auto-created by sweetest. E.g. if `LoginViewModel` requires `AuthManager` in its constructor you should add `AuthManager` to the dependency configuration, and so on...
 
 ### Create a steps class
 
@@ -132,11 +132,11 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 }
 ```
 
-As you can see also the test class references the `appModuleTestingConfiguration` as it's apparently in the same module.
+The test class demands a testing configuration and since `LoginTest` belongs to the `app` module it refers to the `appModuleTestingConfiguration`.
 
 By using `val sut by steps<LoginSteps>` in your test class you get access to the steps class. The variable is simply called "sut" (system under test) because it's the main touch point for the test.
 
-From that you can already predict that there will be a seperation of concern between the steps and test class:
+This already shows the separation of concern between the steps and test class:
 
 1. The **test class** defines **WHAT** is tested (essentially the definition of the test cases)
 2. The **steps class** defines **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, if and which mocks are used, and so on...)
@@ -181,7 +181,7 @@ In order to know how to set up the test system we should first quickly get a gra
 * = mocked
 ```
 
-In order to achieve that you have to add a configuration that reflects the wanted setup in the steps file:
+To achieve this test setup you have to add a configuration that reflects the wanted setup in the steps class:
 
 ```kotlin
 override fun configure() = super.configure()
@@ -193,7 +193,7 @@ This would be already enough in terms of configuration to get the dependency gra
 
 ### Add access to the dependencies in the steps class
 
-When we look at the test case we've written above we can see that we want to put something into the top of the system under test (the view model) and see what comes out at the bottom (backend gateway). So let's add members to the class that enable us to interact with them:
+When we look at the test case we've written above we can see that we want to start off by putting something into the system under test (the view model) and finally check the returned result in the end (backend gateway). Therefore, let's add members to the class that enable us to interact with them:
 
 ```kotlin
 private val viewModel by dependency<LoginViewModel>()
