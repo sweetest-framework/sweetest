@@ -53,7 +53,7 @@ After some time working with sweetest we came up to the conclusion there is a lo
 
 ## Goals
 
-* Put a **layer of abstraction** on the system under test: we call these abstractions _steps_ (as derived from Cucumber)
+* Put a **layer of abstraction** on the system under test (SuT): we call these abstractions _steps_ (as derived from Cucumber)
   * so if the system under test changes, most parts of the test system don't need to change
   * so the test just tells _what_ is tested, not _how_ (tests become more business-centric; whenever possible, all _technical implementation_ is in the steps)
   * so test code, especially its technical implementation (steps classes), can be reused
@@ -85,6 +85,8 @@ Given you have a module `app` you should create a file `AppModuleTestingConfigur
 ```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 ```
+
+To learn more about the module testing configuration have a look at the [respective chapter in the reference](#module-testing-configuration).
 
 ### Add dependencies to the configuration
 
@@ -754,6 +756,8 @@ The downside using `requireSpy` is that you have no control over the creation of
 In contrast to that, for the `FakeBackendGateway` we _need_ to use **approach A** as we need more control over the spy creation (we don't need a spy on `BackendGateway` but rather on `FakeBackendGateway`).
 
 ### Module testing configuration
+
+The module testing configuration is responsible for holding configuration for a software module or project. Currently only the declaration of [dependencies](#dependencies) is supported, but as new features are added to sweetest the module testing configuration is quite probable to grow.
 
 Whenever a new module is created in your project (or when you introduce sweetest in a module) there needs to be a configuration created for that module:
 
