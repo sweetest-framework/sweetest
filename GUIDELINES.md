@@ -130,7 +130,7 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 }
 ```
 
-As you can see also the test class references the `appModuleTestingConfiguration` as it's apparently in the same module.
+The test class demands a testing configuration and since `LoginTest` belongs to the `app` module it refers to the `appModuleTestingConfiguration`.
 
 By using `val sut by steps<LoginSteps>` in your test class you get access to the steps class. The variable is simply called "sut" (system under test) because it's the main touch point for the test.
 
