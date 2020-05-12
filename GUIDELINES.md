@@ -88,7 +88,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 
 ### Add dependencies to the configuration
 
-sweetest puts dependencies together for you by configuration. If you have a complex system under test you don't have to create the dependencies manually. In case a type is required by your test, the internal dependency management of sweetest examines the constructors of the dependencies and tries to satisfy all parameters. This is a recursive process that goes on until all dependencies are created.
+sweetest provides necessary test dependencies for you through the configuration you provided within the above mentioned module configuration file. If you have a complex system under test you don't have to create the dependencies manually. In case a type is required by your test, the internal dependency management of sweetest examines the constructors of the dependencies and tries to satisfy all parameters. This is a recursive process that continues until all dependencies are created.
 
 That's how you declare dependencies in sweetest:
 
