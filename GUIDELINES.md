@@ -18,7 +18,7 @@ After some time working with sweetest we came to the conclusion there are a lot 
       - [Add the `when` function](#add-the-when-function)
       - [Add the `then` function](#add-the-then-function)
     - [Current state](#current-state-of-the-example)
-    - [Improving structure by reusing test code](#further-improve-structure-by-reusing-code)
+    - [Further improve structure by reusing code](#further-improve-structure-by-reusing-code)
       - [The fake backend](#the-fake-backend)
       - [Create the steps class for the unit test](#create-the-steps-class-for-the-unit-test)
       - [Create the test class](#create-the-test-class)
@@ -34,7 +34,7 @@ After some time working with sweetest we came to the conclusion there are a lot 
         - [Real](#real)
         - [Configuring and requiring modes](#configuring-and-requiring-modes)
         - [Offering instances](#offering-instances)
-        - [Distinguish mock and real correctly](#distinguish-mock-and-real-correctly)
+        - [Make sure to use mock and real modes correctly!](#make-sure-to-use-mock-and-real-modes-correctly)
       - [Special case: abstract types and type hierarchies](#special-case-abstract-types-and-type-hierarchies)
         - [Lazy-initialized approach](#lazy-initialized-approach)
         - [Immediate initialization approach](#immediate-initialization-approach)
@@ -123,6 +123,8 @@ You should put that class in the same package as the class with the highest abst
 From the package and class name you can already tell that this steps class is not concerned about the exact types under test, but rather evolves around the idea of testing a certain feature (in this case simply "login").
 
 You can also see that our formerly created `appModuleTestingConfiguration` is referenced. You should always reference the configuration of the module the steps class resides in.
+
+To understand steps classes better don't forget to [read the respective chapter in the reference](#steps)!
 
 ### Create a test class
 
@@ -625,7 +627,7 @@ Underlying dependencies of a dependency can have different modes, though. E.g. t
 
 ##### Configuring and requiring modes
 
-You should configure dependencies mostly in steps classes (but in very rare cases you might also need to do it in test classes). You can do that by calling `requireX` in the overriden `configure` function:
+In order to have a plug-and-play-like experience you should configure dependencies mostly in steps classes (just in very rare cases you might also need to do it in test classes). You can add the dependency configuration by calling `requireX` in the overridden `configure` function:
 
 ```kotlin
 override fun configure() = super.configure()
@@ -674,9 +676,9 @@ offerMockRequired<AuthManager> { FakeAuthManager() }
 
 The reason for being able to just "offer" something without actually putting it to use is that steps classes can also be seen as libraries which define how to create a real or mocked version of a type, where the decision what to pick finally can happen elsewhere. To keep things simple, in most cases `offerMockRequired` and `offerRealRequired` does the trick though.
 
-##### Distinguish mock and real correctly
+##### Make sure to use mock and real modes correctly!
 
-Make sure to distinguish mock and real correctly: when you're using the production type as it's used in your product, consider it real. Everything else that is specific to your test system like mocks, spies and fakes should fall under the "mock" category for sweetest.
+When you're using the production type as it's used in your product, consider it real. Everything else that is specific to your test system like mocks, spies and fakes should fall under the "mock" category for sweetest.
 
 #### Special case: abstract types and type hierarchies
 
@@ -685,14 +687,14 @@ When consuming or configuring dependencies sweetest tries to find a dependency d
 ```kotlin
 // in the module configuration:
 
-dependency any of<BackendGateway>()
+dependency any of<BackendGateway>() // <-- declared here
 
-// e.g. in the steps class
+// e.g. in the steps class:
 
-private val instance by dependency<BackendGateway>() // <-- here
+private val instance by dependency<BackendGateway>() // <-- used here
 
 override fun configure() = super.configure()
-    .requireReal<BackendGateway>() // <-- here 
+    .requireReal<BackendGateway>() // <-- configured here
 ```
 
 But consuming or configuring a sub-classed dependency won't work (sweetest will complain that the type was not found in the module configuration):
