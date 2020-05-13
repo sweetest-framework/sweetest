@@ -141,7 +141,7 @@ By using `val sut by steps<LoginSteps>` in your test class you get access to the
 This already shows the separation of concern between the steps and test class:
 
 1. The **test class** defines **WHAT** is tested (essentially the definition of the test cases)
-2. The **steps class** defines **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, if and which mocks are used, and so on...)
+1. The **steps class** defines **HOW** it is tested (the technical implementation of the test and its configuration, like which classes are involved, if and which mocks are used, and so on...)
 
 ### Define test cases
 
@@ -231,7 +231,7 @@ Within the `givenExistingUser` function the state of an existing user is achieve
 
 #### Add the `when` function
 
-Functions starting with `when` are taking care of the "acting" part in "arrange", "act", "assert" and would hence interact directly with the production system; so let's wire the test to the production code:
+Functions starting with `when` are taking care of the "acting" part in "arrange", "act", "assert" and therefore interact directly with the production system. So let's wire the test to the production code:
 
 ```kotlin
 fun whenLoggingIn(email: String, password: String) {
@@ -300,14 +300,16 @@ class LoginSteps(testContext: TestContext) :
 What if we want to create a simple unit test for `AuthManager`?
 
 1. We can create a steps which resembles a fake version of the backend gateway that is capable of handling tasks like having fake users and acting upon that data.
-3. We can create a test and steps class pair which focuses on unit-testing the `AuthManager` that uses the fake backend.
-4. We can re-wire the previous integration test to use the same fake backend steps class.
+1. We can create a test and steps class pair which focuses on unit-testing the `AuthManager` that uses the fake backend.
+1. We can re-wire the previous integration test to use the same fake backend steps class.
 
 So in one word: we're going to show sweetest's strengths by reusing test code and working with dependencies distributed among multiple steps classes.
 
 #### The fake backend
 
-The concept of steps classes is that they encapsulate everything needed to add a piece to the test system. In this example that will be:
+The aim of a steps class is to encapsulate test behavior which can subsequently be plugged into the test system wherever needed.
+
+For the fake backend in this example that includes:
 
 * Offering a fake implementation of a production interface
 * Configuration (providing the fake to dependency management)
@@ -871,7 +873,7 @@ Apparently both test classes test the same physical entity (`DeviceSelectionView
 #### Summing up naming
 
 1. **Business-facing test** (`LoginTest`): just name the test after the feature or business concept (`Login`) under test
-2. **Technology-facing test** (`LoginViewModelTest`): in this case it's fair to use the specific component under test
+1. **Technology-facing test** (`LoginViewModelTest`): in this case it's fair to use the specific component under test
 
 ### Structuring steps classes
 
@@ -971,9 +973,9 @@ And why is `backend` just called `backend` and not `backendGateway`? And why is 
 No matter what a steps class does, the naming has to show it as clear as possible:
 
 1. Abstraction of a **class** (`LoginViewModelSteps`): use this if a steps class solely concentrates on interacting with or mocking/faking a single specific class or interface
-2. Abstraction of an **integration of classes** (`LoginViewModelIntegrationSteps`): in cases where the class or interface is tested in integration with other classes
-3. Abstraction of a **feature** (`LoginSteps`): in cases of business-facing tests, sitting quite at the top of the system
-4. Abstraction of **other subsystems** (`BackendFakeSteps`): in cases where rather low-level subsystems are abstracted in business terms
+1. Abstraction of an **integration of classes** (`LoginViewModelIntegrationSteps`): in cases where the class or interface is tested in integration with other classes
+1. Abstraction of a **feature** (`LoginSteps`): in cases of business-facing tests, sitting quite at the top of the system
+1. Abstraction of **other subsystems** (`BackendFakeSteps`): in cases where rather low-level subsystems are abstracted in business terms
 
 As already discussed, 3 and 4 should be preferred as much as possible or feasible.
 
