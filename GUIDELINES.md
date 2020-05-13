@@ -601,7 +601,7 @@ override fun configure() = super.configure()
 
 sweetest is tailored for systems where [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) is used. As you most likely have no DI during unit testing sweetest makes good for that by offering its own simple way of doing it.
 
-In sweetest all dependencies are treated as singletons, so there will be only one instance of a certain type. So it can only be used in these cases. In all other cases you have to fall back to managing object creation on your own. The automated way should cater for the very most cases, though.
+In sweetest all dependencies are treated as singletons, so there will be only one instance of a certain type and it can only be used in these cases. In all other cases you have to fall back to managing object creation on your own. The automated way should cater for the very most cases, though.
 
 #### Dependency modes
 
