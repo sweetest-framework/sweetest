@@ -612,7 +612,7 @@ For each dependency type there are two possibilities: either it's configured to 
 If a dependency is set to the "mock" mode, a Mockito mock is created for the dependency.
 
 * The mock is created lazily on demand
-* The same instance is cached when the same type is needed elsewhere
+* The instance is cached and reused when the same type is needed elsewhere
 * The cache is cleared after each test function run
 
 ##### Real
