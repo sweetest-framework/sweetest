@@ -605,14 +605,14 @@ In sweetest all dependencies are treated as singletons, so there will be only on
 
 #### Dependency modes
 
-For each dependency type there are two possibilities: either it's configured to be mock or real. Unless you tell sweetest otherwise, all dependencies are set to the "mock" mode by default.
+For each dependency type there are two possibilities: either it's configured to be mocked or real. Unless you tell sweetest otherwise, all dependencies are set to the "mock" mode by default.
 
 ##### Mock
 
 If a dependency is set to the "mock" mode, a Mockito mock is created for the dependency.
 
 * The mock is created lazily on demand
-* The same instance is cached when the same type is needed elsewhere
+* The instance is cached and reused when the same type is needed elsewhere
 * The cache is cleared after each test function run
 
 ##### Real
