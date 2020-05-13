@@ -80,11 +80,13 @@ You can use the templates by beginning to type the abbreviations as shown in the
 
 ### Add a module configuration
 
-Given you have a module `app` you have to create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app`.
+Given you have a module `app` you have to create a file `AppModuleTestingConfiguration.kt` in the root package of your module, e.g. `com.example.app` inside the test sources.
 
 ```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration { ... }
 ```
+
+This is a top-level declaration, so that is all there is in this file.
 
 To learn more about the module testing configuration have a look at the [respective chapter in the reference](#module-testing-configuration).
 
@@ -112,8 +114,8 @@ The steps class will contain the _technical implementation_ of your test:
 ```kotlin
 package com.example.app.view
 
-class LoginSteps(testContext: TestContext)
-    : BaseSteps(testContext, appModuleTestingConfiguration)
+class LoginSteps(testContext: TestContext) :
+    BaseSteps(testContext, appModuleTestingConfiguration)
 ```
 
 You should put that class in the same package as the class with the highest abstraction level (`LoginViewModel`), in this case `com.example.app.view`.
@@ -181,7 +183,7 @@ In order to know how to set up the test system we should first quickly get a gra
 * = mocked
 ```
 
-To achieve this test setup you have to add a configuration that reflects the wanted setup in the steps class:
+To achieve this test setup you have to add a configuration that reflects the wanted setup in the steps class, e.g. `LoginSteps`:
 
 ```kotlin
 override fun configure() = super.configure()
@@ -200,7 +202,7 @@ private val viewModel by dependency<LoginViewModel>()
 private val backendGateway by dependency<BackendGateway>()
 ```
 
-By the way, dependencies can also be consumed in test classes, but that's a rather unusual use case.
+By the way, dependencies can also be used in test classes, but that's a rather unusual use case.
 
 So now let's have a look at the functions the class needs to have. As we did the design of the test case first we already know we need the following functions in the steps class:
 
@@ -225,7 +227,7 @@ fun givenExistingUser(email: String, password: String, authToken: AuthToken) {
 }
 ```
 
-In this case the state of a user being existent is achieved by setting up the backend gateway so it responds with specific answers.
+Within the `givenExistingUser` function the state of an existing user is achieved by setting up the backend gateway to respond with the expected return values for `checkEmail` and `login`.
 
 #### Add the `when` function
 
@@ -456,7 +458,7 @@ fun thenSessionWasStarted() {
 
 #### Use the fake backend in the integration test
 
-So currently the integration test we created in the beginning still uses it's own backend mock. Let's adapt the `LoginSteps` class to use the same fake backend created previously:
+So currently the integration test we created in the beginning still uses its own backend mock. Let's adapt the `LoginSteps` class to use the same fake backend created previously:
 
 ```kotlin
 class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
@@ -531,7 +533,7 @@ class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
 * Code reuse in tests is key in sweetest.
 * Testing on different levels (unit, integration, ...) can be achieved with comparatively little effort.
 * Technical implementation and test configuration as well as fake and mock behavior can and should be encapsulated in dedicated steps class using business language whenever possible.
-* In order get the most benefit, tests have to be more thought through, though.
+* In order to get the most benefit, tests have to be more thought through, though.
 
 All in all experience shows that designing tests with the appropriate principles in mind is a matter of training and can become second nature after some time.
 
@@ -568,7 +570,7 @@ An instance of a steps class can only exist once during the whole test. So if th
 
 Steps classes are initialized during a specific phase in the initialization of the framework and of course purged after each test function run to avoid side effects.
 
-By the way: the name "steps class" is taken from [Cucumber](https://cucumber.io/), a [behavior-driven testing](https://en.wikipedia.org/wiki/Behavior-driven_development) tool. Also there workflows are broken down into simple "steps" and grouped into steps classes. sweetest was in fact designed with interoperability with Cucumber in mind and takes the concepts further by allowing for interdependent steps classes and dependency management, where dependencies can be consumed across steps classes.
+By the way: the name "steps class" is taken from [Cucumber](https://cucumber.io/), a [behavior-driven testing](https://en.wikipedia.org/wiki/Behavior-driven_development) tool. Also there workflows are broken down into simple "steps" and grouped into steps classes. sweetest was in fact designed with interoperability with Cucumber in mind and takes the concepts further by allowing for interdependent steps classes and dependency management, where dependencies can be used across steps classes.
 
 #### Using steps classes
 
@@ -580,7 +582,7 @@ class LoginSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTes
 
 You have to reference the module testing configuration (in this case `appModuleTestingConfiguration`) of the module the component under test lies in.
 
-To consume a steps class you have to use the `steps` function inside a test or steps class:
+To use a steps class you have to use the `steps` function inside a test or steps class:
 
 ```kotlin
 val sut by steps<LoginSteps>()
@@ -804,7 +806,7 @@ The file has to be placed in the main sources and in the same package as the pro
 
 For a more detailed description of sweetest's concept of dependencies have a look at the [dependencies](#dependencies) chapter.
 
-All dependencies need to be listed in the module testing configuration:
+All dependencies needed to be auto-created have to be listed in the module testing configuration:
 
 ```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration {
@@ -875,7 +877,7 @@ Apparently both test classes test the same physical entity (`DeviceSelectionView
 
 The principles from the previous chapter don't only apply to the top-level acceptance and/or integration test classes, also steps classes should adhere whenever possible. This is especially true for the `BackendFakeSteps` class shown in the introduction part of this guidelines.
 
-In the example we create this steps class `BackendFakeSteps` by whose name we can already tell it rather aims at the concept of an abstract backend rather the concrete implementation of a `BackendGateway`. So the steps class is abstracting a backend on a very high level. This is good because by that it's API becomes as independent as possible from the concrete classes and data types. And by that we can feel fairly safe using this steps class in many places throughout our test suite without needing to fear future changes.
+In the example we create this steps class `BackendFakeSteps` by whose name we can already tell it rather aims at the concept of an abstract backend rather the concrete implementation of a `BackendGateway`. So the steps class is abstracting a backend on a very high level. This is good because by that its API becomes as independent as possible from the concrete classes and data types. And by that we can feel fairly safe using this steps class in many places throughout our test suite without needing to fear future changes.
 
 Also steps classes are to be placed in the same package as the concrete classes under test.
 
