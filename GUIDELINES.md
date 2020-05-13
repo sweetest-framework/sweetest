@@ -603,7 +603,7 @@ override fun configure() = super.configure()
 
 sweetest is tailored for systems where [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) is used. As you most likely have no DI during unit testing sweetest makes good for that by offering its own simple way of doing it.
 
-In sweetest all dependencies are treated as singletons, so there will be only one instance of a certain type. So it can only be used in these cases. In all other cases you have to fall back to managing object creation on your own. The automated way should cater for the very most cases, though.
+In sweetest all dependencies are treated as singletons, so there will be only one instance of a certain type and it can only be used in these cases. In all other cases you have to fall back to managing object creation on your own. The automated way should cater for the very most cases, though.
 
 #### Dependency modes
 
@@ -621,7 +621,7 @@ If a dependency is set to the "mock" mode, a Mockito mock is created for the dep
 
 What does it mean if you define a type as "real"?
 
-Instance creation is different from "mock" here: the constructor of the _real_ class will be called. In case there are parameters they will be satisfied with arguments by sweetest automatically. All the arguments will be handled as dependencies exactly the same way in a recursive manner until the dependency graph is built up.
+Contrary to "mock", the instance creation for "real" calls the constructor of the _real_ class. In case there are parameters they will be satisfied with arguments by sweetest automatically. All the arguments will be handled as dependencies exactly the same way in a recursive manner until the dependency graph is built up.
 
 Underlying dependencies of a dependency can have different modes, though. E.g. the `LoginViewModel` can have mode "real", but `LoginViewModel`'s dependency `AuthManager` can still be in "mock" mode.
 
@@ -634,7 +634,7 @@ override fun configure() = super.configure()
     .requireReal<LoginViewModel>()
 ```
 
-"require" here means that that you expect the type (in this case `LoginViewModel`) in its real form, not as a mock. So if the configuration says `mockOnly of<LoginViewModel>` or in another steps or test class you declare `requireMock<LoginViewModel>` there's a conflict and sweetest will throw an exception. Expectations about dependencies need to be unanbiguous in a test system.
+"require" here means that that you expect the type (in this case `LoginViewModel`) in its real form, not as a mock. So if the configuration says `mockOnly of<LoginViewModel>` or in another steps or test class you declare `requireMock<LoginViewModel>` there's a conflict and sweetest will throw an exception. Expectations about dependencies need to be unambiguous in a test system.
 
 **Caution:** make sure you have declared the dependency type in the [module testing configuration](#adding-dependencies)!
 
