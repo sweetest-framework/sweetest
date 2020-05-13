@@ -411,7 +411,7 @@ class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 ```
 
 * `AuthManager` is configured to be  a real instance (`requireReal<AuthManager>()`) as it's the class under test.
-* Access to `AuthManager` is added (`val instance by dependency<AuthManager>()`) as there needs to be interaction with the instance.
+* Access to the `AuthManager` instance is added (`val instance by dependency<AuthManager>()`) since it needs to be available for interaction.
 * The `BackendGateway` is implemented as a fake by adding `val backend by steps<BackendFakeSteps>()`.
 * As writing the test we might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): in the example it's used to perform verifications on it.
 
