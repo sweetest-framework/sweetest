@@ -17,8 +17,8 @@ After some time working with sweetest we came to the conclusion there are a lot 
       - [Add the `given` function](#add-the-given-function)
       - [Add the `when` function](#add-the-when-function)
       - [Add the `then` function](#add-the-then-function)
-    - [Current state](#current-state)
-    - [Improving structure by reusing test code](#improving-structure-by-reusing-test-code)
+    - [Current state](#current-state-of-the-example)
+    - [Improving structure by reusing test code](#further-improve-structure-by-reusing-code)
       - [The fake backend](#the-fake-backend)
       - [Create the steps class for the unit test](#create-the-steps-class-for-the-unit-test)
       - [Create the test class](#create-the-test-class)
@@ -249,7 +249,7 @@ fun thenEmailWasCheckedAtBackend(email: String) {
 }
 ```
 
-### Current state
+### Current state of the example
 
 ```kotlin
 class LoginTest : BaseJUnitTest(appModuleTestingConfiguration) {
@@ -295,7 +295,7 @@ class LoginSteps(testContext: TestContext) :
 }
 ```
 
-### Improving structure by reusing test code
+### Further improve structure by reusing code
 
 What if we want to create a simple unit test for `AuthManager`?
 
@@ -413,7 +413,7 @@ class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 * `AuthManager` is configured to be  a real instance (`requireReal<AuthManager>()`) as it's the class under test.
 * Access to the `AuthManager` instance is added (`val instance by dependency<AuthManager>()`) since it needs to be available for interaction.
 * The `BackendGateway` is implemented as a fake by adding `val backend by steps<BackendFakeSteps>()`.
-* As writing the test we might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): in the example it's used to perform verifications on it.
+* As writing the test we might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): in the example it's used to perform verifications on it. Also `SessionStore` is a perfect candidate for being faked in `SessionFakeSteps` or similar, but for the sake of simplicity we only concentrate on faking the backend.
 
 But why is `backend` just called `backend` and not `backendGateway`? And why is it public? For an explanation have a look at ["Can there be too much abstraction?"](#can-there-be-too-much-abstraction).
 
