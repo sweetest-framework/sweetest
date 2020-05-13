@@ -299,11 +299,11 @@ class LoginSteps(testContext: TestContext) :
 
 What if we want to create a simple unit test for `AuthManager`?
 
-1. We can create a steps which resembles a fake version of the backend gateway that is capable of handling tasks like having fake users and acting upon that data.
+1. We can create a steps class which resembles a fake version of the backend gateway that is capable of handling tasks like having fake users and acting upon that data.
 1. We can create a test and steps class pair which focuses on unit-testing the `AuthManager` that uses the fake backend.
 1. We can re-wire the previous integration test to use the same fake backend steps class.
 
-So in one word: we're going to show sweetest's strengths by reusing test code and working with dependencies distributed among multiple steps classes.
+In short, we're going to show sweetest's strengths by reusing test code and working with dependencies distributed among multiple steps classes.
 
 #### The fake backend
 
