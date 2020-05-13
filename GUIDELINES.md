@@ -303,7 +303,7 @@ What if we want to create a simple unit test for `AuthManager`?
 3. We can create a test and steps class pair which focuses on unit-testing the `AuthManager` that uses the fake backend.
 4. We can re-wire the previous integration test to use the same fake backend steps class.
 
-So in one word: we're going to show sweetest's strengths by reusing test code and working with dependencies distributed among multiple steps classes.
+In short, we're going to show sweetest's strengths by reusing test code and working with dependencies distributed among multiple steps classes.
 
 #### The fake backend
 
