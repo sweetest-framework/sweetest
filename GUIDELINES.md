@@ -632,7 +632,7 @@ override fun configure() = super.configure()
     .requireReal<LoginViewModel>()
 ```
 
-"require" here means that that you expect the type (in this case `LoginViewModel`) in its real form, not as a mock. So if the configuration says `mockOnly of<LoginViewModel>` or in another steps or test class you declare `requireMock<LoginViewModel>` there's a conflict and sweetest will throw an exception. Expectations about dependencies need to be unanbiguous in a test system.
+"require" here means that that you expect the type (in this case `LoginViewModel`) in its real form, not as a mock. So if the configuration says `mockOnly of<LoginViewModel>` or in another steps or test class you declare `requireMock<LoginViewModel>` there's a conflict and sweetest will throw an exception. Expectations about dependencies need to be unambiguous in a test system.
 
 **Caution:** make sure you have declared the dependency type in the [module testing configuration](#adding-dependencies)!
 
