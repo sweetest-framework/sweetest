@@ -621,7 +621,7 @@ What does it mean if you define a type as "real"?
 
 Instance creation is different from "mock" here: the constructor of the _real_ class will be called. In case there are parameters they will be satisfied with arguments by sweetest automatically. All the arguments will be handled as dependencies exactly the same way in a recursive manner until the dependency graph is built up.
 
-Of course also dependencies of dependencies can have different modes. E.g. the `LoginViewModel` can have mode "real", but the underlying dependencies can have mode "mock".
+Underlying dependencies of a dependency can have different modes, though. E.g. the `LoginViewModel` can have mode "real", but `LoginViewModel`'s dependency `AuthManager` can still be in "mock" mode.
 
 ##### Configuring and requiring modes
 
