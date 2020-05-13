@@ -368,11 +368,11 @@ class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 }
 ```
 
-Maybe you noticed that the name `BackendFakeSteps` doesn't reference the `BackendGateway` directly, whose behavior it implements. This is intentional: this ties it more to the abstract concept of a "backend" than to how its access is technically implemented. So if we decide to come up with a different way of accessing the backend in the future, the steps classes' API and the tests using it can remain unchanged. That is the reason why...
+Notice that the name `BackendFakeSteps` doesn't mention the `BackendGateway` (whose behavior it fakes) exactly. This is intentional: it ties the steps class more to the abstract concept of a "backend" than to how it is technically implemented. So if we decide to come up with a different way of accessing the backend in the future, the steps classes' API and the tests using it can remain unchanged. That is the reason why...
 
 * the steps classes' API doesn't reveal much about the technicalities
 * we keep the fake implementation private
-* the naming in the API is evolving around business terms as much as possible
+* the naming in the API is revolving around business terms as much as possible
 
 If you're wondering how the `BackendFakeUser` looks like, here it is:
 
@@ -389,11 +389,13 @@ data class BackendFakeUser(
 }
 ```
 
-It also contains predefined data `USER_A` and `USER_B` so it can be reused by multiple tests without the need to define constants individually each time. Maybe you noticed that this class is outside the steps class; that is intentional too: its use reaches beyond the steps class as it can be handy for various test scenarios, no matter you decide to use the fake backend or not.
+It also contains predefined pieces of data (`USER_A` and `USER_B`) so they can be reused by multiple tests without the need to define constants individually. This class is deliberately not within the steps class to make it accessible beyond that scope since it might be handy for various test scenarios, no matter you decide to use the fake backend or not.
 
 #### Create the steps class for the unit test
 
 So let's create a steps class responsible for just unit-testing `AuthManager`:
+
+It's obvious that the `AuthManager` type is the main concern in the `AuthManagerStaps` class, but also `SessionStore` and `BackendGateway` have to be considered, as they are two direct dependencies of `AuthManager`. Taking that into consideration the steps class is created with the following outcome:
 
 ```kotlin
 class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
@@ -408,9 +410,7 @@ class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 }
 ```
 
-The `AuthManager` type is of corse in the game, but also `SessionStore` and `BackendGateway` have to be considered, as they are two direct dependencies of `AuthManager`; so somehow that has to be reflected in the steps class:
-
-* `AuthManager` is configured to be  a real instance (`requireReal<AuthManager>()`) as it's obviously the class under test.
+* `AuthManager` is configured to be  a real instance (`requireReal<AuthManager>()`) as it's the class under test.
 * Access to `AuthManager` is added (`val instance by dependency<AuthManager>()`) as there needs to be interaction with the instance.
 * The `BackendGateway` is implemented as a fake by adding `val backend by steps<BackendFakeSteps>()`.
 * As writing the test you might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): even though it's just a mock (as it's not configured otherwise) you still can perform verifications with it.
@@ -570,7 +570,7 @@ The second aim of steps classes is to abstract not only the test code but also *
 
 An instance of a steps class can only exist once during the whole test. So if the same type of steps class is requested multiple times always the same instance is returned.
 
-Steps classes are initialized during a specific phase in the initialization of the framework and of course purged after each test function run to avoid side effects.
+Steps classes are initialized during a specific phase in the initialization of the framework and purged after each test function run to avoid side effects.
 
 By the way: the name "steps class" is taken from [Cucumber](https://cucumber.io/), a [behavior-driven testing](https://en.wikipedia.org/wiki/Behavior-driven_development) tool. Also there workflows are broken down into simple "steps" and grouped into steps classes. sweetest was in fact designed with interoperability with Cucumber in mind and takes the concepts further by allowing for interdependent steps classes and dependency management, where dependencies can be used across steps classes.
 
@@ -621,7 +621,7 @@ What does it mean if you define a type as "real"?
 
 Instance creation is different from "mock" here: the constructor of the _real_ class will be called. In case there are parameters they will be satisfied with arguments by sweetest automatically. All the arguments will be handled as dependencies exactly the same way in a recursive manner until the dependency graph is built up.
 
-Of course dependencies of dependencies can have different modes. E.g. the `LoginViewModel` can have mode "real", but the underlying dependencies can have mode "mock".
+Of course also dependencies of dependencies can have different modes. E.g. the `LoginViewModel` can have mode "real", but the underlying dependencies can have mode "mock".
 
 ##### Configuring and requiring modes
 
@@ -979,7 +979,7 @@ No matter what a steps class does, the naming has to show it as clear as possibl
 
 As already discussed, 3 and 4 should be preferred as much as possible or feasible.
 
-In most cases steps should revolve around real instances. By giving a class the name `AuthManagerSteps` it becomes clear the  `AuthManager` will be configured to be "real" by the steps class. For `LoginSteps` it's similar: at least a portion of the test system is expected to be configured to be real. Of course underlying dependencies can still be mocks or fakes.
+In most cases steps should revolve around real instances. By giving a class the name `AuthManagerSteps` it becomes clear the  `AuthManager` will be configured to be "real" by the steps class. For `LoginSteps` it's similar: at least a portion of the test system is expected to be configured to be real. Underlying dependencies can still be mocks or fakes.
 
 But for steps classes which introduce mocked or fake behavior make sure the name of the steps class reflects that! Examples:
 
