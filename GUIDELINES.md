@@ -413,7 +413,7 @@ class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext, appMod
 * `AuthManager` is configured to be  a real instance (`requireReal<AuthManager>()`) as it's the class under test.
 * Access to `AuthManager` is added (`val instance by dependency<AuthManager>()`) as there needs to be interaction with the instance.
 * The `BackendGateway` is implemented as a fake by adding `val backend by steps<BackendFakeSteps>()`.
-* As writing the test you might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): even though it's just a mock (as it's not configured otherwise) you still can perform verifications with it.
+* As writing the test we might figure out that also access to `SessionStore` is useful (`val sessionStore by dependency<SessionStore>()`): in the example it's used to perform verifications on it.
 
 But why is `backend` just called `backend` and not `backendGateway`? And why is it public? For an explanation have a look at ["Can there be too much abstraction?"](#can-there-be-too-much-abstraction).
 
