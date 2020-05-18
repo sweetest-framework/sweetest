@@ -25,6 +25,7 @@ Benefits:
 
 Further resources:
 
+- [Test development guidelines](GUIDELINES.md) (getting started and reference)
 - [mySugr's journey to "sweetest"](http://bit.ly/sweetest-journey)
 - [Introduction – create tests you actually love working with](http://bit.ly/sweetest-intro)
 
@@ -33,12 +34,9 @@ Further resources:
 * [Customise and contribute](#customise-and-contribute)
 * [How does it look?](#how-does-it-look)
 * [Setup](#setup)
-* [Getting started](#getting-started)
-* [Guidelines](#guidelines)
+* [Documentation](#documentation)
 * [IntelliJ live templates](#intellij-live-templates)
 * [License](#license)
-
-Further details and references to related content will be available soon!
 
 ## Customise and contribute
 
@@ -56,7 +54,7 @@ In this example you can see that
 * Setup, mocking/stubbing, interaction with the system under test and
   assertion is abstracted away to "steps" classes
 
-```
+```kotlin
 class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
@@ -114,7 +112,7 @@ class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
 In order to tell the framework about all dependencies which can be put under test or can act as
 mocks you have to specify them in the testing configuration:
 
-```
+```kotlin
 val appModuleTestingConfiguration = moduleTestingConfiguration {
 
     /**
@@ -148,7 +146,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
 
 The test implementation code is abstracted into a class:
 
-```
+```kotlin
 class AuthManagerSteps(testContext: TestContext)
     : BaseSteps(testContext, appModuleTestingConfiguration) {
 
@@ -195,34 +193,17 @@ In this class you can see mocking/stubbing, interaction (`when...`) and assertio
 
 In your module's Gradle file please add the following line in the `dependencies` section:
 
-```testImplementation 'com.mysugr.sweetest:sweetest:1.0.0'```
+```
+testImplementation 'com.mysugr.sweetest:sweetest:1.0.1'
+```
 
 If the dependency can't be found make sure you have `jcenter()` in the `repositories` section.
 
-## Getting started
+## Documentation
 
-Please follow the following steps to get started with this testing framework. Please refer to the
-examples from above as they are containing important details to understand
+Please have a look at the [test development guidelines](GUIDELINES.md)! Here you can find out how to get started in a step-by-step fashion.
 
-1. For each module create a module testing configuration. Note that it's not a class but a global
-   property. Create an entry for each dependency you want to put under test, including the classes
-   under test themselves:<br>
-   `dependency [any | mockOnly | realOnly] [of<[Type]> | initializer { [object creation] }]`
-2. Create a steps class for each dependency, including the class under test (we usually name them
-   `[class under test]Steps`).
-3. Finally you can create the final test. Here you create references to the steps objects whose
-   functions can be called.
-
-## Guidelines
-
-* Steps should have one private property `instance`which contains the actual instance that's
-  controlled via the steps class.
-* Use `given` (setup), `when` (interaction) and `then` (assertion) as prefixes for all public
-  functions so the implementer can just start typing these keywords in order to narrow the
-  auto-completion search down quickly.
-* Use names that would read understandably in a test even for non-tech people.
-* Use `import com.mysugr.sweetest.framework.base.*` to make use of the `dependency` and `steps`
-  functions as well as utilities which you might need for writing convenient test and steps code.
+In the [reference section](GUIDELINES.md#reference) you can look up all relevant information you are going to need during test development.
 
 ## IntelliJ live templates
 
@@ -231,7 +212,7 @@ top of that you can also use live templates to make things even easier:
 
 <img src="readme/live-remplates-ssteps.gif">
 
-To use them please download these [exported IntelliJ settings](tools/live-templates.jar) and import
+To use them please download these [exported IntelliJ settings](raw/master/tools/live-templates.jar) and import
 them into your IDE at `File / Import settings` (make sure to just check live templates). After
 the import you can see them in the settings at `Editor / Live Templates`:
 
