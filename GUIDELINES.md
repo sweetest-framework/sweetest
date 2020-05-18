@@ -72,7 +72,7 @@ If you use [IntelliJ IDEA](https://www.jetbrains.com/idea) (respectively [Androi
 
 <img src="readme/live-remplates-ssteps.gif">
 
-To make use of them please [download these exported IntelliJ settings](raw/master/tools/live-templates.jar) and import them into your IDE with `File / Import settings`. After the import you can see them in the settings at `Editor / Live Templates`:
+To make use of them please [download these exported IntelliJ settings](https://github.com/mysugr/sweetest/blob/master/tools/live-templates.jar?raw=true) and import them into your IDE with `File / Import settings`. After the import you can see them in the settings at `Editor / Live Templates`:
 
 <img src="readme/live-templates-settings.png">
 

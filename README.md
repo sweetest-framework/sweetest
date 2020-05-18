@@ -212,7 +212,7 @@ top of that you can also use live templates to make things even easier:
 
 <img src="readme/live-remplates-ssteps.gif">
 
-To use them please download these [exported IntelliJ settings](raw/master/tools/live-templates.jar) and import
+To use them please download these [exported IntelliJ settings](https://github.com/mysugr/sweetest/blob/master/tools/live-templates.jar?raw=true) and import
 them into your IDE at `File / Import settings` (make sure to just check live templates). After
 the import you can see them in the settings at `Editor / Live Templates`:
 
