@@ -98,10 +98,9 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
             "Use \"provide\" instead.",
         replaceWith = ReplaceWith("provide")
     )
-    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) =
-        apply {
-            testContext.dependencies.offerRealRequired(T::class, initializer)
-        }
+    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) = apply {
+        testContext.dependencies.offerRealRequired(T::class, initializer)
+    }
 
     @Deprecated(
         "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
@@ -126,10 +125,9 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
             "Use \"provide\" instead.",
         replaceWith = ReplaceWith("provide")
     )
-    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) =
-        apply {
-            testContext.dependencies.offerMockRequired(T::class, initializer)
-        }
+    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) = apply {
+        testContext.dependencies.offerMockRequired(T::class, initializer)
+    }
 
     @Deprecated(
         "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
@@ -144,39 +142,21 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         testContext.factories.configure(FactoryRunner0(R::class.java, createObject))
     }
 
-    inline fun <reified T : Steps, reified R : Any> offerFactory(noinline createObject: (T) -> R) =
-        apply {
-            testContext.factories.configure(
-                FactoryRunner1(
-                    R::class.java,
-                    T::class.java,
-                    createObject
-                )
-            )
-        }
+    inline fun <reified T : Steps, reified R : Any> offerFactory(noinline createObject: (T) -> R) = apply {
+        testContext.factories.configure(FactoryRunner1(R::class.java, T::class.java, createObject))
+    }
 
     inline fun <reified T1 : Steps, reified T2 : Steps, reified R : Any> offerFactory(
         noinline createObject: (T1, T2) -> R
     ) = apply {
-        testContext.factories.configure(
-            FactoryRunner2(
-                R::class.java,
-                T1::class.java,
-                T2::class.java,
-                createObject
-            )
-        )
+        testContext.factories.configure(FactoryRunner2(R::class.java, T1::class.java, T2::class.java, createObject))
     }
 
     inline fun <reified T1 : Steps, reified T2 : Steps, reified T3 : Steps, reified R : Any> offerFactory(
         noinline createObject: (T1, T2, T3) -> R
     ) = apply {
-        testContext.factories.configure(
-            FactoryRunner3(
-                R::class.java, T1::class.java, T2::class.java, T3::class.java,
-                createObject
-            )
-        )
+        testContext.factories.configure(FactoryRunner3(R::class.java, T1::class.java, T2::class.java, T3::class.java,
+            createObject))
     }
 
     fun onInitializeDependencies(run: () -> Unit) = apply {

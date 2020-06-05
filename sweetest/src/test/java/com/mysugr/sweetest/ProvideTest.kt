@@ -175,15 +175,21 @@ class ProvideTest {
 
     private fun givenConfiguredWithAny() {
         moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestUserService>()
-            dependency any of<TestViewModel>()
+            dependency mockOnly initializer {
+                object : TestUserService {
+                    override fun getUserName(): String {
+                        return ""
+                    }
+                }
+            }
+            dependency realOnly of<TestViewModel>()
         }
     }
 
     private fun givenServiceConfiguredAsMockOnly() {
         moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly of<TestUserService>()
-            dependency any of<TestViewModel>()
+            dependency mockOnly of<TestViewModel>()
         }
     }
 }
