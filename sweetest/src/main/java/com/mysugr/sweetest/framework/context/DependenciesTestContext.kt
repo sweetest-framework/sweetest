@@ -13,6 +13,7 @@ class DependenciesTestContext {
     }
 
     fun offerReal(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
+        // TODO fix inconsistence and check effect on tests (should use getDependencyConfiguration()!)
         val dependency = TestEnvironment.dependencies.configurations.getAssignableFrom(clazz)
         TestEnvironment.dependencies.states[dependency].realInitializerUnknown = initializer
     }

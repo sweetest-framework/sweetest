@@ -3,6 +3,8 @@ package com.mysugr.sweetest.framework.dependency
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.jvm.reflect
 
 class DependencyState<T : Any>(
     private val initializerContext: DependencyInitializerContext,
@@ -31,6 +33,16 @@ class DependencyState<T : Any>(
             mockInitializer = value as? DependencyInitializer<T>
         }
         get() = mockInitializer
+
+    val aliasType: KClass<T>?
+        get() {
+            val initializer = when (mode) {
+                DependencyMode.SPY, DependencyMode.REAL -> realInitializer
+                DependencyMode.MOCK -> mockInitializer
+            }
+            // TODO reflect() could be expensive - cache?
+            return initializer?.reflect()?.returnType?.jvmErasure as? KClass<T>?
+        }
 
     val instance: T
         get() = instanceField ?: initializeInstance()

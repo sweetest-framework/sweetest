@@ -2,6 +2,8 @@ package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
+import kotlin.reflect.jvm.jvmErasure
+import kotlin.reflect.jvm.reflect
 
 class DependencyConfiguration<T : Any>(
     val clazz: KClass<T>,
@@ -10,6 +12,7 @@ class DependencyConfiguration<T : Any>(
     val defaultDependencyMode: DependencyMode? = null
 ) {
 
+    // TODO remove
     val instance: T
         get() = TestEnvironment.dependencies.states[this].instance
 

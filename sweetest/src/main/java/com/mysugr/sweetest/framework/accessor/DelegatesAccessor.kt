@@ -26,8 +26,7 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
                 throw RuntimeException("Steps classes can's be accessed as dependency, please " +
                     "use the correct function to access steps classes!")
             }
-            val dependency = TestEnvironment.dependencies.configurations.getAssignableTo(T::class)
-            val dependencyState = TestEnvironment.dependencies.states[dependency]
+            val dependencyState = TestEnvironment.dependencies.states.getForConsumptionOf(T::class)
             return DependencyPropertyDelegate(dependencyState)
         } catch (throwable: Throwable) {
             throw RuntimeException("Call on \"dependency<${T::class.simpleName}>\" failed",
