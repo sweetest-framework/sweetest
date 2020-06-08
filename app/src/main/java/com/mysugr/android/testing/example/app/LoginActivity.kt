@@ -15,8 +15,6 @@ import kotlinx.android.synthetic.main.activity_login.logout_button
 import kotlinx.android.synthetic.main.activity_login.message
 import kotlinx.android.synthetic.main.activity_login.password
 import kotlinx.android.synthetic.main.activity_login.sign_in_button
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.logging.Level

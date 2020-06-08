@@ -57,5 +57,3 @@ class BackendFakeSteps(testContext: TestContext) : BaseSteps(testContext, appMod
         }
     }
 }
-
-
