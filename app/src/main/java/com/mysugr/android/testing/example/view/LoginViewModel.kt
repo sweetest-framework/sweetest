@@ -5,20 +5,18 @@ import androidx.lifecycle.viewModelScope
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.coroutine.DispatcherProvider
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class LoginViewModel(
     private val authManager: AuthManager,
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
+
     val state: Flow<State>
+
     private val stateChannel = ConflatedBroadcastChannel<State>()
 
     init {
@@ -55,11 +53,8 @@ class LoginViewModel(
     }
 
     private fun validateEmail(email: String): Boolean {
-        return Regex(
-            "^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})\$"
-        ).matches(
-            email
-        )
+        return Regex("^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})\$")
+            .matches(email)
     }
 
     fun logout() {

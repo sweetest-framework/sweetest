@@ -11,12 +11,12 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
 
-class OldBackendGatewaySteps(testContext: TestContext) :
+class BackendGatewaySteps(testContext: TestContext) :
     BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
         .requireMock<BackendGateway>()
-        .onSetUp(this::setUp)
+        .onSetUp(::setUp)
 
     private val instance by dependency<BackendGateway>()
 

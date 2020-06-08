@@ -12,7 +12,7 @@ import java.util.UUID
 
 class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
 
-    override fun configure() = super.configure().requireMock<BackendGateway>().onSetUp(this::setUp)
+    override fun configure() = super.configure().requireMock<BackendGateway>().onSetUp(::setUp)
 
     private val instance by dependency<BackendGateway>()
     private var backendUsers = mutableListOf<FakeBackendUser>()

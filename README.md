@@ -153,7 +153,7 @@ class AuthManagerSteps(testContext: TestContext)
     : BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure()= super.configure()
-            .onSetUp(this::setUp)
+            .onSetUp(::setUp)
 
     private val instance by dependency<AuthManager>()
     private val user by steps<UserSteps>()

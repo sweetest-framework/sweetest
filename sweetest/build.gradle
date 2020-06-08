@@ -54,5 +54,4 @@ dependencies {
     api "io.cucumber:cucumber-jvm:$versions.cucumber"
     api "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     api "junit:junit:4.12"
-
 }

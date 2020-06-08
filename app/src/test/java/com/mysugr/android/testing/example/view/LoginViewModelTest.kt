@@ -13,6 +13,11 @@ import kotlin.coroutines.ContinuationInterceptor
 
 class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
+    private val sut by steps<LoginViewModelSteps>()
+    private val authManager by steps<AuthManagerMockSteps>()
+    private val scope = TestCoroutineScope()
+    private val user = FakeBackendUser("test@test.com", "supersecure")
+
     override fun configure() = super.configure()
         .requireReal<LoginViewModel>()
         .offerMockRequired { scope.coroutineContext[ContinuationInterceptor] as CoroutineDispatcher }
@@ -20,12 +25,6 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
             sut.scope = scope
             sut.whenInitialized()
         }
-
-    private val sut by steps<LoginViewModelSteps>()
-    private val authManager by steps<AuthManagerMockSteps>()
-
-    private val scope = TestCoroutineScope()
-    private val user = FakeBackendUser("test@test.com", "supersecure")
 
     @Test
     fun `Login with existing email and correct password`() {
