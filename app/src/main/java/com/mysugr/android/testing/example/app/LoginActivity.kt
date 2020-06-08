@@ -9,8 +9,6 @@ import com.mysugr.android.testing.example.app.databinding.ActivityLoginBinding
 import com.mysugr.android.testing.example.dependency.DependencyFramework
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import java.util.logging.Level
