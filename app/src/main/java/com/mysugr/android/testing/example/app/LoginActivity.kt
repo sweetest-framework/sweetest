@@ -22,8 +22,6 @@ import kotlinx.coroutines.flow.onEach
 import java.util.logging.Level
 import java.util.logging.Logger
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class LoginActivity : AppCompatActivity() {
 
     private val logger = Logger.getLogger(this::class.java.simpleName)

@@ -9,7 +9,7 @@ import org.junit.Test
 
 class AuthManagerTest2 : BaseJUnitTest(appModuleTestingConfiguration) {
 
-    private val sut by steps<AuthManagerSteps>()
+    private val sut by steps<AuthManagerSteps2>()
 
     @Test
     fun `Login as existing user, checks for existing email`() = sut {

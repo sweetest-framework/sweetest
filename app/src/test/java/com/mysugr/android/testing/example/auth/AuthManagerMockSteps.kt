@@ -16,7 +16,7 @@ class AuthManagerMockSteps(testContext: TestContext) :
 
     override fun configure() = super.configure()
         .requireMock<AuthManager>()
-        .onSetUp(this::setUp)
+        .onSetUp(::setUp)
 
     private val instance by dependency<AuthManager>()
     private val user by steps<UserSteps>()
