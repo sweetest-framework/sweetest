@@ -3,7 +3,7 @@ package com.mysugr.android.testing.example.feature.auth
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGatewayMockSteps
-import com.mysugr.android.testing.example.net.FakeBackendUser
+import com.mysugr.android.testing.example.net.BackendFakeUser
 import com.mysugr.android.testing.example.state.SessionStoreSteps
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModelSteps
@@ -40,7 +40,7 @@ class LoginIntegrationTestSteps(testContext: TestContext) :
 
     @Given("^there is a user existing with email address \"([^\"]*)\" and password \"([^\"]*)\"$")
     fun givenRegisteredUser(email: String, password: String) {
-        backendGateway.givenUsers(FakeBackendUser(email, password))
+        backendGateway.givenUsers(BackendFakeUser(email, password))
     }
 
     @When("^trying to login or register with email address \"([^\"]*)\" and password \"([^\"]*)\"$")

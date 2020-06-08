@@ -2,7 +2,7 @@ package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManagerMockSteps
-import com.mysugr.android.testing.example.net.FakeBackendUser
+import com.mysugr.android.testing.example.net.BackendFakeUser
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
 import com.mysugr.sweetest.framework.base.steps
@@ -25,7 +25,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
     private val authManager by steps<AuthManagerMockSteps>()
 
     private val scope = TestCoroutineScope()
-    private val user = FakeBackendUser("test@test.com", "supersecure")
+    private val user = BackendFakeUser("test@test.com", "supersecure")
 
     @Test
     fun `Login with existing email and correct password`() {

@@ -8,14 +8,13 @@ import com.mysugr.sweetest.framework.context.TestContext
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import java.util.UUID
 
 class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
 
     override fun configure() = super.configure().requireMock<BackendGateway>().onSetUp(this::setUp)
 
     private val instance by dependency<BackendGateway>()
-    private var backendUsers = mutableListOf<FakeBackendUser>()
+    private var backendUsers = mutableListOf<BackendFakeUser>()
 
     private fun setUp() {
         `when`(instance.checkEmail(anyString())).then {
@@ -33,7 +32,7 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
         `when`(instance.register(anyString(), anyString())).then {
             val email = it.arguments[0] as String
             val password = it.arguments[1] as String
-            val newUser = FakeBackendUser(email, password)
+            val newUser = BackendFakeUser(email, password)
             backendUsers.add(newUser)
             newUser.authToken
         }
@@ -46,8 +45,8 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
         }
     }
 
-    fun givenUsers(vararg backendUsers: FakeBackendUser) {
-        this.backendUsers = backendUsers.toMutableList()
+    fun givenUsers(vararg backendFakeUsers: BackendFakeUser) {
+        this.backendUsers = backendFakeUsers.toMutableList()
     }
 
     fun thenEmailIsChecked(email: String) {
@@ -62,13 +61,7 @@ class BackendGatewayMockSteps(testContext: TestContext) : BaseSteps(testContext,
         verify(instance).register(email, password)
     }
 
-    fun getUser(email: String): FakeBackendUser {
+    fun getUser(email: String): BackendFakeUser {
         return backendUsers.find { it.email == email } ?: error("User $email not found")
     }
 }
-
-data class FakeBackendUser(
-    val email: String,
-    val password: String,
-    val authToken: AuthToken = UUID.randomUUID().toString()
-)

@@ -1,13 +1,13 @@
 
 package com.mysugr.android.testing.example
 
-import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.coroutine.FakeDispatcherProvider
 import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.state.SessionStore
+import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.test.TestCoroutineScope
 
 val appModuleTestingConfiguration = moduleTestingConfiguration {
 
@@ -36,7 +36,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
      */
     dependency realOnly initializer { LoginViewModel(instanceOf(), instanceOf()) }
 
-    dependency mockOnly initializer { FakeDispatcherProvider(instanceOf()) }
+    dependency mockOnly initializer { FakeDispatcherProvider(instanceOf<TestCoroutineScope>()) }
 
-    dependency any of<CoroutineDispatcher>()
+    dependency any of<TestCoroutineScope>()
 }
