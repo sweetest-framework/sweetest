@@ -3,7 +3,6 @@ package com.mysugr.sweetest
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.framework.dependency.DependencyConfigurations
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.util.isMock
 import com.mysugr.sweetest.util.mock

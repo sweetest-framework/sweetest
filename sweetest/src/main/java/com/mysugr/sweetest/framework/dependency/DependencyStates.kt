@@ -25,8 +25,7 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
 
     override val all get() = statesMap.values
 
-    override operator fun <T : Any> get(configuration: DependencyConfiguration<T>):
-        DependencyState<T> {
+    override operator fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T> {
         val found = statesMap[configuration]
         return if (found == null) {
             val newState = DependencyState(initializerContext, configuration)

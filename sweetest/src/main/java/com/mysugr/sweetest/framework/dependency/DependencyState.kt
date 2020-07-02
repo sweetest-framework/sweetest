@@ -98,7 +98,8 @@ class DependencyState<T : Any>(
             } catch (exception: Exception) {
                 throw RuntimeException(
                     "At least one dependency required by the constructor could " +
-                        "not be found.", exception
+                        "not be found.",
+                    exception
                 )
             }
 
@@ -107,7 +108,8 @@ class DependencyState<T : Any>(
             throw RuntimeException(
                 "Couldn't automatically construct dependency \"$configuration\". Either you need " +
                     "a manual initializer, the class should have a single constructor or one of the dependencies " +
-                    "required by the constructor could not be initialized.", exception
+                    "required by the constructor could not be initialized.",
+                exception
             )
         }
     }
@@ -128,10 +130,7 @@ class DependencyState<T : Any>(
         } catch (mockitoException: MockitoException) {
             throw mockitoException
         } catch (throwable: Throwable) {
-            throw DependencyInstanceInitializationException(
-                "Initializer for \"$configuration\" " +
-                    "failed", throwable
-            )
+            throw DependencyInstanceInitializationException("Initializer for \"$configuration\" failed", throwable)
         }
     }
 

@@ -66,25 +66,25 @@ class LoginActivityTest {
 
         state = State.LoggedOut()
         onView(withId(R.id.login_progress))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+            .check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.login_form))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
         state = State.Busy()
         onView(withId(R.id.login_progress))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         onView(withId(R.id.login_form))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+            .check(matches(withEffectiveVisibility(Visibility.GONE)))
 
         state = State.Error()
         onView(withId(R.id.login_progress))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+            .check(matches(withEffectiveVisibility(Visibility.GONE)))
         onView(withId(R.id.login_form))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
 
         state = State.LoggedIn(true)
         onView(withId(R.id.logout_button))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 
     @Test
@@ -94,18 +94,18 @@ class LoginActivityTest {
             val expectedPassword = "supersecure"
             state = State.LoggedOut()
             onView(withId(R.id.email))
-                    .perform(replaceText(expectedEmail))
+                .perform(replaceText(expectedEmail))
             onView(withId(R.id.password))
-                    .perform(replaceText(expectedPassword))
+                .perform(replaceText(expectedPassword))
             onView(withId(R.id.sign_in_button))
-                    .perform(click())
+                .perform(click())
             verify(loginViewModel).loginOrRegister(expectedEmail, expectedPassword)
         }
 
         run {
             state = State.LoggedIn(true)
             onView(withId(R.id.logout_button))
-                    .perform(click())
+                .perform(click())
             verify(loginViewModel).logout()
         }
     }

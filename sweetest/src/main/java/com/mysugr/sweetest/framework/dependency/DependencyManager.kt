@@ -21,8 +21,8 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
         override fun <T : Any> instanceOf(clazz: KClass<T>): T {
             val configuration = configurations.getAssignableTo(clazz)
                 ?: throw DependencyConfigurations.NotFoundException(
-                    clazz, "No dependency " +
-                        "assignable to \"${clazz.simpleName}\" found."
+                    clazz,
+                    "No dependency assignable to \"${clazz.simpleName}\" found."
                 )
             val state = states[configuration]
             return state.instance

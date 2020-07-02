@@ -52,8 +52,10 @@ class LoginActivity : AppCompatActivity() {
         email.error = (state as? State.Error)?.emailError?.let { this.resources.getString(it) }
         password.error = (state as? State.Error)?.passwordError?.let { this.resources.getString(it) }
         if (state is State.LoggedIn) {
-            message.setText(if (state.isNewUser) R.string.login_new_user else
-                R.string.login_existing_user)
+            message.setText(
+                if (state.isNewUser) R.string.login_new_user else
+                    R.string.login_existing_user
+            )
         } else {
             message.text = ""
         }

@@ -74,8 +74,12 @@ class Dsl {
         inline fun <reified T1 : Steps, reified T2 : Steps, reified T3 : Steps, reified R : Any> factory(
             noinline createObject: (T1, T2, T3) -> R
         ) {
-            factories.add(FactoryRunner3(R::class.java, T1::class.java, T2::class.java, T3::class.java,
-                createObject))
+            factories.add(
+                FactoryRunner3(
+                    R::class.java, T1::class.java, T2::class.java, T3::class.java,
+                    createObject
+                )
+            )
         }
 
         // Dependency configuration

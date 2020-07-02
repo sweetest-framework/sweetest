@@ -64,8 +64,8 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
         return configurations.values.find { it.clazz.java.isAssignableFrom(clazz.java) }
             as? DependencyConfiguration<T>
             ?: throw NotFoundException(
-                clazz, "No dependency " +
-                    "assignable from \"${clazz.simpleName}\" found."
+                clazz,
+                "No dependency assignable from \"${clazz.simpleName}\" found."
             )
     }
 
@@ -74,8 +74,7 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
 
         companion object {
             private fun transformMessage(clazz: KClass<*>, message: String?): String {
-                val firstPart = message ?: "No dependency configuration for class " +
-                "\"${clazz.simpleName}\" found."
+                val firstPart = message ?: "No dependency configuration for class \"${clazz.simpleName}\" found."
                 return firstPart + " Possible solution: Add the dependency to the module configuration. " +
                     "Make sure you add it at the correct MODULE depending on where it is implemented!"
             }
