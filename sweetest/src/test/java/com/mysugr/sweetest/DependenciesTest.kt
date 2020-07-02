@@ -35,6 +35,10 @@ class DependenciesTest {
         val instance by dependency<BViewModel>()
     }
 
+    class CSteps(testContext: TestContext) : BaseSteps(testContext) {
+        val instance by dependency<BViewModel>()
+    }
+
     class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
@@ -52,6 +56,22 @@ class DependenciesTest {
         val b by steps<BSteps>()
         override fun configure() = super.configure()
             .requireMock<BViewModel>()
+    }
+
+    class TestClassNoConfig : BaseJUnitTest() {
+        val c by steps<CSteps>()
+
+        override fun configure() = super.configure()
+            .requireMock<BViewModel>()
+    }
+
+    class TestClassMixedConfig : BaseJUnitTest() {
+        val a by steps<ASteps>()
+        val c by steps<CSteps>()
+
+        override fun configure() = super.configure()
+            .requireReal<BViewModel>()
+            .requireMock<AService>()
     }
 
     @Before
@@ -112,8 +132,32 @@ class DependenciesTest {
         }
     }
 
+    @Test
+    fun `No module configuration is provided`() {
+        TestClassNoConfig().run {
+            junitBefore()
+            assertNotNull(c.instance)
+        }
+    }
+
+    @Test
+    fun `No module configuration is provided mixed with module configuration provided`() {
+        givenAMock()
+        TestClassMixedConfig().run {
+            junitBefore()
+            assertNotNull(c.instance)
+            assertNotNull(a.instance)
+        }
+    }
+
     private fun givenNothingConfigured() {
         moduleTestingConfiguration = moduleTestingConfiguration { }
+    }
+
+    private fun givenAMock() {
+        moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency mockOnly of<AService>()
+        }
     }
 
     private fun givenAMockBReal() {

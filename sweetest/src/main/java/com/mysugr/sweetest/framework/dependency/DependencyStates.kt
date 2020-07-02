@@ -7,6 +7,7 @@ interface DependencyStatesConsumer {
     val all: Collection<DependencyState<*>>
     fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>>
     operator fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T>
+    operator fun <T : Any> get(clazz: KClass<T>): DependencyState<T>?
 }
 
 class DependencyStates(private val initializerContext: DependencyInitializerContext) : DependencyStatesConsumer {
@@ -34,5 +35,10 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
         } else {
             found as DependencyState<T>
         }
+    }
+
+    override operator fun <T : Any> get(clazz: KClass<T>): DependencyState<T>? {
+        val key = statesMap.keys.find { it.clazz == clazz }
+        return statesMap[key] as? DependencyState<T>
     }
 }

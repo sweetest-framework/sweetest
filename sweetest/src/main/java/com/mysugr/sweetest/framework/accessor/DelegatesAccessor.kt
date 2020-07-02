@@ -31,9 +31,13 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
                         "use the correct function to access steps classes!"
                 )
             }
-            val dependency = TestEnvironment.dependencies.configurations.getAssignableTo(T::class)
-                ?: throw DependencyConfigurations.NotFoundException(T::class, "")
-            val dependencyState = TestEnvironment.dependencies.states[dependency]
+
+            val dependencyState = TestEnvironment.dependencies.configurations.getAssignableTo(T::class)?.let {
+                TestEnvironment.dependencies.states[it]
+            } ?: kotlin.run {
+                TestEnvironment.dependencies.states[T::class]
+            } ?: throw DependencyConfigurations.NotFoundException(T::class, "")
+
             return DependencyPropertyDelegate(dependencyState)
         } catch (throwable: Throwable) {
             throw RuntimeException(
