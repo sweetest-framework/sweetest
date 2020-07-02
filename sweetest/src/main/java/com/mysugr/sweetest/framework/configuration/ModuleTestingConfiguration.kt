@@ -12,6 +12,14 @@ import com.mysugr.sweetest.framework.factory.FactoryRunner2
 import com.mysugr.sweetest.framework.factory.FactoryRunner3
 import kotlin.reflect.KClass
 
+private const val dependencyModeDeprecationMessage = "Dependency mode constraints " +
+    "(\"realOnly\", \"mockOnly\") are obsolete. Use \"any\" instead and add a `provide` " +
+    "configuration in a test or steps class instead."
+
+private const val dependencyInitializationDeprecationMessage = "Dependency initialization in the " +
+    "module configuration level is obsolete. Add a `provide` configuration on a test or steps " +
+    "class level instead."
+
 fun moduleTestingConfiguration(
     vararg baseModuleTestingConfigurations: ModuleTestingConfiguration,
     run: (Dsl.MainScope.() -> Unit)? = null
@@ -92,14 +100,17 @@ class Dsl {
             rightOperand.addFunction(null, false)
         }
 
+        @Deprecated(dependencyModeDeprecationMessage)
         infix fun LeftOperand.mockOnly(rightOperand: RightOperand) {
             rightOperand.addFunction(DependencyMode.MOCK, true)
         }
 
+        @Deprecated(dependencyModeDeprecationMessage)
         infix fun LeftOperand.realOnly(rightOperand: RightOperand) {
             rightOperand.addFunction(DependencyMode.REAL, true)
         }
 
+        @Deprecated(dependencyInitializationDeprecationMessage)
         inline fun <reified T : Any> initializer(noinline initializer: DependencyInitializer<T>) =
             RightOperand { dependencyMode, only ->
                 val finalDependencyMode = if (only) dependencyMode else null
@@ -116,6 +127,7 @@ class Dsl {
                 addDependency(DependencyConfiguration(T::class, null, null, finalDependencyMode))
             }
 
+        @Deprecated(dependencyInitializationDeprecationMessage)
         inline fun <reified T : Any> instance(instance: T) =
             RightOperand { dependencyMode, only ->
                 val finalDependencyMode = if (only) dependencyMode else null
