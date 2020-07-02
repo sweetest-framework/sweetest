@@ -13,6 +13,9 @@ import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_DEPENDEN
 import com.mysugr.sweetest.framework.flow.InitializationStep.SET_UP
 import kotlin.reflect.KClass
 
+private const val dependencyModeDeprecationMessage = "Dependency modes like \"REAL\" or \"MOCK\" " +
+    "as well as \"required...\" are obsolete. Use \"provide\" instead."
+
 abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     @PublishedApi internal val testContext: TestContext,
     moduleTestingConfiguration: ModuleTestingConfiguration
@@ -75,65 +78,39 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         testContext.steps.setUpAsRequired(T::class as KClass<Steps>)
     }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireReal() = apply {
         testContext.dependencies.requireReal(T::class)
     }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerReal(noinline initializer: DependencyInitializer<T>) = apply {
         testContext.dependencies.offerReal(T::class, initializer)
     }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
-    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerRealRequired(T::class, initializer)
-    }
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) =
+        apply {
+            testContext.dependencies.offerRealRequired(T::class, initializer)
+        }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireMock() = apply {
         testContext.dependencies.requireMock(T::class)
     }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMock(noinline initializer: DependencyInitializer<T>) = apply {
         testContext.dependencies.offerMock(T::class, initializer)
     }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
-    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerMockRequired(T::class, initializer)
-    }
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) =
+        apply {
+            testContext.dependencies.offerMockRequired(T::class, initializer)
+        }
 
-    @Deprecated(
-        "Dependency Modes like \"REAL\" or \"MOCK\" as well as \"required\" are obsolete. " +
-            "Use \"provide\" instead.",
-        replaceWith = ReplaceWith("provide")
-    )
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireSpy() = apply {
         testContext.dependencies.requireSpy(T::class)
     }
@@ -142,21 +119,39 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
         testContext.factories.configure(FactoryRunner0(R::class.java, createObject))
     }
 
-    inline fun <reified T : Steps, reified R : Any> offerFactory(noinline createObject: (T) -> R) = apply {
-        testContext.factories.configure(FactoryRunner1(R::class.java, T::class.java, createObject))
-    }
+    inline fun <reified T : Steps, reified R : Any> offerFactory(noinline createObject: (T) -> R) =
+        apply {
+            testContext.factories.configure(
+                FactoryRunner1(
+                    R::class.java,
+                    T::class.java,
+                    createObject
+                )
+            )
+        }
 
     inline fun <reified T1 : Steps, reified T2 : Steps, reified R : Any> offerFactory(
         noinline createObject: (T1, T2) -> R
     ) = apply {
-        testContext.factories.configure(FactoryRunner2(R::class.java, T1::class.java, T2::class.java, createObject))
+        testContext.factories.configure(
+            FactoryRunner2(
+                R::class.java,
+                T1::class.java,
+                T2::class.java,
+                createObject
+            )
+        )
     }
 
     inline fun <reified T1 : Steps, reified T2 : Steps, reified T3 : Steps, reified R : Any> offerFactory(
         noinline createObject: (T1, T2, T3) -> R
     ) = apply {
-        testContext.factories.configure(FactoryRunner3(R::class.java, T1::class.java, T2::class.java, T3::class.java,
-            createObject))
+        testContext.factories.configure(
+            FactoryRunner3(
+                R::class.java, T1::class.java, T2::class.java, T3::class.java,
+                createObject
+            )
+        )
     }
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
