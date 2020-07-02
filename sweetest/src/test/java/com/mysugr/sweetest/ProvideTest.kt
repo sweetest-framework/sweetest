@@ -103,8 +103,7 @@ class ProvideTest {
         }
     }
 
-    @Test(expected = DependencyConfigurations.NotFoundException::class)
-    fun `exception if dependency is not declared in module configuration`() {
+    fun `no exception if dependency is not declared in module configuration`() {
         val moduleTestingConfiguration = moduleTestingConfiguration { }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
