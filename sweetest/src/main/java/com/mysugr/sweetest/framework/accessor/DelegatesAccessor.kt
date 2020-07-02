@@ -2,6 +2,7 @@ package com.mysugr.sweetest.framework.accessor
 
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.framework.dependency.DependencyConfigurations
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
@@ -15,23 +16,30 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
             accessor.testContext.steps.setUpAsRequired(T::class as KClass<Steps>)
             return ReadOnlyPropertyDelegate { accessor.testContext.steps.get(T::class) }
         } catch (throwable: Throwable) {
-            throw RuntimeException("Call on \"steps<${T::class.simpleName}>\" failed",
-                throwable)
+            throw RuntimeException(
+                "Call on \"steps<${T::class.simpleName}>\" failed",
+                throwable
+            )
         }
     }
 
     inline fun <reified T : Any> dependency(): DependencyPropertyDelegate<T> {
         try {
             if (T::class.isSubclassOf(BaseSteps::class)) {
-                throw RuntimeException("Steps classes can's be accessed as dependency, please " +
-                    "use the correct function to access steps classes!")
+                throw RuntimeException(
+                    "Steps classes can't be accessed as dependency, please " +
+                        "use the correct function to access steps classes!"
+                )
             }
             val dependency = TestEnvironment.dependencies.configurations.getAssignableTo(T::class)
+                ?: throw DependencyConfigurations.NotFoundException(T::class, "")
             val dependencyState = TestEnvironment.dependencies.states[dependency]
             return DependencyPropertyDelegate(dependencyState)
         } catch (throwable: Throwable) {
-            throw RuntimeException("Call on \"dependency<${T::class.simpleName}>\" failed",
-                throwable)
+            throw RuntimeException(
+                "Call on \"dependency<${T::class.simpleName}>\" failed",
+                throwable
+            )
         }
     }
 
@@ -40,8 +48,10 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
             accessor.testContext.factories.get<T>().run(accessor.testContext.steps.provider)
         }
     } catch (throwable: Throwable) {
-        throw RuntimeException("Call on \"factory<${T::class.simpleName}>\" failed",
-            throwable)
+        throw RuntimeException(
+            "Call on \"factory<${T::class.simpleName}>\" failed",
+            throwable
+        )
     }
 
     class ReadOnlyPropertyDelegate<out T>(private val getter: () -> T) {

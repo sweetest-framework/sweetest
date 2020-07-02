@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 
 abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     @PublishedApi internal val testContext: TestContext,
-    moduleTestingConfiguration: ModuleTestingConfiguration
+    moduleTestingConfiguration: ModuleTestingConfiguration?
 ) {
 
     init {

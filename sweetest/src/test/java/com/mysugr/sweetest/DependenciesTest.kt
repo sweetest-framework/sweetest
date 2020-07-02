@@ -14,7 +14,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 
 class DependenciesTest {
@@ -45,7 +44,7 @@ class DependenciesTest {
         val a by steps<ASteps>()
         val b by steps<BSteps>()
         override fun configure() = super.configure()
-            .requireReal<ASteps>()
+            .requireReal<AService>()
     }
 
     class TestClassBMock : BaseJUnitTest(moduleTestingConfiguration) {
@@ -95,7 +94,6 @@ class DependenciesTest {
     }
 
     @Test(expected = Throwable::class)
-    @Ignore("Is not checked currently, but has no negative impact on test outcomes")
     fun `B is realOnly, can't be used as mock`() {
         givenAMockBReal()
         TestClassBMock().run {

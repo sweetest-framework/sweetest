@@ -10,7 +10,7 @@ interface Steps : CoroutineScope
 
 abstract class BaseSteps(
     private val testContext: TestContext,
-    private val moduleTestingConfiguration: ModuleTestingConfiguration
+    private val moduleTestingConfiguration: ModuleTestingConfiguration? = null
 ) : Steps, TestingAccessor {
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)

@@ -4,7 +4,7 @@ import com.mysugr.sweetest.framework.build.TestBuilder
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import org.junit.Before
 
-abstract class BaseJUnitTest(private val moduleTestingConfiguration: ModuleTestingConfiguration) : TestingAccessor {
+abstract class BaseJUnitTest(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) : TestingAccessor {
 
     open fun configure() = TestBuilder(moduleTestingConfiguration)
 
