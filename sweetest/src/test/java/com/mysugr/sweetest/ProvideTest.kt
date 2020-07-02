@@ -15,24 +15,11 @@ import org.junit.Test
 
 class ProvideTest {
 
-    interface TestUserService {
-        fun getUserName(): String
-    }
+    interface TestUserService
 
-    class FakeTestUserService : TestUserService {
-        override fun getUserName(): String = "FAKE"
-    }
+    class FakeTestUserService : TestUserService
 
-    class TestViewModel(
-        internal val userService: TestUserService
-    ) {
-        fun reload() {
-            message = "Hello ${userService.getUserName()}!"
-        }
-
-        var message: String = "..."
-            private set
-    }
+    class TestViewModel(internal val userService: TestUserService)
 
     @Before
     fun setUp() {
@@ -105,7 +92,6 @@ class ProvideTest {
                 .requireMock<TestUserService>()
                 .provide<TestViewModel>()
 
-            val userService by dependency<TestUserService>()
             val viewModel by dependency<TestViewModel>()
         }
 
@@ -137,25 +123,17 @@ class ProvideTest {
     @Test(expected = RuntimeException::class)
     fun `provide cannot be used twice for the same type`() {
         val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestUserService>()
             dependency any of<TestViewModel>()
         }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
-                .provide<TestViewModel> { TestViewModel(mock()) }
+                .provide { TestViewModel(mock()) }
                 .provide<TestViewModel>()
-
-            val userService by dependency<TestUserService>()
-            val viewModel by dependency<TestViewModel>()
         }
 
         TestClass().run {
             junitBefore()
-
-            assertEquals(TestViewModel::class.java, viewModel::class.java)
-            assertEquals(FakeTestUserService::class.java, userService::class.java)
-            assertEquals(userService, viewModel.userService)
         }
     }
 }
