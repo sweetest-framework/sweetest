@@ -81,7 +81,7 @@ class ProvideTest {
     }
 
     @Test
-    fun `provide works together with mockOnly and requireMock`() { // TODO MARKER
+    fun `provide works together with mockOnly and requireMock`() {
         val moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly of<TestUserService>()
             dependency any of<TestViewModel>()
