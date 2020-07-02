@@ -14,6 +14,13 @@ class DependencyState<T : Any>(
     private var instanceField: T? = null
     private var modeField: DependencyMode? = mode
 
+    var providedInitializer: DependencyInitializer<T>? = null
+    var providedInitializerUnknown: DependencyInitializer<*>?
+        set(value) {
+            providedInitializer = value as? DependencyInitializer<T>
+        }
+        get() = providedInitializer
+
     var realInitializer: DependencyInitializer<T>? = initializer
         ?: configuration.defaultRealInitializer
 
@@ -60,6 +67,7 @@ class DependencyState<T : Any>(
             DependencyMode.REAL -> createInstance()
             DependencyMode.MOCK -> createMock()
             DependencyMode.SPY -> Mockito.spy(createInstance())
+            DependencyMode.PROVIDED -> createProvidedInstance()
         }
         this.instanceField = instance
         return instance
@@ -102,6 +110,14 @@ class DependencyState<T : Any>(
                     "required by the constructor could not be initialized.", exception
             )
         }
+    }
+
+    private fun createProvidedInstance(): T {
+        return providedInitializer?.let {
+            createInstanceBy(it)
+        } ?: throw RuntimeException(
+            "Cannot create provided instance, because providedInitializer is not set."
+        )
     }
 
     private fun createInstanceBy(initializer: DependencyInitializer<T>): T {
