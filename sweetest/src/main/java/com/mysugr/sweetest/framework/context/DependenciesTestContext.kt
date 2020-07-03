@@ -123,6 +123,9 @@ class DependenciesTestContext {
         }
     }
 
+    /**
+     * Asserts if the type [clazz] is already added.
+     */
     private fun assertDependency(clazz: KClass<*>) {
         check(TestEnvironment.dependencies.states[clazz] == null) {
             "Can't change dependency mode or ${clazz.simpleName}, it " +
