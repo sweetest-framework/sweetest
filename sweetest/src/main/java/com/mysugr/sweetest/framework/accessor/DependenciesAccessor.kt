@@ -27,4 +27,8 @@ class DependenciesAccessor(@PublishedApi internal val parent: BaseAccessor) {
     inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) {
         parent.testContext.dependencies.offerMockRequired(T::class, initializer)
     }
+
+    inline fun <reified T : Any> provide() {
+        parent.testContext.dependencies.provide(T::class)
+    }
 }

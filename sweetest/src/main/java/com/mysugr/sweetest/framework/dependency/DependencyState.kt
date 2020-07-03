@@ -43,7 +43,7 @@ class DependencyState<T : Any>(
         get() = instanceField ?: initializeInstance()
 
     var mode: DependencyMode
-        get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.REAL
+        get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
         set(value) {
             if (value != modeField) {
                 if (modeField != null) {

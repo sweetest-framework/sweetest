@@ -112,6 +112,7 @@ class DependenciesTestContext {
      */
     private fun addDependency(clazz: KClass<*>, block: (DependencyState<out Any>, DependencyMode?) -> Unit) {
         with(TestEnvironment.dependencies) {
+            assertDependency(clazz)
             val dependencyState = getDependencyConfiguration(clazz)?.let { configuration ->
                 states[configuration]
             } ?: run {
@@ -119,6 +120,13 @@ class DependenciesTestContext {
             }
 
             block(dependencyState, dependencyState.configuration.defaultDependencyMode)
+        }
+    }
+
+    private fun assertDependency(clazz: KClass<*>) {
+        check(TestEnvironment.dependencies.states[clazz] == null) {
+            "Can't change dependency mode or ${clazz.simpleName}, it " +
+                "has already been set before and can't be changed afterwards"
         }
     }
 

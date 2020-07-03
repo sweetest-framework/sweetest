@@ -2,7 +2,6 @@ package com.mysugr.sweetest.framework.accessor
 
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.Steps
-import com.mysugr.sweetest.framework.dependency.DependencyConfigurations
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
@@ -36,7 +35,10 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
                 TestEnvironment.dependencies.states[it]
             } ?: kotlin.run {
                 TestEnvironment.dependencies.states[T::class]
-            } ?: throw DependencyConfigurations.NotFoundException(T::class, "")
+            } ?: kotlin.run {
+                accessor.dependencies.provide<T>()
+                requireNotNull(TestEnvironment.dependencies.states[T::class])
+            }
 
             return DependencyPropertyDelegate(dependencyState)
         } catch (throwable: Throwable) {

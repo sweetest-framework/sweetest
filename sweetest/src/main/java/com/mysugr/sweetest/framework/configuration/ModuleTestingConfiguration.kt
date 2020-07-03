@@ -25,6 +25,10 @@ fun moduleTestingConfiguration(
     run: (Dsl.MainScope.() -> Unit)? = null
 ): ModuleTestingConfiguration {
 
+    // check(baseModuleTestingConfigurations.isNotEmpty()) {
+    //     "The module configuration ${baseModuleTestingConfigurations::class.simpleName} must not be empty!"
+    // }
+
     // Force initialization before everything else
     TestEnvironment
 
