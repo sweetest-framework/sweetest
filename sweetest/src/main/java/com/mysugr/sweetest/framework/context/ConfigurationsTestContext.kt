@@ -8,12 +8,10 @@ class ConfigurationsTestContext(private val factories: FactoriesTestContext) {
 
     val all = moduleConfigurations as List<ModuleTestingConfiguration>
 
-    fun put(configuration: ModuleTestingConfiguration?) {
+    fun put(configuration: ModuleTestingConfiguration) {
         if (!moduleConfigurations.contains(configuration)) {
-            configuration?.let {
-                moduleConfigurations.add(it)
-                it.factories.forEach(factories::configure)
-            }
+            moduleConfigurations.add(configuration)
+            configuration.factories.forEach(factories::configure)
         }
     }
 }

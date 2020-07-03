@@ -22,7 +22,7 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 ) {
 
     init {
-        testContext.configurations.put(moduleTestingConfiguration)
+        moduleTestingConfiguration?.let { testContext.configurations.put(it) }
     }
 
     private var built = false

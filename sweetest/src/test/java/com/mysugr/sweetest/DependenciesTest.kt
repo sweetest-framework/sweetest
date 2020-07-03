@@ -62,7 +62,7 @@ class DependenciesTest {
         val c by steps<CSteps>()
 
         override fun configure() = super.configure()
-            .requireMock<BViewModel>()
+            .provide<BViewModel>()
     }
 
     class TestClassMixedConfig : BaseJUnitTest() {
@@ -133,10 +133,11 @@ class DependenciesTest {
     }
 
     @Test
-    fun `No module configuration is provided`() {
+    fun `No module configuration is provided, default mode is REAL`() {
         TestClassNoConfig().run {
             junitBefore()
             assertNotNull(c.instance)
+            assertFalse(c.instance.isMock)
         }
     }
 
