@@ -148,6 +148,9 @@ class DependenciesTest {
             junitBefore()
             assertNotNull(c.instance)
             assertNotNull(a.instance)
+
+            // if no module config is provided
+            assertFalse(a.isMock)
         }
     }
 

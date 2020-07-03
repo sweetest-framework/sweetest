@@ -41,7 +41,7 @@ class DependenciesTestContext {
         val mode = DependencyMode.MOCK
         addDependency(clazz) { state, configurationMode ->
             assertMode(clazz, configurationMode, mode)
-            configurationMode?.let { state.mode = mode } ?: run { DependencyMode.REAL }
+            state.mode = mode
         }
     }
 
@@ -58,7 +58,7 @@ class DependenciesTestContext {
         addDependency(clazz) { state, configurationMode ->
             assertMode(clazz, configurationMode, mode)
             state.mockInitializerUnknown = initializer
-            configurationMode?.let { state.mode = mode } ?: run { DependencyMode.REAL }
+            state.mode = mode
         }
     }
 
@@ -67,7 +67,7 @@ class DependenciesTestContext {
         val mode = DependencyMode.SPY
         addDependency(clazz) { state, configurationMode ->
             assertMode(clazz, configurationMode, mode)
-            configurationMode?.let { state.mode = mode } ?: run { DependencyMode.REAL }
+            state.mode = mode
         }
     }
 
@@ -106,7 +106,7 @@ class DependenciesTestContext {
     }
 
     /**
-     * Checks if an instance of [clazz] is already added via the global module configuration.
+     * Checks if the type [clazz] is already added via the global module configuration.
      * If so, the found [DependencyConfiguration] is added to the [DependencyManager.states].
      * If not, a [DependencyConfiguration] is created dynamically and also added.
      */
@@ -115,7 +115,7 @@ class DependenciesTestContext {
             val dependencyState = getDependencyConfiguration(clazz)?.let { configuration ->
                 states[configuration]
             } ?: run {
-                states[DependencyConfiguration(clazz, null, null, DependencyMode.REAL)]
+                states[DependencyConfiguration(clazz, null, null, null)]
             }
 
             block(dependencyState, dependencyState.configuration.defaultDependencyMode)
@@ -123,7 +123,7 @@ class DependenciesTestContext {
     }
 
     /**
-     *
+     * Asserts if the configured mode matches the requested one.
      */
     private fun assertMode(clazz: KClass<*>, configurationMode: DependencyMode?, mode: DependencyMode) {
         check(configurationMode == mode || configurationMode == null) {

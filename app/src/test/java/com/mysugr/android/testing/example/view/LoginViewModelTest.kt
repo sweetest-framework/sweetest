@@ -1,6 +1,7 @@
 package com.mysugr.android.testing.example.view
 
 import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.auth.AuthManagerSteps
 import com.mysugr.android.testing.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.view.LoginViewModel.State.Error
@@ -14,6 +15,7 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     override fun configure() = super.configure()
         .requireReal<LoginViewModel>()
+        .requireMock<AuthManager>()
         .onSetUp { sut.givenStateListenerConnected() }
 
     private val sut by steps<LoginViewModelSteps>()
