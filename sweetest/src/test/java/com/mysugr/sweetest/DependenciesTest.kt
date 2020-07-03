@@ -15,6 +15,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.lang.RuntimeException
 
 class DependenciesTest {
 
@@ -132,6 +133,58 @@ class DependenciesTest {
         }
     }
 
+    @Test(expected = RuntimeException::class)
+    fun `Module configuration with A and B set as "any", changing mode to MOCK throws exception`() {
+        givenAllAny()
+
+        val testInstance = object : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .requireReal<AService>()
+                .requireMock<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `Module configuration with A and B set as "any", changing mode to REAL throws exception`() {
+        givenAllAny()
+
+        val testInstance = object : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .requireMock<AService>()
+                .requireReal<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `No module configuration, changing mode to MOCK throws exception`() {
+        givenAllAny()
+
+        val testInstance = object : BaseJUnitTest() {
+            override fun configure() = super.configure()
+                .requireReal<AService>()
+                .requireMock<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `No module configuration, changing mode to REAL throws exception`() {
+        givenAllAny()
+
+        val testInstance = object : BaseJUnitTest() {
+            override fun configure() = super.configure()
+                .requireMock<AService>()
+                .requireReal<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
     @Test
     fun `No module configuration is provided`() {
         TestClassNoConfig().run {
@@ -171,6 +224,13 @@ class DependenciesTest {
         moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly initializer { AService().also { initializedAInstance = it } }
             dependency realOnly of<BViewModel>()
+        }
+    }
+
+    private fun givenAllAny() {
+        moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency any of<AService>()
+            dependency any of<BViewModel>()
         }
     }
 }
