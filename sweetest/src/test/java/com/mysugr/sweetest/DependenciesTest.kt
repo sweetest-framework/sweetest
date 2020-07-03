@@ -14,7 +14,10 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
+import org.mockito.internal.util.MockUtil
+import java.lang.RuntimeException
 
 class DependenciesTest {
 
@@ -132,6 +135,90 @@ class DependenciesTest {
         }
     }
 
+    @Test(expected = RuntimeException::class)
+    fun `Given module dependency configuration, changing REAL to MOCK throws no exception`() {
+        givenAllAny()
+
+        val testInstance = object : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .requireReal<AService>()
+                .requireMock<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `Given module dependency configuration, changing MOCK to REAL throws exception`() {
+        givenAllAny()
+
+        val testInstance = object : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .requireMock<AService>()
+                .requireReal<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `No module configuration, changing REAL to MOCK throws exception`() {
+        val testInstance = object : BaseJUnitTest() {
+            override fun configure() = super.configure()
+                .requireReal<AService>()
+                .requireMock<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `No module configuration, changing MOCK to REAL throws exception`() {
+        val testInstance = object : BaseJUnitTest() {
+            override fun configure() = super.configure()
+                .requireMock<AService>()
+                .requireReal<AService>()
+        }
+
+        testInstance.junitBefore()
+    }
+
+    @Test
+    fun `No module configuration, returns REAL dependency by default`() {
+        var actualInstance: AService? = null
+
+        val testInstance = object : BaseJUnitTest() {
+            val instance by dependency<AService>()
+
+            override fun configure() = super.configure()
+                .onSetUp {
+                    actualInstance = instance
+                }
+        }
+
+        testInstance.junitBefore()
+        assertFalse(MockUtil.isMock(actualInstance!!))
+    }
+
+    @Test
+    fun `Given module configuration, returns MOCKed dependency by default`() {
+        givenAllAny()
+
+        var actualInstance: AService? = null
+
+        val testInstance = object : BaseJUnitTest(moduleTestingConfiguration) {
+            val instance by dependency<AService>()
+
+            override fun configure() = super.configure()
+                .onSetUp {
+                    actualInstance = instance
+                }
+        }
+
+        testInstance.junitBefore()
+        assertTrue(MockUtil.isMock(actualInstance!!))
+    }
+
     @Test
     fun `No module configuration is provided, default mode is REAL`() {
         TestClassNoConfig().run {
@@ -175,6 +262,13 @@ class DependenciesTest {
         moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly initializer { AService().also { initializedAInstance = it } }
             dependency realOnly of<BViewModel>()
+        }
+    }
+
+    private fun givenAllAny() {
+        moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency any of<AService>()
+            dependency any of<BViewModel>()
         }
     }
 }
