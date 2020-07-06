@@ -102,10 +102,9 @@ class ProvideTest {
         }
     }
 
+    @Test
     fun `no exception if dependency is not declared in module configuration`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration { }
-
-        class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
+        class TestClass : BaseJUnitTest() {
             override fun configure() = super.configure()
                 .provide<TestUserService> { FakeTestUserService() }
 
