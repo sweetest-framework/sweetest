@@ -25,15 +25,13 @@ fun moduleTestingConfiguration(
     run: (Dsl.MainScope.() -> Unit)? = null
 ): ModuleTestingConfiguration {
 
-    // check(baseModuleTestingConfigurations.isNotEmpty()) {
-    //     "The module configuration ${baseModuleTestingConfigurations::class.simpleName} must not be empty!"
-    // }
-
     // Force initialization before everything else
     TestEnvironment
 
     val scope = Dsl.MainScope()
     run?.invoke(scope)
+
+    check(scope.dependencies.isNotEmpty()) { "The module configuration must not be empty!" }
 
     return ModuleTestingConfiguration(baseModuleTestingConfigurations.toList(), scope.factories.toList())
 }

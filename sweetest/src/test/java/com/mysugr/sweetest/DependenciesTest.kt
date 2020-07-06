@@ -14,7 +14,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import java.lang.RuntimeException
 
@@ -82,7 +81,6 @@ class DependenciesTest {
     }
 
     @Test(expected = Throwable::class)
-    @Ignore
     fun `No dependencies configured leads to exception`() {
         givenNothingConfigured()
         TestClass().run {
