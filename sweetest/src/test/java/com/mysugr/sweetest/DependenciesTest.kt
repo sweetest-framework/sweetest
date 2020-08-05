@@ -180,8 +180,8 @@ class DependenciesTest {
         testInstance.junitBefore()
     }
 
-    @Test
-    fun `No module configuration, returns REAL dependency by default`() {
+    @Test(expected = RuntimeException::class)
+    fun `No module configuration or provide throws exception`() {
         var actualInstance: AService? = null
 
         val testInstance = object : BaseJUnitTest() {

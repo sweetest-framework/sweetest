@@ -7,7 +7,6 @@ interface DependencyConfigurationConsumer {
     val all: Collection<DependencyConfiguration<*>>
     operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T>
     fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>?
-    fun <T : Any> getAssignableFrom(clazz: KClass<T>): DependencyConfiguration<T>
 }
 
 class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetupHandler {
@@ -58,15 +57,6 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
     override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>? {
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }
             as DependencyConfiguration<T>?
-    }
-
-    override fun <T : Any> getAssignableFrom(clazz: KClass<T>): DependencyConfiguration<T> {
-        return configurations.values.find { it.clazz.java.isAssignableFrom(clazz.java) }
-            as? DependencyConfiguration<T>
-            ?: throw NotFoundException(
-                clazz,
-                "No dependency assignable from \"${clazz.simpleName}\" found."
-            )
     }
 
     class NotFoundException(val clazz: KClass<*>, message: String? = null) :

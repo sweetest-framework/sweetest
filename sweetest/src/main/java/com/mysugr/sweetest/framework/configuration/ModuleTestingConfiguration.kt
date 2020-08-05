@@ -4,6 +4,7 @@ import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyMode
+import com.mysugr.sweetest.framework.dependency.DependencySetup
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.framework.factory.FactoryRunner
 import com.mysugr.sweetest.framework.factory.FactoryRunner0
@@ -31,7 +32,9 @@ fun moduleTestingConfiguration(
     val scope = Dsl.MainScope()
     run?.invoke(scope)
 
-    check(scope.dependencies.isNotEmpty()) { "The module configuration must not be empty!" }
+    if (scope.dependencies.isEmpty()) {
+        println("Please remove all empty module configurations as this will no longer be supported in version 2.0.0")
+    }
 
     return ModuleTestingConfiguration(baseModuleTestingConfigurations.toList(), scope.factories.toList())
 }
@@ -54,7 +57,7 @@ class Dsl {
         @PublishedApi
         internal fun addDependency(configuration: DependencyConfiguration<*>) {
             dependencies.add(configuration)
-            com.mysugr.sweetest.framework.dependency.DependencySetup.addConfiguration(configuration)
+            DependencySetup.addConfiguration(configuration)
         }
 
         // Supplier configuration
