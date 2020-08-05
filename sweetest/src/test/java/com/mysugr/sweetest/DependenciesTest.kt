@@ -15,7 +15,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import java.lang.RuntimeException
 
 class DependenciesTest {
 
@@ -237,6 +236,29 @@ class DependenciesTest {
             // if no module config is provided
             assertFalse(a.isMock)
         }
+    }
+
+    @Test
+    fun `Dependency can be required to be of some mode multiple times`() {
+        givenAllAny()
+
+        val test = object : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .requireReal<AService>()
+                .requireReal<AService>()
+                .offerReal<AService> { AService() }
+                .offerReal<AService> { AService() }
+                .offerRealRequired<AService> { AService() }
+                .offerRealRequired<AService> { AService() }
+                .requireMock<BViewModel>()
+                .requireMock<BViewModel>()
+                .offerMock<BViewModel> { BViewModel() }
+                .offerMock<BViewModel> { BViewModel() }
+                .offerMockRequired<BViewModel> { BViewModel() }
+                .offerMockRequired<BViewModel> { BViewModel() }
+        }
+
+        test.junitBefore()
     }
 
     private fun givenNothingConfigured() {
