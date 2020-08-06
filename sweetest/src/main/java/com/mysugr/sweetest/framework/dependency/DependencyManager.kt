@@ -1,11 +1,13 @@
 package com.mysugr.sweetest.framework.dependency
 
+import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
+import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
 
-class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) :
-    DependencyAccessor {
+class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) : DependencyAccessor {
 
     private var _states: DependencyStates? = null
     private val configurationsField = DependencyConfigurations()
@@ -19,13 +21,30 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
 
     private val initializerContext = object : DependencyInitializerContext() {
         override fun <T : Any> instanceOf(clazz: KClass<T>): T {
-            val configuration = configurations.getAssignableTo(clazz)
-                ?: throw DependencyConfigurations.NotFoundException(
-                    clazz,
-                    "No dependency assignable to \"${clazz.simpleName}\" found."
+            try {
+                if (clazz.isSubclassOf(BaseSteps::class)) {
+                    throw RuntimeException(
+                        "Steps classes can't be accessed as dependency, please " +
+                            "use the correct function to access steps classes!"
+                    )
+                }
+
+                val dependencyState = TestEnvironment.dependencies.configurations.getAssignableTo(clazz)?.let {
+                    TestEnvironment.dependencies.states.getByConfiguration(it)
+                } ?: run {
+                    TestEnvironment.dependencies.states.getByDependencyType(clazz)
+                } ?: error(
+                    "No configuration or dependency state for ${clazz.simpleName} added. " +
+                        "Please specify it explicitly."
                 )
-            val state = states.getByConfiguration(configuration)
-            return state.instance
+
+                return dependencyState.instance
+            } catch (throwable: Throwable) {
+                throw RuntimeException(
+                    "Call on \"dependency<${clazz.simpleName}>\" failed",
+                    throwable
+                )
+            }
         }
     }
 
