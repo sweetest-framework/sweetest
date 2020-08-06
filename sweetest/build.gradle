@@ -1,6 +1,6 @@
 buildscript {
     ext.publishingInfo = [
-            version: '1.1.0-ex',
+            version: '1.1.0',
             org    : 'mysugr',
             lib    : 'sweetest',
             group  : 'com.mysugr',
