@@ -44,7 +44,9 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
             TestEnvironment.dependencies.states.getByDependencyType(clazz)
         } ?: error(
             "No configuration or dependency state for ${clazz.simpleName} added. " +
-                "Please specify it explicitly."
+                "Please specify it explicitly by using provide<${clazz.simpleName}>. " +
+                "It is also possible to add it to the module configuration. However, this is deprecated " +
+                "and will be removed in the future."
         )
     }
 

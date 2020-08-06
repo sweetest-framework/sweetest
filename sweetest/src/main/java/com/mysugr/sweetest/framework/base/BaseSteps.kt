@@ -24,7 +24,6 @@ abstract class BaseSteps @Deprecated(
         get() = testContext.coroutines.coroutineContext
 
     override val accessor = configure().build()
-    protected val dependencies = accessor.dependencies
     protected val delegates = accessor.delegates
 }
 

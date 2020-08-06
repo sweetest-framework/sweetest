@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyManager
@@ -13,17 +14,17 @@ class DependenciesTestContext {
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun requireReal(clazz: KClass<*>) {
         val mode = DependencyMode.REAL
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, _ ->
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
-            // assertConfiguredMode(clazz, configurationMode, mode)
+            // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
         }
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun offerReal(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        addDependency(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz) { state, _ ->
             state.realInitializerUnknown = initializer
         }
     }
@@ -31,9 +32,9 @@ class DependenciesTestContext {
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun offerRealRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
         val mode = DependencyMode.REAL
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, configurationMode ->
-            assertConfiguredMode(clazz, configurationMode, mode)
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, configurationMode ->
+            checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
             state.realInitializerUnknown = initializer
         }
@@ -42,17 +43,17 @@ class DependenciesTestContext {
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun requireMock(clazz: KClass<*>) {
         val mode = DependencyMode.MOCK
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, _ ->
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
-            // assertConfiguredMode(clazz, configurationMode, mode)
+            // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
         }
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        addDependency(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz) { state, _ ->
             state.mockInitializerUnknown = initializer
         }
     }
@@ -60,9 +61,9 @@ class DependenciesTestContext {
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun offerMockRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
         val mode = DependencyMode.MOCK
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, configurationMode ->
-            assertConfiguredMode(clazz, configurationMode, mode)
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, configurationMode ->
+            checkConfiguredMode(clazz, configurationMode, mode)
             state.mockInitializerUnknown = initializer
             state.mode = mode
         }
@@ -71,9 +72,9 @@ class DependenciesTestContext {
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
     fun requireSpy(clazz: KClass<*>) {
         val mode = DependencyMode.SPY
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, configurationMode ->
-            assertConfiguredMode(clazz, configurationMode, mode)
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, configurationMode ->
+            checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
         }
     }
@@ -91,8 +92,8 @@ class DependenciesTestContext {
      */
     fun provide(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
         val mode = DependencyMode.PROVIDED
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, _ ->
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
             state.providedInitializerUnknown = initializer
             state.mode = mode
         }
@@ -108,8 +109,8 @@ class DependenciesTestContext {
      */
     fun provide(clazz: KClass<*>) {
         val mode = DependencyMode.REAL
-        assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, _ ->
+        checkDependencyMode(clazz, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
             state.mode = mode
         }
     }
@@ -119,7 +120,10 @@ class DependenciesTestContext {
      * If so, the found [DependencyConfiguration] is added to the [DependencyManager.states].
      * If not, a [DependencyConfiguration] is created dynamically and also added.
      */
-    private fun addDependency(clazz: KClass<*>, block: (DependencyState<out Any>, DependencyMode?) -> Unit) {
+    private fun prepareAndUseDependencyOf(
+        clazz: KClass<*>,
+        block: (DependencyState<out Any>, DependencyMode?) -> Unit
+    ) {
         with(TestEnvironment.dependencies) {
             val dependencyState = getDependencyConfiguration(clazz)?.let { configuration ->
                 return@let states.getByConfiguration(configuration)
@@ -132,18 +136,23 @@ class DependenciesTestContext {
     }
 
     /**
-     * Asserts if the configured mode matches the requested one.
+     * Checks if the configured [DependencyConfiguration.defaultDependencyMode] matches the requested [DependencyMode].
+     * If no [ModuleTestingConfiguration] is defined, the check succeeds.
      */
-    private fun assertConfiguredMode(clazz: KClass<*>, configurationMode: DependencyMode?, mode: DependencyMode) {
+    private fun checkConfiguredMode(clazz: KClass<*>, configurationMode: DependencyMode?, mode: DependencyMode) {
         check(configurationMode == mode || configurationMode == null) {
-            "Dependency $clazz has been configured as ${configurationMode?.name} but is requested as ${mode.name}! "
+            "Dependency \"$clazz.simpleName\" has been forced to be ${configurationMode?.name} in the module " +
+                "testing configuration, but you requested it to be ${mode.name} instead. Please loosen up the " +
+                "constraint by using \"any\" instead of \"requireMock\" or \"requireReal\" or remove the module " +
+                "testing configuration entirely as it's deprecated anyway."
         }
     }
 
     /**
-     * Asserts if the [DependencyState.mode] of an already added [DependencyState] has changed.
+     * Checks if the [DependencyState.mode] of an already added [DependencyState] is requested to be changed,
+     * which is not allowed.
      */
-    private fun assertDependencyMode(clazz: KClass<*>, mode: DependencyMode) {
+    private fun checkDependencyMode(clazz: KClass<*>, mode: DependencyMode) {
         TestEnvironment.dependencies.states.getByDependencyType(clazz)?.let {
             check(mode == it.mode) {
                 "Dependency ${clazz.simpleName} is requested as $mode but is already defined as ${it.mode}. " +
