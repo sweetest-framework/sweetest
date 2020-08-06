@@ -14,8 +14,9 @@ class DependenciesTestContext {
     fun requireReal(clazz: KClass<*>) {
         val mode = DependencyMode.REAL
         assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, configurationMode ->
-            assertConfiguredMode(clazz, configurationMode, mode)
+        addDependency(clazz) { state, _ ->
+            // The assertion is omitted to keep compatibility to older versions of this library.
+            // assertConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
         }
     }
@@ -42,8 +43,9 @@ class DependenciesTestContext {
     fun requireMock(clazz: KClass<*>) {
         val mode = DependencyMode.MOCK
         assertDependencyMode(clazz, mode)
-        addDependency(clazz) { state, configurationMode ->
-            assertConfiguredMode(clazz, configurationMode, mode)
+        addDependency(clazz) { state, _ ->
+            // The assertion is omitted to keep compatibility to older versions of this library.
+            // assertConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
         }
     }
