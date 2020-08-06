@@ -15,12 +15,21 @@ abstract class BaseSteps(
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
+    @Deprecated(coroutineScopeImplementationDeprecation)
     override val coroutineContext: CoroutineContext
-        get() = testContext.legacyCoroutines.coroutineContext
+        get() {
+            println(coroutineScopeImplementationDeprecation)
+            return testContext.legacyCoroutines.coroutineContext
+        }
 
     override val accessor = configure().build()
     protected val dependencies = accessor.dependencies
     protected val delegates = accessor.delegates
+
+    companion object {
+        private const val coroutineScopeImplementationDeprecation = "Using steps class as CoroutineScope is " +
+            "deprecated, please use testCoroutineScope extension property instead!"
+    }
 }
 
 operator fun <T : Steps> T.invoke(run: T.() -> Unit) = run(this)

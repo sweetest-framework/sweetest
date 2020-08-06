@@ -8,9 +8,6 @@ import kotlinx.coroutines.cancelAndJoin
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
 
-/**
- * Experimental
- */
 class LegacyCoroutinesTestContext {
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
