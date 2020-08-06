@@ -20,14 +20,28 @@ class WorkflowTestContextTest {
 
         sut.run()
 
-        val expectedEvents = listOf(
-            "INITIALIZE_STEPS",
-            "finalize steps setup",
-            "INITIALIZE_DEPENDENCIES",
-            "SET_UP"
+        assertEquals(
+            listOf(
+                "INITIALIZE_STEPS",
+                "finalize steps setup",
+                "INITIALIZE_DEPENDENCIES",
+                "SET_UP",
+                "RUNNING"
+            ), trackedEvents
         )
 
-        assertEquals(expectedEvents, trackedEvents)
+        sut.finish()
+
+        assertEquals(
+            listOf(
+                "INITIALIZE_STEPS",
+                "finalize steps setup",
+                "INITIALIZE_DEPENDENCIES",
+                "SET_UP",
+                "RUNNING",
+                "TEAR_DOWN"
+            ), trackedEvents
+        )
     }
 
     @Test
@@ -50,7 +64,31 @@ class WorkflowTestContextTest {
                 "INITIALIZE_STEPS",
                 "finalize steps setup",
                 "INITIALIZE_DEPENDENCIES"
-                ), trackedEvents
+            ), trackedEvents
+        )
+    }
+
+    @Test
+    fun `Doesn't skip steps`() {
+        trackEvents()
+
+        sut.proceedTo(InitializationStep.INITIALIZE_STEPS)
+
+        assertEquals(
+            listOf(
+                "INITIALIZE_STEPS"
+            ), trackedEvents
+        )
+
+        sut.proceedTo(InitializationStep.SET_UP)
+
+        assertEquals(
+            listOf(
+                "INITIALIZE_STEPS",
+                "finalize steps setup",
+                "INITIALIZE_DEPENDENCIES",
+                "SET_UP"
+            ), trackedEvents
         )
     }
 
@@ -85,6 +123,8 @@ class WorkflowTestContextTest {
         sut.subscribe(InitializationStep.INITIALIZE_STEPS) { trackedEvents += "INITIALIZE_STEPS" }
         sut.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES) { trackedEvents += "INITIALIZE_DEPENDENCIES" }
         sut.subscribe(InitializationStep.SET_UP) { trackedEvents += "SET_UP" }
+        sut.subscribe(InitializationStep.RUNNING) { trackedEvents += "RUNNING" }
+        sut.subscribe(InitializationStep.TEAR_DOWN) { trackedEvents += "TEAR_DOWN" }
 
         `when`(stepsContext.finalizeSetUp()).then {
             trackedEvents += "finalize steps setup"
