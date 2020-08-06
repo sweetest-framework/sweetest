@@ -1,12 +1,11 @@
 package com.mysugr.sweetest.framework.accessor
 
-import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
+import com.mysugr.sweetest.framework.environment.getDependencyState
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
-import kotlin.reflect.full.isSubclassOf
 
 class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
 
@@ -24,23 +23,7 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
 
     inline fun <reified T : Any> dependency(): DependencyPropertyDelegate<T> {
         try {
-            if (T::class.isSubclassOf(BaseSteps::class)) {
-                throw RuntimeException(
-                    "Steps classes can't be accessed as dependency, please " +
-                        "use the correct function to access steps classes!"
-                )
-            }
-
-            val dependencyState = TestEnvironment.dependencies.configurations.getAssignableTo(T::class)?.let {
-                TestEnvironment.dependencies.states.getByConfiguration(it)
-            } ?: run {
-                TestEnvironment.dependencies.states.getByDependencyType(T::class)
-            } ?: error(
-                "No configuration or dependency state for ${T::class.simpleName} added. " +
-                    "Please specify it explicitly."
-            )
-
-            return DependencyPropertyDelegate(dependencyState)
+            return DependencyPropertyDelegate(TestEnvironment.dependencies.getDependencyState())
         } catch (throwable: Throwable) {
             throw RuntimeException(
                 "Call on \"dependency<${T::class.simpleName}>\" failed",

@@ -1,3 +1,5 @@
 package com.mysugr.sweetest.framework.dependency
 
-typealias DependencyInitializer<T> = DependencyInitializerContext.() -> T
+import com.mysugr.sweetest.framework.environment.DependencyAccessor
+
+typealias DependencyInitializer<T> = DependencyAccessor.() -> T

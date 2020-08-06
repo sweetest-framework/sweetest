@@ -3,10 +3,10 @@ package com.mysugr.sweetest.framework.environment
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyConfigurationConsumer
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
-import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.dependency.DependencyManager
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
+import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.dependency.DependencyStatesConsumer
 import kotlin.reflect.KClass
 
@@ -48,13 +48,20 @@ interface DependencySetupHandler {
     fun <T : Any> addConfiguration(
         clazz: KClass<T>,
         realInitializer: DependencyInitializer<T>? = null,
-        mockInitializer: (DependencyInitializerContext.() -> T)? = null,
+        mockInitializer: (DependencyAccessor.() -> T)? = null,
         dependencyMode: DependencyMode? = null,
         alias: KClass<*>? = null
     ): DependencyConfiguration<T>
 }
 
-interface DependencyAccessor {
-    val configurations: DependencyConfigurationConsumer
-    val states: DependencyStatesConsumer
+abstract class DependencyAccessor {
+    abstract val configurations: DependencyConfigurationConsumer
+    abstract val states: DependencyStatesConsumer
+
+    @PublishedApi
+    internal abstract fun <T : Any> instanceOf(clazz: KClass<T>): T
+    abstract fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T>
 }
+
+inline fun <reified T : Any> DependencyAccessor.instanceOf() = instanceOf(T::class)
+inline fun <reified T : Any> DependencyAccessor.getDependencyState() = getDependencyState(T::class)

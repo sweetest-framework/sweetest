@@ -1,11 +1,12 @@
 package com.mysugr.sweetest.framework.dependency
 
+import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
 class DependencyState<T : Any>(
-    private val initializerContext: DependencyInitializerContext,
+    private val initializerContext: DependencyAccessor,
     val configuration: DependencyConfiguration<T>,
     initializer: DependencyInitializer<T>? = null,
     mode: DependencyMode? = null

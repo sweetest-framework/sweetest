@@ -2,6 +2,7 @@ package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.environment.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
