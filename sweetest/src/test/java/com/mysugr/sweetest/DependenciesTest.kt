@@ -105,10 +105,18 @@ class DependenciesTest {
         }
     }
 
-    @Test(expected = Throwable::class)
-    fun `A is mockOnly, can't be used as real`() {
+    @Test
+    fun `Legacy bug compatibility - A is mockOnly, can be used as real nonetheless`() {
         givenAMockBReal()
         TestClassAReal().run {
+            junitBefore()
+        }
+    }
+
+    @Test
+    fun `Legacy bug compatibility - B is realOnly, can be used as mock nonetheless`() {
+        givenAMockBReal()
+        TestClassBMock().run {
             junitBefore()
         }
     }
