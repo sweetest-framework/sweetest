@@ -6,6 +6,7 @@ import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.coroutine.coroutineDispatcher
+import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import com.mysugr.sweetest.framework.coroutine.testCoroutineScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -19,7 +20,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.coroutines.ContinuationInterceptor
 
-class CoroutinesTest {
+class TestCoroutineScopeTest {
 
     class Steps(testContext: TestContext) : BaseSteps(testContext, moduleConfig)
 
@@ -71,8 +72,23 @@ class CoroutinesTest {
         }
 
         CoroutineScope(test.coroutineDispatcher).launch {
+            throw Exception("test")
             Thread.sleep(2000)
         }
+    }
+
+    @Test(expected = Exception::class)
+    fun `Legacy coroutine scope tools don't work together with TestCoroutineScope support`() {
+        val test = object : BaseJUnitTest(moduleTestingConfiguration()) {}
+        test.testCoroutineScope
+        test.testCoroutine { }
+    }
+
+    @Test(expected = Exception::class)
+    fun `TestCoroutineScope support doesn't work together with legacy coroutine scope tools`() {
+        val test = object : BaseJUnitTest(moduleTestingConfiguration()) {}
+        test.testCoroutine { }
+        test.testCoroutineScope
     }
 
     private fun TestCoroutineScope.smokeTest() {
