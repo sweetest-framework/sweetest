@@ -42,7 +42,8 @@ class WorkflowTestContext internal constructor(private val steps: StepsTestConte
     }
 
     fun subscribe(step: InitializationStep, handler: () -> Unit) {
-        if (currentStep.isAfter(step)) {
+        check(step != INITIALIZE_FRAMEWORK && step != DONE) { "INITIALIZE_FRAMEWORK and DONE are not supported" }
+        if (currentStep.isAfterOrSame(step)) {
             throw IllegalStateException("You can't subscribe to a workflow step whose execution is already finished!")
         } else {
             stepHandlers[step]?.add(StepHandler(handler))
