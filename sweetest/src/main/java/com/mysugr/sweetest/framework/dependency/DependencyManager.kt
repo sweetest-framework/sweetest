@@ -19,8 +19,12 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
 
     private val initializerContext = object : DependencyInitializerContext() {
         override fun <T : Any> instanceOf(clazz: KClass<T>): T {
-            val configuration = requireNotNull(configurations.getAssignableTo(clazz))
-            val state = states[configuration]
+            val configuration = configurations.getAssignableTo(clazz)
+                ?: throw DependencyConfigurations.NotFoundException(
+                    clazz,
+                    "No dependency assignable to \"${clazz.simpleName}\" found."
+                )
+            val state = states.getByConfiguration(configuration)
             return state.instance
         }
     }

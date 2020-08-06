@@ -11,7 +11,7 @@ class DependencyConfiguration<T : Any>(
 ) {
 
     val instance: T
-        get() = TestEnvironment.dependencies.states[this].instance
+        get() = TestEnvironment.dependencies.states.getByConfiguration(this).instance
 
     override fun toString(): String {
         return clazz.simpleName.toString()

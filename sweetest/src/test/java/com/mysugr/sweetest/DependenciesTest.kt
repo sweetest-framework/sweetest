@@ -158,7 +158,7 @@ class DependenciesTest {
         testInstance.junitBefore()
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = IllegalStateException::class)
     fun `No module configuration, changing REAL to MOCK throws exception`() {
         val testInstance = object : BaseJUnitTest() {
             override fun configure() = super.configure()
@@ -169,12 +169,19 @@ class DependenciesTest {
         testInstance.junitBefore()
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = IllegalStateException::class)
     fun `No module configuration, changing MOCK to REAL throws exception`() {
+        var actualInstance: AService? = null
+
         val testInstance = object : BaseJUnitTest() {
+            val instance by dependency<AService>()
+
             override fun configure() = super.configure()
                 .requireMock<AService>()
                 .requireReal<AService>()
+                .onSetUp {
+                    actualInstance = instance
+                }
         }
 
         testInstance.junitBefore()
@@ -244,12 +251,14 @@ class DependenciesTest {
 
         val test = object : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
+                // A is real
                 .requireReal<AService>()
                 .requireReal<AService>()
                 .offerReal<AService> { AService() }
                 .offerReal<AService> { AService() }
                 .offerRealRequired<AService> { AService() }
                 .offerRealRequired<AService> { AService() }
+                // B is mock
                 .requireMock<BViewModel>()
                 .requireMock<BViewModel>()
                 .offerMock<BViewModel> { BViewModel() }

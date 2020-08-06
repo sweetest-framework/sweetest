@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 
 interface DependencyConfigurationConsumer {
     val all: Collection<DependencyConfiguration<*>>
-    operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T>
+    fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyConfiguration<T>
     fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>?
 }
 
@@ -50,7 +50,7 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
         }
     }
 
-    override operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T> =
+    override fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyConfiguration<T> =
         configurations[clazz] as? DependencyConfiguration<T>
             ?: throw NotFoundException(clazz)
 

@@ -41,11 +41,5 @@ object DependencySetup {
         alias: KClass<*>? = null,
         noinline mockInitializer: DependencyInitializer<T>
     ): DependencyConfiguration<T> =
-        setupHandler.addConfiguration(
-            T::class,
-            null,
-            mockInitializer,
-            DependencyMode.MOCK,
-            alias
-        )
+        setupHandler.addConfiguration(T::class, null, mockInitializer, DependencyMode.MOCK, alias)
 }

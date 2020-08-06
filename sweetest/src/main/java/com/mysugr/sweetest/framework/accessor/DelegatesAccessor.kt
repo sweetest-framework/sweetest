@@ -32,9 +32,9 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
             }
 
             val dependencyState = TestEnvironment.dependencies.configurations.getAssignableTo(T::class)?.let {
-                TestEnvironment.dependencies.states[it]
+                TestEnvironment.dependencies.states.getByConfiguration(it)
             } ?: run {
-                TestEnvironment.dependencies.states[T::class]
+                TestEnvironment.dependencies.states.getByDependencyType(T::class)
             } ?: error(
                 "No configuration or dependency state for ${T::class.simpleName} added. " +
                     "Please specify it explicitly."
