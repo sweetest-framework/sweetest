@@ -4,8 +4,7 @@ import com.mysugr.sweetest.framework.flow.InitializationStep
 
 class WorkflowTestContext internal constructor(private val steps: StepsTestContext) {
 
-    var currentStep: InitializationStep = InitializationStep.INITIALIZE_FRAMEWORK
-        private set
+    private var currentStep: InitializationStep = InitializationStep.INITIALIZE_FRAMEWORK
 
     private val supportedSubscriptionSteps = listOf(
         InitializationStep.INITIALIZE_STEPS,
@@ -47,18 +46,18 @@ class WorkflowTestContext internal constructor(private val steps: StepsTestConte
     }
 
     private fun runStep(step: InitializationStep) {
-        currentStep = step
-        if (currentStep == InitializationStep.INITIALIZE_DEPENDENCIES) {
+        if (step == InitializationStep.INITIALIZE_DEPENDENCIES) {
             onBeforeInitializeDependencies()
         }
-        triggerHandler(step)
+        triggerHandlerFor(step)
+        currentStep = step
     }
 
     private fun onBeforeInitializeDependencies() {
         steps.finalizeSetUp()
     }
 
-    private fun triggerHandler(step: InitializationStep) {
+    private fun triggerHandlerFor(step: InitializationStep) {
         val stepHandlers = subscriptionHandlers[step] ?: return
         // Can't use iterator as list is likely to be changed during iteration
         var i = 0

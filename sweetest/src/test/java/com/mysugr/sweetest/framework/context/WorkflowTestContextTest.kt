@@ -2,6 +2,7 @@ package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -117,6 +118,19 @@ class WorkflowTestContextTest {
     fun `Can't proceed to step already executed`() {
         sut.proceedTo(InitializationStep.INITIALIZE_DEPENDENCIES)
         sut.proceedTo(InitializationStep.INITIALIZE_DEPENDENCIES)
+    }
+
+    @Test
+    fun `Can add handler during execution of same event`() {
+        var executed = false
+        sut.subscribe(InitializationStep.INITIALIZE_STEPS) {
+            sut.subscribe(InitializationStep.INITIALIZE_STEPS) {
+                executed = true
+            }
+        }
+        sut.proceedTo(InitializationStep.INITIALIZE_STEPS)
+
+        assertTrue(executed)
     }
 
     private fun trackEvents() {
