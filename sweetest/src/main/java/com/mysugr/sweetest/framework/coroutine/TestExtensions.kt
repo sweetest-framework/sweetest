@@ -2,21 +2,33 @@ package com.mysugr.sweetest.framework.coroutine
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.framework.base.TestingAccessor
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
+import kotlin.coroutines.ContinuationInterceptor
 
-/**
- * Experimental
- */
+val TestingAccessor.testCoroutineScope: TestCoroutineScope
+    get() = this.accessor.testContext.coroutines.testCoroutineScope
+
+val TestingAccessor.coroutineDispatcher: CoroutineDispatcher
+    get() = this.accessor.testContext.coroutines.testCoroutineScope
+        .coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
+
+@Deprecated(
+    "Legacy support only",
+    replaceWith = ReplaceWith("testCoroutineScope.runBlockingTest", "kotlinx.coroutines.test", "")
+)
 fun BaseJUnitTest.testCoroutine(
     testBlock: suspend CoroutineScope.() -> Unit
 ) {
     runBlocking {
-        val coroutinesTestContext = accessor.testContext.coroutines
+        val coroutinesTestContext = accessor.testContext.legacyCoroutines
         withContext(coroutinesTestContext.coroutineContext) {
             testBlock()
         }

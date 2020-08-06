@@ -1,30 +1,42 @@
 package com.mysugr.sweetest.framework.coroutine
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.cancelAndJoin
-import java.util.concurrent.Executors
-import kotlin.coroutines.CoroutineContext
+import com.mysugr.sweetest.framework.context.WorkflowTestContext
+import com.mysugr.sweetest.framework.flow.InitializationStep
+import kotlinx.coroutines.test.TestCoroutineScope
 
-/**
- * Experimental
- */
-class CoroutinesTestContext {
-    private val name = CoroutineName("testCoroutine${instanceCounter++}")
-    private val supervisorJob = SupervisorJob()
-    val coroutineContext: CoroutineContext
-        get() = coroutineDispatcher + supervisorJob + name
+internal class CoroutinesTestContext(private val workflowTestContext: WorkflowTestContext) {
 
-    suspend fun testFinished() {
-        supervisorJob.cancelAndJoin()
+    val testCoroutineScope: TestCoroutineScope
+        get() = lazyGetTestCoroutineScope()
+
+    private var _testCoroutineScope: TestCoroutineScope? = null
+    private var cleanedUp: Boolean = false
+
+    init {
+        workflowTestContext.subscribe(InitializationStep.DONE) { cleanUp() }
     }
 
-    companion object {
-        val coroutineDispatcher: CoroutineDispatcher by lazy {
-            Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    private fun lazyGetTestCoroutineScope(): TestCoroutineScope {
+        check(!cleanedUp) {
+            "The TestCoroutineScope has already been cleaned up and thus can't be used anymore"
         }
-        private var instanceCounter = 0
+        synchronized(this) {
+            if (_testCoroutineScope == null) {
+                check (workflowTestContext.currentStep.isBefore(InitializationStep.DONE)) {
+                    "Can't initialize TestCoroutineScope when testing workflow is already done"
+                }
+                _testCoroutineScope = TestCoroutineScope()
+            }
+            return _testCoroutineScope!!
+        }
+    }
+
+    private fun cleanUp() {
+        check(!cleanedUp) {
+            "The TestCoroutineScope has already been cleaned " +
+                "up and thus can't be cleaned up anymore"
+        }
+        _testCoroutineScope?.cleanupTestCoroutines()
+        cleanedUp = true
     }
 }

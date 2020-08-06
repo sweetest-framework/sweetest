@@ -16,7 +16,7 @@ abstract class BaseSteps(
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
     override val coroutineContext: CoroutineContext
-        get() = testContext.coroutines.coroutineContext
+        get() = testContext.legacyCoroutines.coroutineContext
 
     override val accessor = configure().build()
     protected val dependencies = accessor.dependencies

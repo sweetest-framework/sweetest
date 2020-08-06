@@ -4,14 +4,15 @@ import com.mysugr.sweetest.framework.flow.InitializationStep
 
 class WorkflowTestContext internal constructor(private val steps: StepsTestContext) {
 
-    private var currentStep: InitializationStep = InitializationStep.INITIALIZE_FRAMEWORK
+    internal var currentStep: InitializationStep = InitializationStep.INITIALIZE_FRAMEWORK
 
     private val supportedSubscriptionSteps = listOf(
         InitializationStep.INITIALIZE_STEPS,
         InitializationStep.INITIALIZE_DEPENDENCIES,
         InitializationStep.SET_UP,
         InitializationStep.RUNNING,
-        InitializationStep.TEAR_DOWN
+        InitializationStep.TEAR_DOWN,
+        InitializationStep.DONE
     )
 
     private val subscriptionHandlers =
