@@ -4,6 +4,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.cucumber.HookOrder
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.framework.flow.InitializationStep
+import cucumber.api.java.After
 import cucumber.api.java.Before
 
 class AppCucumberHooks(private val testContext: TestContext) {
@@ -26,5 +27,10 @@ class AppCucumberHooks(private val testContext: TestContext) {
     @Before(order = HookOrder.SETUP)
     fun setUp() {
         testContext.workflow.proceedTo(InitializationStep.SET_UP)
+    }
+
+    @After
+    fun tearDown() {
+        testContext.workflow.proceedTo(InitializationStep.TEAR_DOWN)
     }
 }
