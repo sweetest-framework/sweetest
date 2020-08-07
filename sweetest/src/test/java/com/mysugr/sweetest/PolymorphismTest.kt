@@ -3,14 +3,10 @@ package com.mysugr.sweetest
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.framework.environment.instanceOf
-import com.mysugr.sweetest.util.expectException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
-import org.junit.Before
 import org.junit.Test
-import java.lang.Exception
 
 class PolymorphismTest : BaseTest() {
 

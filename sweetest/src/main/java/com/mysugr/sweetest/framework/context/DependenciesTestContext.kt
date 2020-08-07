@@ -33,8 +33,9 @@ class DependenciesTestContext {
     fun offerRealRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
         val mode = DependencyMode.REAL
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, configurationMode ->
-            checkConfiguredMode(clazz, configurationMode, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
+            // The assertion is omitted to keep compatibility to older versions of this library.
+            // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
             state.realInitializerUnknown = initializer
         }
@@ -62,8 +63,9 @@ class DependenciesTestContext {
     fun offerMockRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
         val mode = DependencyMode.MOCK
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, configurationMode ->
-            checkConfiguredMode(clazz, configurationMode, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
+            // The assertion is omitted to keep compatibility to older versions of this library.
+            // checkConfiguredMode(clazz, configurationMode, mode)
             state.mockInitializerUnknown = initializer
             state.mode = mode
         }
@@ -73,8 +75,9 @@ class DependenciesTestContext {
     fun requireSpy(clazz: KClass<*>) {
         val mode = DependencyMode.SPY
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, configurationMode ->
-            checkConfiguredMode(clazz, configurationMode, mode)
+        prepareAndUseDependencyOf(clazz) { state, _ ->
+            // The assertion is omitted to keep compatibility to older versions of this library.
+            // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
         }
     }
@@ -141,7 +144,7 @@ class DependenciesTestContext {
      */
     private fun checkConfiguredMode(clazz: KClass<*>, configurationMode: DependencyMode?, mode: DependencyMode) {
         check(configurationMode == mode || configurationMode == null) {
-            "Dependency \"$clazz.simpleName\" has been forced to be ${configurationMode?.name} in the module " +
+            "Dependency \"${clazz.simpleName}\" has been forced to be ${configurationMode?.name} in the module " +
                 "testing configuration, but you requested it to be ${mode.name} instead. Please loosen up the " +
                 "constraint by using \"any\" instead of \"requireMock\" or \"requireReal\" or remove the module " +
                 "testing configuration entirely as it's deprecated anyway."
