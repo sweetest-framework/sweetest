@@ -10,15 +10,21 @@ val Any.isMock get() = MockUtil.isMock(this)
 
 val Any.isSpy get() = MockUtil.isSpy(this)
 
-inline fun <reified TException : Exception> expectException(block: () -> Unit) {
+// Internal for now as there is no decision yet whether to keep these assertions as public tools
+internal inline fun <reified TThrowable : Throwable> assertThrown(block: () -> Unit) =
+    expectException<TThrowable>(block)
+
+inline fun <reified TThrowable : Throwable> expectException(block: () -> Unit) {
     try {
         block()
-        fail("Expected exception of type ${TException::class.simpleName}, but no exception was thrown")
+        fail("Expected throwable of type ${TThrowable::class.simpleName}, but not thrown.")
     } catch (e: Exception) {
-        if (e !is TException) {
-            fail("Wrong exception type.\n" +
-                    "expected: ${TException::class.simpleName}\n" +
-                    "actual: ${e::class.simpleName}")
+        if (e !is TThrowable) {
+            fail(
+                "Unexpected throwable type.\n" +
+                    "    Expected: ${TThrowable::class.simpleName}\n" +
+                    "    Actual: ${e::class.simpleName}"
+            )
         }
     }
 }
