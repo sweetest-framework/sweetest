@@ -14,6 +14,7 @@ abstract class BaseJUnitTest @Deprecated(
     open fun configure() = TestBuilder(moduleTestingConfiguration)
 
     override val accessor = configure().build()
+    protected val dependencies = accessor.dependencies
     protected val delegates = accessor.delegates
 
     @Before
