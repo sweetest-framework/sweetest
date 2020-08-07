@@ -57,6 +57,14 @@ class DependenciesTest : BaseTest() {
             .requireMock<BViewModel>()
     }
 
+    class TestClassAllSpy : BaseJUnitTest(moduleTestingConfiguration) {
+        val a by steps<ASteps>()
+        val b by steps<BSteps>()
+        override fun configure() = super.configure()
+            .requireSpy<AService>()
+            .requireSpy<BViewModel>()
+    }
+
     class TestClassNoConfig : BaseJUnitTest() {
         val c by steps<CSteps>()
 
@@ -115,8 +123,16 @@ class DependenciesTest : BaseTest() {
         }
     }
 
+    @Test
+    fun `Legacy bug compatibility - realOnly and mockOnly, can both be used as spy nonetheless`() {
+        givenAMockBReal()
+        TestClassAllSpy().run {
+            junitBefore()
+        }
+    }
+
     @Test(expected = Throwable::class)
-    @Ignore("Is not checked currently, but has no negative impact on test outcomes")
+    @Ignore("Ignored because of legacy bug that is kept as is because of backwards compatibility")
     fun `B is realOnly, can't be used as mock`() {
         givenAMockBReal()
         TestClassBMock().run {
