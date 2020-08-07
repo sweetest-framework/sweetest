@@ -2,12 +2,17 @@ package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.dependency
+import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
+import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.framework.environment.instanceOf
+import com.mysugr.sweetest.util.expectException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Before
 import org.junit.Test
+import java.lang.Exception
 
-class PolymorphismTest {
+class PolymorphismTest : BaseTest() {
 
     interface Being
 
@@ -19,7 +24,7 @@ class PolymorphismTest {
     class Dog : Animal
 
     @Test
-    fun `Polymorphism scenario`() {
+    fun `New polymorphism scenario`() {
 
         val test = object : BaseJUnitTest() {
 
@@ -42,5 +47,34 @@ class PolymorphismTest {
         assertEquals(test.being, test.human)
 
         test.junitBefore()
+    }
+
+    @Test(expected = Exception::class)
+    fun `New polymorphism behavior (= NO module config present) - strict type lookup`() {
+        object : BaseJUnitTest() {
+
+            val animal by dependency<Animal>() // fails here
+
+            override fun configure() = super.configure()
+                .provide<Cat>()
+        }
+    }
+
+    @Test
+    fun `Old polymorphism behavior (= module config IS present) - loose type lookup`() {
+
+        val moduleConfig = moduleTestingConfiguration {
+            dependency any of<Animal>()
+        }
+
+        val test = object : BaseJUnitTest(moduleConfig) {
+
+            val animal by dependency<Animal>()
+
+            override fun configure() = super.configure()
+                .provide<Cat>()
+        }
+
+        test.animal // animal can be retrieved as it is the supertype of cat
     }
 }

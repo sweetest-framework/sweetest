@@ -12,18 +12,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class ProvideTest {
+class ProvideTest : BaseTest() {
 
     interface TestUserService
 
     class FakeTestUserService : TestUserService
 
     class TestViewModel(internal val userService: TestUserService)
-
-    @Before
-    fun setUp() {
-        TestEnvironment.fullReset()
-    }
 
     @Test
     fun `provide can be used when dependency is configured with any`() {

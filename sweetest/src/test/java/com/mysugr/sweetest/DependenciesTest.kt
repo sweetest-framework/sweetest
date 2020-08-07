@@ -17,7 +17,7 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 
-class DependenciesTest {
+class DependenciesTest : BaseTest() {
 
     companion object {
         lateinit var moduleTestingConfiguration: ModuleTestingConfiguration
@@ -73,11 +73,6 @@ class DependenciesTest {
         override fun configure() = super.configure()
             .requireReal<BViewModel>()
             .requireMock<AService>()
-    }
-
-    @Before
-    fun setUp() {
-        TestEnvironment.fullReset()
     }
 
     @Test(expected = Throwable::class)
