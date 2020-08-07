@@ -8,8 +8,8 @@ import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.coroutine.coroutineDispatcher
 import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import com.mysugr.sweetest.framework.coroutine.testCoroutineScope
+import com.mysugr.sweetest.util.assertThrown
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
@@ -21,8 +21,6 @@ import org.junit.Test
 import kotlin.coroutines.ContinuationInterceptor
 
 class TestCoroutineScopeTest {
-
-    class Steps(testContext: TestContext) : BaseSteps(testContext, moduleConfig)
 
     @Test
     fun `Create TestCoroutineScope`() {
@@ -49,6 +47,9 @@ class TestCoroutineScopeTest {
 
     @Test
     fun `It doesn't matter whether you get it on the test or steps level`() {
+
+        class Steps(testContext: TestContext) : BaseSteps(testContext, moduleConfig)
+
         val test = object : BaseJUnitTest(moduleConfig) {
             val steps by steps<Steps>()
         }
@@ -59,21 +60,29 @@ class TestCoroutineScopeTest {
         assertSame(test.coroutineDispatcher, test.steps.coroutineDispatcher)
     }
 
-    // TODO couldn't manage to provoke the wanted exception yet
-    @Test(expected = UncompletedCoroutinesError::class)
-    fun `Cleans up TestCoroutineScope`() {
+    @Suppress("BlockingMethodInNonBlockingContext")
+    @Test
+    fun `cleanupTestCoroutines() has to be executed after each test making sure no coroutines are still running`() {
+
+        val otherCoroutineIsStarted = Object()
+        val checkIsFinished = Object()
+
         val test = object : BaseJUnitTest(moduleConfig) {}
 
         test.junitBefore()
 
         GlobalScope.launch {
-            Thread.sleep(1000)
-            test.junitAfter()
+            otherCoroutineIsStarted.wait()
+            // cleanupTestCoroutines() should cause an error if not all coroutines are completed yet
+            assertThrown<UncompletedCoroutinesError> {
+                test.junitAfter() // runs workflow until end, causing cleanupTestCoroutines() to be called
+            }
+            checkIsFinished.notify()
         }
 
-        CoroutineScope(test.coroutineDispatcher).launch {
-            throw Exception("test")
-            Thread.sleep(2000)
+        test.testCoroutineScope.launch {
+            otherCoroutineIsStarted.notify()
+            checkIsFinished.wait() // this causes the coroutine to block so it can't be completed
         }
     }
 
