@@ -3,7 +3,7 @@ package com.mysugr.sweetest.framework.environment
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyConfigurationConsumer
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
-import com.mysugr.sweetest.framework.dependency.DependencyInitializerScope
+import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.dependency.DependencyManager
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
@@ -49,7 +49,7 @@ interface DependencySetupHandler {
     fun <T : Any> addConfiguration(
         clazz: KClass<T>,
         realInitializer: DependencyInitializer<T>? = null,
-        mockInitializer: (DependencyInitializerScope.() -> T)? = null,
+        mockInitializer: (DependencyInitializerContext.() -> T)? = null,
         dependencyMode: DependencyMode? = null,
         alias: KClass<*>? = null
     ): DependencyConfiguration<T>

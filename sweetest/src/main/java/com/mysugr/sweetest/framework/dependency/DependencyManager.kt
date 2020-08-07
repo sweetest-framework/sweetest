@@ -19,7 +19,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
     override val configurations: DependencyConfigurationConsumer
         get() = configurationsField
 
-    private val initializerContext = object : DependencyInitializerScope() {
+    private val initializerContext = object : DependencyInitializerContext() {
         override fun <T : Any> instanceOf(clazz: KClass<T>): T {
             return getDependencyState(clazz).instance
         }

@@ -10,7 +10,7 @@ interface DependencyStatesConsumer {
     fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>?
 }
 
-class DependencyStates(private val initializerScope: DependencyInitializerScope) : DependencyStatesConsumer {
+class DependencyStates(private val initializerContext: DependencyInitializerContext) : DependencyStatesConsumer {
 
     private val statesMap = hashMapOf<DependencyConfiguration<*>, DependencyState<*>>()
 
@@ -29,7 +29,7 @@ class DependencyStates(private val initializerScope: DependencyInitializerScope)
     override fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T> {
         val found = statesMap[configuration]
         return if (found == null) {
-            val newState = DependencyState(initializerScope, configuration)
+            val newState = DependencyState(initializerContext, configuration)
             statesMap[configuration] = newState
             newState
         } else {

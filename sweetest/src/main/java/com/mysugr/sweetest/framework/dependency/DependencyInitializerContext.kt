@@ -2,7 +2,7 @@ package com.mysugr.sweetest.framework.dependency
 
 import kotlin.reflect.KClass
 
-abstract class DependencyInitializerScope {
+abstract class DependencyInitializerContext {
 
     @PublishedApi
     internal abstract fun <T : Any> instanceOf(clazz: KClass<T>): T
