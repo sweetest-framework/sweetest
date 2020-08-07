@@ -1,6 +1,5 @@
 package com.mysugr.sweetest.framework.dependency
 
-import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
 
@@ -11,7 +10,7 @@ interface DependencyStatesConsumer {
     fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>?
 }
 
-class DependencyStates(private val dependencyAccessor: DependencyAccessor) : DependencyStatesConsumer {
+class DependencyStates(private val initializerScope: DependencyInitializerScope) : DependencyStatesConsumer {
 
     private val statesMap = hashMapOf<DependencyConfiguration<*>, DependencyState<*>>()
 
@@ -30,7 +29,7 @@ class DependencyStates(private val dependencyAccessor: DependencyAccessor) : Dep
     override fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T> {
         val found = statesMap[configuration]
         return if (found == null) {
-            val newState = DependencyState(dependencyAccessor, configuration)
+            val newState = DependencyState(initializerScope, configuration)
             statesMap[configuration] = newState
             newState
         } else {

@@ -6,7 +6,6 @@ import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.state.SessionStore
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.framework.environment.instanceOf
 
 val appModuleTestingConfiguration = moduleTestingConfiguration {
 

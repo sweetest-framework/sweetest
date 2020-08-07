@@ -19,14 +19,9 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
     override val configurations: DependencyConfigurationConsumer
         get() = configurationsField
 
-    override fun <T : Any> instanceOf(clazz: KClass<T>): T {
-        try {
+    private val initializerContext = object : DependencyInitializerScope() {
+        override fun <T : Any> instanceOf(clazz: KClass<T>): T {
             return getDependencyState(clazz).instance
-        } catch (throwable: Throwable) {
-            throw RuntimeException(
-                "Call on \"dependency<${clazz.simpleName}>\" failed",
-                throwable
-            )
         }
     }
 
@@ -52,7 +47,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
 
     override val states: DependencyStatesConsumer
         get() = if (_states == null) {
-            _states = DependencyStates(this)
+            _states = DependencyStates(initializerContext)
             _states!!
         } else {
             _states!!
