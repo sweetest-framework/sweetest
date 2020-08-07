@@ -6,6 +6,7 @@ import com.mysugr.sweetest.framework.base.TestingAccessor
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineScope
@@ -13,9 +14,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 import kotlin.coroutines.ContinuationInterceptor
 
+@ExperimentalCoroutinesApi
 val TestingAccessor.testCoroutineScope: TestCoroutineScope
     get() = this.accessor.testContext.coroutines.testCoroutineScope
 
+@ExperimentalCoroutinesApi
 val TestingAccessor.coroutineDispatcher: CoroutineDispatcher
     get() = this.accessor.testContext.coroutines.testCoroutineScope
         .coroutineContext[ContinuationInterceptor] as CoroutineDispatcher
