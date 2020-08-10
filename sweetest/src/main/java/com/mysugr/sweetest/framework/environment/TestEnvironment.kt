@@ -55,11 +55,11 @@ interface DependencySetupHandler {
     ): DependencyConfiguration<T>
 }
 
-abstract class DependencyAccessor {
-    abstract val configurations: DependencyConfigurationConsumer
-    abstract val states: DependencyStatesConsumer
+interface DependencyAccessor {
+    val configurations: DependencyConfigurationConsumer
+    val states: DependencyStatesConsumer
 
-    abstract fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T>
+    fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T>
 }
 
 inline fun <reified T : Any> DependencyAccessor.getDependencyState() = getDependencyState(T::class)

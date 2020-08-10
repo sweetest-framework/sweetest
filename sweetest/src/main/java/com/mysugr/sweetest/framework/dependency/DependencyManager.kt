@@ -7,7 +7,7 @@ import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) : DependencyAccessor() {
+class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) : DependencyAccessor {
 
     private var _states: DependencyStates? = null
     private val configurationsField = DependencyConfigurations()

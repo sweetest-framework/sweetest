@@ -5,6 +5,9 @@ import kotlin.reflect.KClass
 
 interface DependencyStatesConsumer {
     val all: Collection<DependencyState<*>>
+
+    @Deprecated("Operator access is deprecated", ReplaceWith("getByConfiguration"))
+    operator fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T>
     fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>>
     fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T>
     fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>?
@@ -25,6 +28,10 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
     }
 
     override val all get() = statesMap.values
+
+    override fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T> {
+        return getByConfiguration(configuration)
+    }
 
     override fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T> {
         val found = statesMap[configuration]
