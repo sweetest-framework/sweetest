@@ -6,7 +6,7 @@ After some time working with sweetest we came to the conclusion there are a lot 
 
 - [Goals](#goals)
 - [Introduction](#introduction)
-    - [Use the live templates!](#use-the-live-templates)
+    - [Use the templates!](#use-the-templates)
     - [Add a module configuration](#add-a-module-configuration)
     - [Add dependencies to the configuration](#add-dependencies-to-the-configuration)
     - [Create a steps class](#create-a-steps-class)
@@ -66,17 +66,46 @@ After some time working with sweetest we came to the conclusion there are a lot 
 
 This introduction guides you through the setup of a typical sweetest test. Its goal is to be as comprehensive and focused as possible for people not yet familiar with sweetest. We recommend reading through the [reference section](#reference) too in order to deepen your understanding of sweetest and generally using it any time you need during development.
 
-### Use the live templates!
+### Use the templates!
 
-If you use [IntelliJ IDEA](https://www.jetbrains.com/idea) (respectively [Android Studio](https://developer.android.com/studio)) as IDE you should use these [live templates](https://www.jetbrains.com/help/idea/using-live-templates.html) to speed up development with sweetest:
+To increase your productivits you should definitely exploit your IDE's power as much as possible. Here are two templates you can use in IntelliJ:
 
-<img src="readme/live-remplates-ssteps.gif">
+#### Live templates
 
-To make use of them please [download these exported IntelliJ settings](https://github.com/mysugr/sweetest/blob/master/tools/live-templates.jar?raw=true) and import them into your IDE with `File / Import settings`. After the import you can see them in the settings at `Editor / Live Templates`:
+<img src="readme/live-templates-ssteps.gif">
+
+To use them please download these [exported IntelliJ settings](https://github.com/mysugr/sweetest/blob/master/tools/live-templates.jar?raw=true) and import
+them into your IDE at `File / Import settings` (make sure to just check live templates). After
+the import you can see them in the settings at `Editor / Live Templates`:
 
 <img src="readme/live-templates-settings.png">
 
-You can use the templates by beginning to type the abbreviations as shown in the image above and hitting enter.
+You can use the templates by beginning to type the abbreviations as shown in the image above and hitting the enter key.
+
+#### File templates
+
+With file templates you can add sweetest source code files right from the project tool window.
+
+Just right-click at the place where you want to add the file (or use `Command + N`) and choose `Sweetest Test Class` or `Sweetest Steps Class`:
+
+<img src="readme/file-templates-menu.png">
+
+Enter the name of the class:
+
+<img src="readme/file-templates-filename.png">
+
+And the source code file is automatically generated for you:
+
+<img src="readme/file-templates-result.png">
+
+The types are automatically guessed by the name you enter.
+
+In order to use the [Velocity](http://velocity.apache.org/engine/devel/user-guide.html) templates download them here...
+
+* [Test class template](https://github.com/mysugr/sweetest/blob/master/tools/file-templates/Sweetest+Steps+Class.kt?raw=true)
+* [Steps class template](https://github.com/mysugr/sweetest/blob/master/tools/file-templates/Sweetest+Test+Class.kt?raw=true)
+
+...and put them in IntelliJ's `fileTemplates` folder (e.g. `~/Library/Preferences/AndroidStudio4.0/fileTemplates`) and you're ready to go!
 
 ### Add a module configuration
 
