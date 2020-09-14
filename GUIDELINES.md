@@ -68,7 +68,7 @@ This introduction guides you through the setup of a typical sweetest test. Its g
 
 ### Use the templates!
 
-To increase your productivits you should definitely exploit your IDE's power as much as possible. Here are two templates you can use in IntelliJ:
+To increase your productivity you should definitely exploit your IDE's power as much as possible. Here are two templates you can use in IntelliJ:
 
 #### Live templates
 
