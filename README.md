@@ -35,7 +35,7 @@ Further resources:
 * [How does it look?](#how-does-it-look)
 * [Setup](#setup)
 * [Documentation](#documentation)
-* [IntelliJ live templates](#intellij-live-templates)
+* [Templates](#templates)
 * [License](#license)
 
 ## Customise and contribute
@@ -205,12 +205,13 @@ Please have a look at the [test development guidelines](GUIDELINES.md)! Here you
 
 In the [reference section](GUIDELINES.md#reference) you can look up all relevant information you are going to need during test development.
 
-## IntelliJ live templates
+## Templates
 
-To make good for added overhead we can make use of IntelliJ's advanced refactoring tools, but on
-top of that you can also use live templates to make things even easier:
+To compensate for added overhead you can rely on refactoring tools as offered by e.g. IntelliJ. To make your life even easier you can use file or live templates to make things even easier.
 
-<img src="readme/live-remplates-ssteps.gif">
+### Live templates
+
+<img src="readme/live-templates-ssteps.gif">
 
 To use them please download these [exported IntelliJ settings](https://github.com/mysugr/sweetest/blob/master/tools/live-templates.jar?raw=true) and import
 them into your IDE at `File / Import settings` (make sure to just check live templates). After
@@ -218,8 +219,32 @@ the import you can see them in the settings at `Editor / Live Templates`:
 
 <img src="readme/live-templates-settings.png">
 
-You can use the templates by beginning to type the abbreviations as shown in the image above
-and hitting the enter key.
+You can use the templates by beginning to type the abbreviations as shown in the image above and hitting the enter key.
+
+### File templates
+
+With file templates you can add sweetest source code files right from the project tool window.
+
+Just right-click at the place where you want to add the file (or use `Command + N`) and choose `Sweetest Test Class` or `Sweetest Steps Class`:
+
+<img src="readme/file-templates-menu.png">
+
+Enter the name of the class:
+
+<img src="readme/file-templates-filename.png">
+
+And the source code file is automatically generated for you:
+
+<img src="readme/file-templates-result.png">
+
+The types are automatically guessed by the name you enter.
+
+In order to use the [Velocity](http://velocity.apache.org/engine/devel/user-guide.html) templates download them here...
+
+* [Test class template](https://github.com/mysugr/sweetest/blob/master/tools/file-templates/Sweetest+Steps+Class.kt?raw=true)
+* [Steps class template](https://github.com/mysugr/sweetest/blob/master/tools/file-templates/Sweetest+Test+Class.kt?raw=true)
+
+...and put them in IntelliJ's `fileTemplates` folder (e.g. `~/Library/Preferences/AndroidStudio4.0/fileTemplates`) and you're ready to go!
 
 ## License
 
