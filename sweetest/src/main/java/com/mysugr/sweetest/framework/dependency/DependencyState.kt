@@ -87,8 +87,19 @@ class DependencyState<T : Any>(
     private fun createInstanceAutomatically(): T {
         return try {
             val constructors = configuration.clazz.constructors
+            if (configuration.clazz.isAbstract) {
+                throw IllegalArgumentException(
+                    "Dependencies like \"${configuration.clazz.simpleName}\" which are abstract can not be " +
+                        "auto-initialized. Please define how to instantiate it by adding a `provide { ... }` " +
+                        "configuration!"
+                )
+            }
             if (constructors.size > 1) {
-                throw IllegalArgumentException("Can't auto-initialize dependency which has more than one constructor")
+                throw IllegalArgumentException(
+                    "Dependencies like \"${configuration.clazz.simpleName}\" which have more than one constructor " +
+                        "can't be auto-initialized. Please define how to instantiate it by adding a " +
+                        "`provide { ... }` configuration!"
+                )
             }
             val constructor = constructors.first()
             val argumentTypes = constructor.parameters.map { it.type.classifier as KClass<*> }
