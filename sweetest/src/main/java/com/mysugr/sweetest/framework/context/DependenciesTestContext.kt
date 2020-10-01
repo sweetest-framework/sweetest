@@ -12,7 +12,8 @@ import kotlin.reflect.KClass
 class DependenciesTestContext {
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun requireReal(clazz: KClass<*>) {
+    fun requireReal(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
+        checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
         val mode = DependencyMode.REAL
         checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz) { state, _ ->
@@ -23,14 +24,24 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerReal(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
+    fun offerReal(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean = true
+    ) {
+        checkInvalidLegacyFunctionCall("offerReal", hasModuleTestingConfiguration)
         prepareAndUseDependencyOf(clazz) { state, _ ->
             state.realInitializerUnknown = initializer
         }
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerRealRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
+    fun offerRealRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean = true
+    ) {
+        checkInvalidLegacyFunctionCall("offerRealRequired", hasModuleTestingConfiguration)
         val mode = DependencyMode.REAL
         checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz) { state, _ ->
@@ -42,7 +53,9 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun requireMock(clazz: KClass<*>) {
+    @JvmOverloads
+    fun requireMock(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
+        checkInvalidLegacyFunctionCall("requireMock", hasModuleTestingConfiguration)
         val mode = DependencyMode.MOCK
         checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz) { state, _ ->
@@ -53,14 +66,24 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
+    fun offerMock(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean = true
+    ) {
+        checkInvalidLegacyFunctionCall("offerMock", hasModuleTestingConfiguration)
         prepareAndUseDependencyOf(clazz) { state, _ ->
             state.mockInitializerUnknown = initializer
         }
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerMockRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
+    fun offerMockRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean = true
+    ) {
+        checkInvalidLegacyFunctionCall("offerMockRequired", hasModuleTestingConfiguration)
         val mode = DependencyMode.MOCK
         checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz) { state, _ ->
@@ -72,13 +95,23 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun requireSpy(clazz: KClass<*>) {
+    fun requireSpy(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
+        checkInvalidLegacyFunctionCall("requireSpy", hasModuleTestingConfiguration)
         val mode = DependencyMode.SPY
         checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
+        }
+    }
+
+    private fun checkInvalidLegacyFunctionCall(functionName: String, hasModuleTestingConfiguration: Boolean) {
+        check(hasModuleTestingConfiguration) {
+            error(
+                "`$functionName` is a legacy function and can't be used " +
+                    "when using new API without module testing configuration!"
+            )
         }
     }
 

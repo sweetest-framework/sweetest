@@ -18,7 +18,7 @@ private const val dependencyModeDeprecationMessage = "Dependency modes like \"RE
 
 abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     @PublishedApi internal val testContext: TestContext,
-    moduleTestingConfiguration: ModuleTestingConfiguration?
+    @PublishedApi internal val moduleTestingConfiguration: ModuleTestingConfiguration?
 ) {
 
     init {
@@ -80,39 +80,64 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireReal() = apply {
-        testContext.dependencies.requireReal(T::class)
+        testContext.dependencies.requireReal(
+            clazz = T::class,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerReal(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerReal(T::class, initializer)
+        testContext.dependencies.offerReal(
+            clazz = T::class,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) =
         apply {
-            testContext.dependencies.offerRealRequired(T::class, initializer)
+            testContext.dependencies.offerRealRequired(
+                clazz = T::class,
+                initializer = initializer,
+                hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            )
         }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireMock() = apply {
-        testContext.dependencies.requireMock(T::class)
+        testContext.dependencies.requireMock(
+            clazz = T::class,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMock(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerMock(T::class, initializer)
+        testContext.dependencies.offerMock(
+            clazz = T::class,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) =
         apply {
-            testContext.dependencies.offerMockRequired(T::class, initializer)
+            testContext.dependencies.offerMockRequired(
+                clazz = T::class,
+                initializer = initializer,
+                hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            )
         }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireSpy() = apply {
-        testContext.dependencies.requireSpy(T::class)
+        testContext.dependencies.requireSpy(
+            clazz = T::class,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     inline fun <reified R : Any> offerFactory(noinline createObject: () -> R) = apply {
