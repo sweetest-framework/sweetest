@@ -1,6 +1,7 @@
 package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import com.mysugr.sweetest.util.expectException
@@ -95,6 +96,7 @@ class PolymorphismTest : BaseTest() {
         }.junitBefore()
 
         assertNotNull(caughtException)
+        assertEquals(SweetestException::class, caughtException!!::class)
     }
 
     /**
@@ -144,7 +146,11 @@ class PolymorphismTest : BaseTest() {
         test.animal
 
         expectException<Exception> {
-            test.cat
+            try {
+                test.cat
+            } catch (ex: SweetestException) {
+                println(ex)
+            }
         }
     }
 
