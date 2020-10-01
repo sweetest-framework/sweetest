@@ -23,7 +23,7 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
 
     inline fun <reified T : Any> dependency(): DependencyPropertyDelegate<T> {
         try {
-            return DependencyPropertyDelegate(TestEnvironment.dependencies.getDependencyState())
+            return DependencyPropertyDelegate { TestEnvironment.dependencies.getDependencyState<T>() }
         } catch (throwable: Throwable) {
             throw RuntimeException(
                 "Call on \"dependency<${T::class.simpleName}>\" failed",
@@ -47,7 +47,15 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): T = getter()
     }
 
-    class DependencyPropertyDelegate<out T : Any>(private val dependencyState: DependencyState<T>) {
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): T = dependencyState.instance
+    class DependencyPropertyDelegate<out T : Any>(private val getDependencyState: (() -> DependencyState<T>)) {
+
+        // For API compatibility
+        constructor(dependencyState: DependencyState<T>) : this(
+            getDependencyState = { dependencyState })
+
+        private var dependencyState: DependencyState<T>? = null
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T =
+            (dependencyState ?: getDependencyState().also { dependencyState = it }).instance
     }
 }
