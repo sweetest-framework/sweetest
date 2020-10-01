@@ -13,6 +13,7 @@ import kotlin.reflect.KClass
 class DependenciesTestContext {
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
+    @JvmOverloads
     fun requireReal(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
         checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
         val mode = DependencyMode.REAL
@@ -25,6 +26,7 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
+    @JvmOverloads
     fun offerReal(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
@@ -37,6 +39,7 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
+    @JvmOverloads
     fun offerRealRequired(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
@@ -67,6 +70,7 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
+    @JvmOverloads
     fun offerMock(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
@@ -79,6 +83,7 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
+    @JvmOverloads
     fun offerMockRequired(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
@@ -96,6 +101,7 @@ class DependenciesTestContext {
     }
 
     @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
+    @JvmOverloads // TODO consider explicit overload
     fun requireSpy(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
         checkInvalidLegacyFunctionCall("requireSpy", hasModuleTestingConfiguration)
         val mode = DependencyMode.SPY
