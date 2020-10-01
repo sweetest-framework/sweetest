@@ -46,17 +46,20 @@ class DependencyState<T : Any>(
         get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
         set(value) {
             if (value != modeField) {
-                if (modeField != null) {
-                    throw IllegalStateException(
-                        "Can't change dependency mode or \"${configuration.clazz}\", it " +
-                            "has already been set before and can't be changed afterwards"
-                    )
-                }
-                if (instanceField != null) {
-                    throw IllegalStateException(
-                        "Can't set dependency mode of \"${configuration.clazz}\", instance " +
-                            "has already been created"
-                    )
+                // PROVIDED mode overrules mode constraints
+                if (value != DependencyMode.PROVIDED) {
+                    if (modeField != null) {
+                        throw IllegalStateException(
+                            "Can't change dependency mode of \"${configuration.clazz}\", it " +
+                                "has already been set before and can't be changed afterwards"
+                        )
+                    }
+                    if (instanceField != null) {
+                        throw IllegalStateException(
+                            "Can't set dependency mode of \"${configuration.clazz}\", instance " +
+                                "has already been created"
+                        )
+                    }
                 }
                 modeField = value
             }
