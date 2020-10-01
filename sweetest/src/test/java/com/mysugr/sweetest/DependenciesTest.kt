@@ -81,14 +81,6 @@ class DependenciesTest : BaseTest() {
             .requireMock<AService>()
     }
 
-    @Test(expected = Throwable::class)
-    fun `No dependencies configured leads to exception`() {
-        givenNothingConfigured()
-        TestClass().run {
-            junitBefore()
-        }
-    }
-
     @Test
     fun `A can be used as mock`() {
         givenAMockBReal()
@@ -248,19 +240,6 @@ class DependenciesTest : BaseTest() {
             junitBefore()
             assertNotNull(c.instance)
             assertFalse(c.instance.isMock)
-        }
-    }
-
-    @Test
-    fun `No module configuration is provided mixed with module configuration provided`() {
-        givenAMock()
-        TestClassMixedConfig().run {
-            junitBefore()
-            assertNotNull(c.instance)
-            assertNotNull(a.instance)
-
-            // if no module config is provided
-            assertFalse(a.isMock)
         }
     }
 
