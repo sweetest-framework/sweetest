@@ -2,6 +2,7 @@ package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
@@ -169,7 +170,7 @@ class DependenciesTest : BaseTest() {
         testInstance.junitBefore()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = SweetestException::class)
     fun `No module configuration, changing REAL to MOCK throws exception`() {
         val testInstance = object : BaseJUnitTest() {
             override fun configure() = super.configure()
@@ -180,7 +181,7 @@ class DependenciesTest : BaseTest() {
         testInstance.junitBefore()
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = SweetestException::class)
     fun `No module configuration, changing MOCK to REAL throws exception`() {
         var actualInstance: AService? = null
 
@@ -198,7 +199,7 @@ class DependenciesTest : BaseTest() {
         testInstance.junitBefore()
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = SweetestException::class)
     fun `No module configuration or provide throws exception`() {
         var actualInstance: AService? = null
 

@@ -11,11 +11,14 @@ interface DependencyStatesConsumer {
     fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>>
     fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T>
     fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>?
+    fun setForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>)
+    fun isForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>): Boolean
 }
 
 class DependencyStates(private val initializerContext: DependencyInitializerContext) : DependencyStatesConsumer {
 
     private val statesMap = hashMapOf<DependencyConfiguration<*>, DependencyState<*>>()
+    private val suppressedConfigurations = hashSetOf<DependencyConfiguration<*>>()
 
     override fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>> {
         val result = mutableListOf<DependencyState<T>>()
@@ -47,5 +50,13 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
     override fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>? {
         val key = statesMap.keys.find { it.clazz == clazz }
         return statesMap[key] as? DependencyState<T>
+    }
+
+    override fun setForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>) {
+        suppressedConfigurations.add(dependencyConfiguration)
+    }
+
+    override fun isForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>): Boolean {
+        return suppressedConfigurations.contains(dependencyConfiguration)
     }
 }

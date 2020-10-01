@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
@@ -16,7 +17,7 @@ class DependenciesTestContext {
         checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
         val mode = DependencyMode.REAL
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
@@ -30,7 +31,7 @@ class DependenciesTestContext {
         hasModuleTestingConfiguration: Boolean = true
     ) {
         checkInvalidLegacyFunctionCall("offerReal", hasModuleTestingConfiguration)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             state.realInitializerUnknown = initializer
         }
     }
@@ -44,7 +45,7 @@ class DependenciesTestContext {
         checkInvalidLegacyFunctionCall("offerRealRequired", hasModuleTestingConfiguration)
         val mode = DependencyMode.REAL
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
@@ -58,7 +59,7 @@ class DependenciesTestContext {
         checkInvalidLegacyFunctionCall("requireMock", hasModuleTestingConfiguration)
         val mode = DependencyMode.MOCK
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
@@ -72,7 +73,7 @@ class DependenciesTestContext {
         hasModuleTestingConfiguration: Boolean = true
     ) {
         checkInvalidLegacyFunctionCall("offerMock", hasModuleTestingConfiguration)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             state.mockInitializerUnknown = initializer
         }
     }
@@ -86,7 +87,7 @@ class DependenciesTestContext {
         checkInvalidLegacyFunctionCall("offerMockRequired", hasModuleTestingConfiguration)
         val mode = DependencyMode.MOCK
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
             state.mockInitializerUnknown = initializer
@@ -99,7 +100,7 @@ class DependenciesTestContext {
         checkInvalidLegacyFunctionCall("requireSpy", hasModuleTestingConfiguration)
         val mode = DependencyMode.SPY
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
             state.mode = mode
@@ -107,8 +108,8 @@ class DependenciesTestContext {
     }
 
     private fun checkInvalidLegacyFunctionCall(functionName: String, hasModuleTestingConfiguration: Boolean) {
-        check(hasModuleTestingConfiguration) {
-            error(
+        if (!hasModuleTestingConfiguration) {
+            throw SweetestException(
                 "`$functionName` is a legacy function and can't be used " +
                     "when using new API without module testing configuration!"
             )
@@ -129,7 +130,7 @@ class DependenciesTestContext {
     fun provide(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
         val mode = DependencyMode.PROVIDED
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = true) { state, _ ->
             state.providedInitializerUnknown = initializer
             state.mode = mode
         }
@@ -146,7 +147,7 @@ class DependenciesTestContext {
     fun provide(clazz: KClass<*>) {
         val mode = DependencyMode.REAL
         checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz) { state, _ ->
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = true) { state, _ ->
             state.mode = mode
         }
     }
@@ -158,15 +159,31 @@ class DependenciesTestContext {
      */
     private fun prepareAndUseDependencyOf(
         clazz: KClass<*>,
+        preciseTypeMatching: Boolean,
         block: (DependencyState<out Any>, DependencyMode?) -> Unit
     ) {
         with(TestEnvironment.dependencies) {
-            val dependencyState = getDependencyConfiguration(clazz)?.let { configuration ->
-                return@let states.getByConfiguration(configuration)
-            } ?: run {
-                val configuration = DependencyConfiguration(clazz, null, null, null)
-                return@run states.getByConfiguration(configuration)
+            val dependencyState = if (preciseTypeMatching) {
+                val dependencyState = states.getByDependencyType(clazz) ?: run {
+                    val configuration = DependencyConfiguration(clazz, null, null, DependencyMode.PROVIDED)
+                    states.getByConfiguration(configuration)
+                }
+
+                val configuration = configurations.getAssignableTo(clazz)
+                if (configuration != null) {
+                    states.setForcedToPreciseMatching(configuration)
+                }
+
+                dependencyState
+            } else {
+                getDependencyConfiguration(clazz)?.let { configuration ->
+                    states.getByConfiguration(configuration)
+                } ?: throw SweetestException(
+                    "Dependency `${clazz.simpleName}` is not configured. Please use `provide` instead of the " +
+                        "`require/offer` family of functions."
+                )
             }
+
             block(dependencyState, dependencyState.configuration.defaultDependencyMode)
         }
     }

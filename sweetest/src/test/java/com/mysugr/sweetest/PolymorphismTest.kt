@@ -145,12 +145,36 @@ class PolymorphismTest : BaseTest() {
 
         test.animal
 
-        expectException<Exception> {
-            try {
-                test.cat
-            } catch (ex: SweetestException) {
-                println(ex)
-            }
+        expectException<SweetestException> {
+            test.cat
+        }
+    }
+
+    /**
+     * Edge case: Only Animal is configured with `provide`, but not Cat --> complain, because when using `provide` all
+     * variants of a specific type have to be configured with `provide` (strict type matching)
+     */
+    @Test
+    fun `Global config YES - NEW local config 3`() {
+
+        val globalConfig = moduleTestingConfiguration {
+            dependency any of<Cat>() // = global config
+        }
+
+        val test = object : BaseJUnitTest(globalConfig) {
+            val cat by dependency<Cat>() // matches only Cat
+            val animal by dependency<Animal>() // matches only Animal
+
+            override fun configure() = super.configure()
+                .provide<Cat> { mock() } // should fail here already
+        }
+
+        test.junitBefore()
+
+        test.cat
+
+        expectException<SweetestException> {
+            test.animal
         }
     }
 
