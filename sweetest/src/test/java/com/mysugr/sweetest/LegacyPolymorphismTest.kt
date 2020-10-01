@@ -39,9 +39,13 @@ class LegacyPolymorphismTest {
             dependency realOnly of<Animal>()
         }
 
-        object : BaseJUnitTest(config) {
+        val test = object : BaseJUnitTest(config) {
             val cat by dependency<Cat>() // fails already here
         }
+
+        test.junitBefore()
+
+        test.cat
     }
 
     @Test
@@ -68,10 +72,16 @@ class LegacyPolymorphismTest {
             dependency any of<Animal>()
         }
 
-        object : BaseJUnitTest(config) {
+        val test = object : BaseJUnitTest(config) {
+            val cat by dependency<Cat>() // fails already here
+
             override fun configure() = super.configure()
                 .requireReal<Cat>() // already fails here
         }
+
+        test.junitBefore()
+
+        test.cat
     }
 
 }
