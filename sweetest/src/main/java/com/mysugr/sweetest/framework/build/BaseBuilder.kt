@@ -52,23 +52,28 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     /**
      * Provides an [initializer] for type [T] to sweetest.
+     *
      * That [initializer] will be used when an instance of [T] is needed in the test.
      *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the [initializer] is used.
+     * Can only by called once per type!
+     *
+     * **Legacy note:** [provide] doesn't know about constraints configured with [requireReal], [requireMock] etc.
+     * (configuration in test and steps classes) or `realOnly` and `mockOnly` (module testing configuration) and thus
+     * overrides these constraints.
      */
     inline fun <reified T : Any> provide(noinline initializer: DependencyInitializer<T>) = apply {
         testContext.dependencies.provide(T::class, initializer)
     }
 
     /**
-     * Provides an instance of [T] to sweetest that is automatically instantiated using the default
-     * constructor and the built-in dependency injection.
+     * Provides an instance of [T] to sweetest that is automatically instantiated using the default constructor and the
+     * built-in dependency injection.
      *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the automatically created instance is used.
+     * Can only by called once per type!
+     *
+     * **Legacy note:** [provide] doesn't know about constraints configured with [requireReal], [requireMock] etc.
+     * (configuration in test and steps classes) or `realOnly` and `mockOnly` (module testing configuration) and thus
+     * overrides these constraints.
      */
     inline fun <reified T : Any> provide() = apply {
         testContext.dependencies.provide(T::class)

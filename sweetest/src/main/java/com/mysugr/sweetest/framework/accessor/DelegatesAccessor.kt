@@ -3,7 +3,6 @@ package com.mysugr.sweetest.framework.accessor
 import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.framework.environment.getDependencyState
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -23,7 +22,7 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
 
     inline fun <reified T : Any> dependency(): DependencyPropertyDelegate<T> {
         try {
-            return DependencyPropertyDelegate { TestEnvironment.dependencies.getDependencyState<T>() }
+            return DependencyPropertyDelegate { TestEnvironment.dependencies.getDependencyState(T::class) }
         } catch (throwable: Throwable) {
             throw RuntimeException(
                 "Call on \"dependency<${T::class.simpleName}>\" failed",

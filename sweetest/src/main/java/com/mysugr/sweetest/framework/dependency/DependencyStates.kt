@@ -12,7 +12,13 @@ interface DependencyStatesConsumer {
     operator fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T>
 
     /**
-     * Looks up a [DependencyState] for the exact [clazz] (precise matching) or null if not found.
+     * Returns a state assigned to the [clazz] or CREATES (⚠️) one if necessary (in this case the state is _not_
+     * assigned to a [DependencyConfiguration]!)
+     */
+    operator fun <T : Any> get(clazz: KClass<T>): DependencyState<T>
+
+    /**
+     * Looks up a [DependencyState] for the exact [clazz] or null if not found.
      */
     fun <T : Any> getOrNull(clazz: KClass<T>): DependencyState<T>?
 
@@ -52,12 +58,21 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
     override fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T> {
         val found = statesMap[configuration]
         return if (found == null) {
-            val newState = DependencyState(initializerContext, configuration)
-            statesMap[configuration] = newState
-            newState
+            create(configuration)
         } else {
             found as DependencyState<T>
         }
+    }
+
+    override fun <T : Any> get(clazz: KClass<T>): DependencyState<T> {
+        val dummyConfiguration = DependencyConfiguration(clazz, defaultMockInitializer = null)
+        return getOrNull(clazz) ?: create(dummyConfiguration)
+    }
+
+    private fun <T : Any> create(configuration: DependencyConfiguration<T>): DependencyState<T> {
+        val newState = DependencyState(initializerContext, configuration)
+        statesMap[configuration] = newState
+        return newState
     }
 
     override fun <T : Any> getOrNull(clazz: KClass<T>): DependencyState<T>? {

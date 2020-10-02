@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.dependency
 
+import com.mysugr.sweetest.framework.base.SweetestException
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
@@ -45,29 +46,29 @@ class DependencyState<T : Any>(
     var mode: DependencyMode
         get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
         set(value) {
-            if (value != modeField) {
-                // PROVIDED mode overrules mode constraints
-                if (value != DependencyMode.PROVIDED) {
-                    if (modeField != null) {
-                        throw IllegalStateException(
-                            "Can't change dependency mode of \"${configuration.clazz}\", it " +
-                                "has already been set before and can't be changed afterwards"
-                        )
-                    }
-                    if (instanceField != null) {
-                        throw IllegalStateException(
-                            "Can't set dependency mode of \"${configuration.clazz}\", instance " +
-                                "has already been created"
-                        )
-                    }
+            if (value == modeField) return
+            when {
+                modeField != null -> {
+                    throw SweetestException(
+                        "Can't change dependency mode of \"${configuration.clazz.simpleName}\", it " +
+                            "has already been set before and can't be changed afterwards"
+                    )
                 }
-                modeField = value
+                instanceField != null -> {
+                    throw SweetestException(
+                        "Can't set dependency mode of \"${configuration.clazz.simpleName}\", instance " +
+                            "has already been created"
+                    )
+                }
+                else -> {
+                    modeField = value
+                }
             }
         }
 
     private fun initializeInstance(): T {
         val instance = when (mode) {
-            DependencyMode.REAL -> createInstance()
+            DependencyMode.REAL, DependencyMode.AUTO_PROVIDED -> createInstance()
             DependencyMode.MOCK -> createMock()
             DependencyMode.SPY -> Mockito.spy(createInstance())
             DependencyMode.PROVIDED -> createProvidedInstance()

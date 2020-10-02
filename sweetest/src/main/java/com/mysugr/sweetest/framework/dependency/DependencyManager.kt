@@ -26,42 +26,93 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
         }
     }
 
+    /**
+     * Returns the dependency state for _consumption_ (e.g. `val instance by dependency<T>()`).
+     */
     override fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T> {
         if (clazz.isSubclassOf(BaseSteps::class)) {
             throw RuntimeException(
-                "Steps classes can't be accessed as dependency, please " +
-                    "use the correct function to access steps classes!"
+                "Steps classes can't be accessed via `dependency<T>`, please " +
+                    "use `steps<T>` to access steps classes!"
             )
         }
 
-        return with(TestEnvironment.dependencies) {
-            states.getOrNull(clazz)
-                ?: run {
-                    val configuration = configurations.getAssignableTo(clazz)
-                        ?: throw SweetestException(
-                            "No configuration for \"${clazz.simpleName}\" found! Please configure the type by using " +
-                                "`provide<${clazz.simpleName}>...`.\nLegacy note: Adding the type to the module " +
-                                "testing configuration also fixes this problem, but these are deprecated. Please use " +
-                                "`provide` in your test and steps classes instead!"
-                        )
-                    if (states.isForcedToPreciseMatching(configuration)) {
-                        if (configuration.clazz != clazz) {
-                            throw SweetestException( // TODO add extra test case for that
-                                "There is a dependency \"${configuration.clazz.simpleName}\" configured in the module " +
-                                    "testing configuration, but you are requesting type \"${clazz.simpleName}\". To avoid " +
-                                    "ambiguities please specify \"provide<${clazz.simpleName}>...\" explicitly!"
-                            )
-                        } else {
-                            throw SweetestException(
-                                "There is a dependency \"${configuration.clazz.simpleName}\" configured in the module " +
-                                    "testing configuration, but as there is a chance for ambiguities between " +
-                                    "different types you have to specify \"provide<${clazz.simpleName}>...\" " +
-                                    "explicitly nonetheless!"
-                            )
-                        }
-                    }
-                    states[configuration]
-                }
+        return getDependencyStateByClassPrecisely(clazz) ?: getDependencyStateViaConfigurationLoosely(clazz)
+    }
+
+    private fun <T : Any> getDependencyStateViaConfigurationLoosely(clazz: KClass<T>): DependencyState<T> {
+        val configuration = getDependencyConfigurationLoosely(clazz)
+
+        ensureLooseMatchingIsAllowed(configuration, clazz)
+
+        return states[configuration]
+    }
+
+    private fun <T : Any> ensureLooseMatchingIsAllowed(
+        configuration: DependencyConfiguration<T>,
+        clazz: KClass<T>
+    ) {
+        if (states.isForcedToPreciseMatching(configuration)) {
+            if (configuration.clazz != clazz) {
+                throw SweetestException( // TODO add extra test case for that
+                    "There is a dependency \"${configuration.clazz.simpleName}\" configured in the module " +
+                        "testing configuration, but you are requesting type \"${clazz.simpleName}\". To avoid " +
+                        "ambiguities please specify \"provide<${clazz.simpleName}>...\" explicitly!"
+                )
+            } else {
+                throw SweetestException(
+                    "There is a dependency \"${configuration.clazz.simpleName}\" configured in the module " +
+                        "testing configuration, but as there is a chance for ambiguities between " +
+                        "different types you have to specify \"provide<${clazz.simpleName}>...\" " +
+                        "explicitly nonetheless!"
+                )
+            }
+        }
+    }
+
+    private fun <T : Any> getDependencyConfigurationLoosely(clazz: KClass<T>): DependencyConfiguration<T> {
+        return (configurations.getAssignableTo(clazz)
+            ?: throw SweetestException(
+                "No configuration for \"${clazz.simpleName}\" found! Please configure the type by using " +
+                    "`provide<${clazz.simpleName}>...`.\nLegacy note: Adding the type to the module " +
+                    "testing configuration also fixes this problem, but these are deprecated. Please use " +
+                    "`provide` in your test and steps classes instead!"
+            ))
+    }
+
+    private fun <T : Any> getDependencyStateByClassPrecisely(clazz: KClass<T>) = states.getOrNull(clazz)
+
+    /**
+     * Returns the dependency state for _configuration_ (e.g. `provide<T>()`).
+     */
+    override fun getDependencyStateForConfiguration(
+        clazz: KClass<*>,
+        preciseTypeMatching: Boolean
+    ): DependencyState<*> {
+        return if (preciseTypeMatching) {
+            val dependencyState = TestEnvironment.dependencies.states[clazz]
+            forcePreciseTypeMatching(clazz)
+            dependencyState
+        } else {
+            configurations.getAssignableTo(clazz)?.let { configuration ->
+                states[configuration]
+            } ?: throw SweetestException(
+                "Dependency `${clazz.simpleName}` is not configured. Please use `provide` instead of the " +
+                    "`require/offer` family of functions."
+            )
+        }
+    }
+
+    /**
+     * If there is a configuration that would match with this type: tag it to force precise type matching!
+     *
+     *  **Reason:** when the user utilizes the "new" precise type matching (`provide<T>`, see [provide]) for configuring
+     *  the dependency here, it makes no sense to use the legacy loose type matching during consumption of the type
+     *  later on.
+     */
+    private fun forcePreciseTypeMatching(clazz: KClass<*>) {
+        TestEnvironment.dependencies.configurations.getAssignableTo(clazz)?.let { configuration ->
+            TestEnvironment.dependencies.states.setForcedToPreciseMatching(configuration)
         }
     }
 

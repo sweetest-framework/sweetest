@@ -59,7 +59,13 @@ interface DependencyAccessor {
     val configurations: DependencyConfigurationConsumer
     val states: DependencyStatesConsumer
 
+    /**
+     * Returns the dependency state for _consumption_ (e.g. `val instance by dependency<T>()`).
+     */
     fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T>
-}
 
-inline fun <reified T : Any> DependencyAccessor.getDependencyState() = getDependencyState(T::class)
+    /**
+     * Returns the dependency state for _configuration_ (e.g. `provide<T>()`).
+     */
+    fun getDependencyStateForConfiguration(clazz: KClass<*>, preciseTypeMatching: Boolean): DependencyState<*>
+}
