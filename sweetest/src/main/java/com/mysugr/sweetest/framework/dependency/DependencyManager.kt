@@ -35,7 +35,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
         }
 
         return with(TestEnvironment.dependencies) {
-            states.getByDependencyType(clazz)
+            states.getOrNull(clazz)
                 ?: run {
                     val configuration = configurations.getAssignableTo(clazz)
                         ?: throw SweetestException(
@@ -60,7 +60,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
                             )
                         }
                     }
-                    states.getByConfiguration(configuration)
+                    states[configuration]
                 }
         }
     }

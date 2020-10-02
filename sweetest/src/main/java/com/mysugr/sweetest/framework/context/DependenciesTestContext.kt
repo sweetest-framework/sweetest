@@ -1,7 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyManager
@@ -12,25 +11,33 @@ import kotlin.reflect.KClass
 
 class DependenciesTestContext {
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads
-    fun requireReal(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
-        checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
+    fun provide(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
+        val mode = DependencyMode.PROVIDED
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = true) { state, _ ->
+            state.mode = mode
+            state.providedInitializerUnknown = initializer
+        }
+    }
+
+    fun provide(clazz: KClass<*>) {
         val mode = DependencyMode.REAL
-        checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
-            // The assertion is omitted to keep compatibility to older versions of this library.
-            // checkConfiguredMode(clazz, configurationMode, mode)
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = true) { state, _ ->
             state.mode = mode
         }
     }
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads
+    fun requireReal(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
+        checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
+        val mode = DependencyMode.REAL
+        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
+            state.mode = mode
+        }
+    }
+
     fun offerReal(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean = true
+        hasModuleTestingConfiguration: Boolean
     ) {
         checkInvalidLegacyFunctionCall("offerReal", hasModuleTestingConfiguration)
         prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
@@ -38,16 +45,13 @@ class DependenciesTestContext {
         }
     }
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads
     fun offerRealRequired(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean = true
+        hasModuleTestingConfiguration: Boolean
     ) {
         checkInvalidLegacyFunctionCall("offerRealRequired", hasModuleTestingConfiguration)
         val mode = DependencyMode.REAL
-        checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
@@ -56,12 +60,9 @@ class DependenciesTestContext {
         }
     }
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads
-    fun requireMock(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
+    fun requireMock(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
         checkInvalidLegacyFunctionCall("requireMock", hasModuleTestingConfiguration)
         val mode = DependencyMode.MOCK
-        checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
@@ -69,12 +70,10 @@ class DependenciesTestContext {
         }
     }
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads
     fun offerMock(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean = true
+        hasModuleTestingConfiguration: Boolean
     ) {
         checkInvalidLegacyFunctionCall("offerMock", hasModuleTestingConfiguration)
         prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
@@ -82,16 +81,13 @@ class DependenciesTestContext {
         }
     }
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads
     fun offerMockRequired(
         clazz: KClass<*>,
         initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean = true
+        hasModuleTestingConfiguration: Boolean
     ) {
         checkInvalidLegacyFunctionCall("offerMockRequired", hasModuleTestingConfiguration)
         val mode = DependencyMode.MOCK
-        checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
@@ -100,12 +96,9 @@ class DependenciesTestContext {
         }
     }
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    @JvmOverloads // TODO consider explicit overload
-    fun requireSpy(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean = true) {
+    fun requireSpy(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
         checkInvalidLegacyFunctionCall("requireSpy", hasModuleTestingConfiguration)
         val mode = DependencyMode.SPY
-        checkDependencyMode(clazz, mode)
         prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = false) { state, _ ->
             // The assertion is omitted to keep compatibility to older versions of this library.
             // checkConfiguredMode(clazz, configurationMode, mode)
@@ -126,39 +119,6 @@ class DependenciesTestContext {
         TestEnvironment.dependencies.configurations.getAssignableTo(clazz)
 
     /**
-     * Provides an [initializer] for type [clazz] to sweetest.
-     * That [initializer] will be used when an instance of [clazz] is needed in the test.
-     *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the [initializer] is used.
-     */
-    fun provide(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val mode = DependencyMode.PROVIDED
-        checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = true) { state, _ ->
-            state.providedInitializerUnknown = initializer
-            state.mode = mode
-        }
-    }
-
-    /**
-     * Provides an instance of [clazz] to sweetest that is automatically instantiated using the default
-     * constructor and the built-in dependency injection.
-     *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the automatically created instance is used.
-     */
-    fun provide(clazz: KClass<*>) {
-        val mode = DependencyMode.REAL
-        checkDependencyMode(clazz, mode)
-        prepareAndUseDependencyOf(clazz = clazz, preciseTypeMatching = true) { state, _ ->
-            state.mode = mode
-        }
-    }
-
-    /**
      * Checks if the type [clazz] is already added via the global module configuration.
      * If so, the found [DependencyConfiguration] is added to the [DependencyManager.states].
      * If not, a [DependencyConfiguration] is created dynamically and also added.
@@ -170,9 +130,9 @@ class DependenciesTestContext {
     ) {
         with(TestEnvironment.dependencies) {
             val dependencyState = if (preciseTypeMatching) {
-                val dependencyState = states.getByDependencyType(clazz) ?: run {
+                val dependencyState = states.getOrNull(clazz) ?: run {
                     val configuration = DependencyConfiguration(clazz, null, null, DependencyMode.PROVIDED)
-                    states.getByConfiguration(configuration)
+                    states[configuration]
                 }
 
                 val configuration = configurations.getAssignableTo(clazz)
@@ -183,7 +143,7 @@ class DependenciesTestContext {
                 dependencyState
             } else {
                 getDependencyConfiguration(clazz)?.let { configuration ->
-                    states.getByConfiguration(configuration)
+                    states[configuration]
                 } ?: throw SweetestException(
                     "Dependency `${clazz.simpleName}` is not configured. Please use `provide` instead of the " +
                         "`require/offer` family of functions."
@@ -194,29 +154,30 @@ class DependenciesTestContext {
         }
     }
 
-    /**
-     * Checks if the configured [DependencyConfiguration.defaultDependencyMode] matches the requested [DependencyMode].
-     * If no [ModuleTestingConfiguration] is defined, the check succeeds.
-     */
-    private fun checkConfiguredMode(clazz: KClass<*>, configurationMode: DependencyMode?, mode: DependencyMode) {
-        check(configurationMode == mode || configurationMode == null) {
-            "Dependency \"${clazz.simpleName}\" has been forced to be ${configurationMode?.name} in the module " +
-                "testing configuration, but you requested it to be ${mode.name} instead. Please loosen up the " +
-                "constraint by using \"any\" instead of \"requireMock\" or \"requireReal\" or remove the module " +
-                "testing configuration entirely as it's deprecated anyway."
-        }
-    }
+    // --- region: legacy binary compatibility API:
 
-    /**
-     * Checks if the [DependencyState.mode] of an already added [DependencyState] is requested to be changed,
-     * which is not allowed.
-     */
-    private fun checkDependencyMode(clazz: KClass<*>, mode: DependencyMode) {
-        TestEnvironment.dependencies.states.getByDependencyType(clazz)?.let {
-            check(mode == it.mode) {
-                "Dependency ${clazz.simpleName} is requested as $mode but is already defined as ${it.mode}. " +
-                    "Please check for contradicting definitions."
-            }
-        }
-    }
+    fun requireReal(clazz: KClass<*>) = requireReal(clazz, hasModuleTestingConfiguration = true)
+
+    fun offerReal(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>
+    ) = offerReal(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun offerRealRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>
+    ) = offerRealRequired(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun requireMock(clazz: KClass<*>) = requireMock(clazz, hasModuleTestingConfiguration = true)
+
+    fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) =
+        offerMock(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun offerMockRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>
+    ) = offerMockRequired(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun requireSpy(clazz: KClass<*>) = requireSpy(clazz, hasModuleTestingConfiguration = true)
+
 }

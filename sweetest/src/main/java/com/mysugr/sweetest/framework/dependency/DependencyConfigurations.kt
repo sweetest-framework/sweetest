@@ -5,7 +5,6 @@ import kotlin.reflect.KClass
 
 interface DependencyConfigurationConsumer {
     val all: Collection<DependencyConfiguration<*>>
-    fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyConfiguration<T>
     fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>?
 }
 
@@ -22,7 +21,7 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
         configurations[configuration.clazz] = configuration
     }
 
-    @Deprecated("Use addConfiguration(config")
+    @Deprecated("Use addConfiguration(config)")
     override fun <T : Any> addConfiguration(
         clazz: KClass<T>,
         realInitializer: DependencyInitializer<T>?,
@@ -49,10 +48,6 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
             )
         }
     }
-
-    override fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyConfiguration<T> =
-        configurations[clazz] as? DependencyConfiguration<T>
-            ?: throw NotFoundException(clazz)
 
     override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>? {
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }

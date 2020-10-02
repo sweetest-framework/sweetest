@@ -6,25 +6,42 @@ import kotlin.reflect.KClass
 interface DependencyStatesConsumer {
     val all: Collection<DependencyState<*>>
 
-    @Deprecated("Operator access is deprecated", ReplaceWith("getByConfiguration"))
+    /**
+     * Returns an existing state assigned to the [configuration] or CREATES (⚠️) one if necessary.
+     */
     operator fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T>
+
+    /**
+     * Looks up a [DependencyState] for the exact [clazz] (precise matching) or null if not found.
+     */
+    fun <T : Any> getOrNull(clazz: KClass<T>): DependencyState<T>?
+
+    /**
+     * Looks up a all [DependencyState]s for the [clazz] or its subtypes (loose matching).
+     */
     fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>>
-    fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T>
-    fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>?
+
+    /**
+     * Tags a [DependencyConfiguration] as forced to precise type matching.
+     */
     fun setForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>)
+
+    /**
+     * Returns whether the [dependencyConfiguration] was tagged for precise type matching.
+     */
     fun isForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>): Boolean
 }
 
 class DependencyStates(private val initializerContext: DependencyInitializerContext) : DependencyStatesConsumer {
 
     private val statesMap = hashMapOf<DependencyConfiguration<*>, DependencyState<*>>()
-    private val suppressedConfigurations = hashSetOf<DependencyConfiguration<*>>()
+    private val configurationsForcedToPreciseMatching = hashSetOf<DependencyConfiguration<*>>()
 
     override fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>> {
         val result = mutableListOf<DependencyState<T>>()
         TestEnvironment.dependencies.configurations.all.forEach {
             if (clazz.java.isAssignableFrom(it.clazz.java)) {
-                result.add(getByConfiguration(it) as DependencyState<T>)
+                result.add(get(it) as DependencyState<T>)
             }
         }
         return result
@@ -33,10 +50,6 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
     override val all get() = statesMap.values
 
     override fun <T : Any> get(configuration: DependencyConfiguration<T>): DependencyState<T> {
-        return getByConfiguration(configuration)
-    }
-
-    override fun <T : Any> getByConfiguration(configuration: DependencyConfiguration<T>): DependencyState<T> {
         val found = statesMap[configuration]
         return if (found == null) {
             val newState = DependencyState(initializerContext, configuration)
@@ -47,16 +60,16 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
         }
     }
 
-    override fun <T : Any> getByDependencyType(clazz: KClass<T>): DependencyState<T>? {
+    override fun <T : Any> getOrNull(clazz: KClass<T>): DependencyState<T>? {
         val key = statesMap.keys.find { it.clazz == clazz }
         return statesMap[key] as? DependencyState<T>
     }
 
     override fun setForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>) {
-        suppressedConfigurations.add(dependencyConfiguration)
+        configurationsForcedToPreciseMatching.add(dependencyConfiguration)
     }
 
     override fun isForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>): Boolean {
-        return suppressedConfigurations.contains(dependencyConfiguration)
+        return configurationsForcedToPreciseMatching.contains(dependencyConfiguration)
     }
 }

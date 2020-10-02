@@ -50,12 +50,11 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
     class DependencyPropertyDelegate<out T : Any>(private val getDependencyState: (() -> DependencyState<T>)) {
 
         // For API compatibility
-        constructor(dependencyState: DependencyState<T>) : this(
-            getDependencyState = { dependencyState })
+        constructor(dependencyState: DependencyState<T>) : this(getDependencyState = { dependencyState })
 
-        private var dependencyState: DependencyState<T>? = null
+        private var cachedDependencyState: DependencyState<T>? = null
 
         operator fun getValue(thisRef: Any?, property: KProperty<*>): T =
-            (dependencyState ?: getDependencyState().also { dependencyState = it }).instance
+            (cachedDependencyState ?: getDependencyState().also { cachedDependencyState = it }).instance
     }
 }
