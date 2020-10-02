@@ -144,7 +144,7 @@ class DependenciesTest : BaseTest() {
         }
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = SweetestException::class)
     fun `Given module dependency configuration, changing REAL to MOCK throws no exception`() {
         givenAllAny()
 
@@ -157,7 +157,7 @@ class DependenciesTest : BaseTest() {
         testInstance.junitBefore()
     }
 
-    @Test(expected = RuntimeException::class)
+    @Test(expected = SweetestException::class)
     fun `Given module dependency configuration, changing MOCK to REAL throws exception`() {
         givenAllAny()
 

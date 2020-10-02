@@ -1,11 +1,11 @@
 package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import org.junit.Before
+import org.junit.After
 
 open class BaseTest {
 
-    @Before
+    @After
     open fun setUp() {
         TestEnvironment.fullReset()
     }
