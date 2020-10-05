@@ -40,7 +40,7 @@ interface DependencyStatesConsumer {
 
 class DependencyStates(private val initializerContext: DependencyInitializerContext) : DependencyStatesConsumer {
 
-    private val statesMap = hashMapOf<DependencyConfiguration<*>, DependencyState<*>>()
+    private val statesMap = linkedMapOf<DependencyConfiguration<*>, DependencyState<*>>()
     private val configurationsForcedToPreciseMatching = hashSetOf<DependencyConfiguration<*>>()
 
     override fun <T : Any> getAllAssignableTo(clazz: KClass<T>): List<DependencyState<T>> {

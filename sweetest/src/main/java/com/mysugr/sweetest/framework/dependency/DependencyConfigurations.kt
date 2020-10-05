@@ -10,7 +10,7 @@ interface DependencyConfigurationConsumer {
 
 class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetupHandler {
 
-    private val configurations = hashMapOf<KClass<*>, DependencyConfiguration<*>>()
+    private val configurations = linkedMapOf<KClass<*>, DependencyConfiguration<*>>()
 
     override val all = configurations.values
 
