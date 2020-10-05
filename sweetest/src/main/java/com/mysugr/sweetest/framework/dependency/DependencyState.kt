@@ -46,18 +46,21 @@ class DependencyState<T : Any>(
     var mode: DependencyMode
         get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
         set(value) {
-            if (value == modeField) return
             when {
+                value == modeField -> {
+                    return
+                }
                 modeField != null -> {
                     throw SweetestException(
-                        "Can't change dependency mode of \"${configuration.clazz.simpleName}\", it " +
-                            "has already been set before and can't be changed afterwards"
+                        "Dependency \"${configuration.clazz.simpleName}\" can't be configured to be " +
+                            "${getModeDescription(value)}: it has already been configured to be " +
+                            "${getModeDescription(modeField)}."
                     )
                 }
                 instanceField != null -> {
                     throw SweetestException(
-                        "Can't set dependency mode of \"${configuration.clazz.simpleName}\", instance " +
-                            "has already been created"
+                        "Can't set dependency mode of \"${configuration.clazz.simpleName}\": instance " +
+                            "has already been created."
                     )
                 }
                 else -> {
@@ -65,6 +68,17 @@ class DependencyState<T : Any>(
                 }
             }
         }
+
+    private fun getModeDescription(mode: DependencyMode? = null): String {
+        return when (mode) {
+            DependencyMode.SPY -> "spy (`requireSpy<${configuration.clazz.simpleName}>()`)"
+            DependencyMode.AUTO_PROVIDED -> "provided (`provide<${configuration.clazz.simpleName}>()`)"
+            DependencyMode.PROVIDED -> "provided (`provide<${configuration.clazz.simpleName}> { ... }`)"
+            DependencyMode.REAL -> "real (`requireReal`, `realOnly`, etc.)"
+            DependencyMode.MOCK -> "mock (`requireMock`, `mockOnly`, etc.)"
+            null -> "not set"
+        }
+    }
 
     private fun initializeInstance(): T {
         val instance = when (mode) {

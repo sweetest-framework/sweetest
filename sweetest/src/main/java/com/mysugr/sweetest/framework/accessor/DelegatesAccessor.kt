@@ -1,6 +1,7 @@
 package com.mysugr.sweetest.framework.accessor
 
 import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
@@ -11,7 +12,16 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
     inline fun <reified T : Steps> steps(): ReadOnlyPropertyDelegate<T> {
         try {
             accessor.testContext.steps.setUpAsRequired(T::class as KClass<Steps>)
-            return ReadOnlyPropertyDelegate { accessor.testContext.steps.get(T::class) }
+            return ReadOnlyPropertyDelegate {
+                try {
+                    accessor.testContext.steps.get(T::class)
+                } catch (throwable: Throwable) {
+                    throw SweetestException(
+                        "Providing steps class instance for \"steps<${T::class.simpleName}>\" failed",
+                        throwable
+                    )
+                }
+            }
         } catch (throwable: Throwable) {
             throw RuntimeException(
                 "Call on \"steps<${T::class.simpleName}>\" failed",
@@ -22,7 +32,16 @@ class DelegatesAccessor(@PublishedApi internal val accessor: BaseAccessor) {
 
     inline fun <reified T : Any> dependency(): DependencyPropertyDelegate<T> {
         try {
-            return DependencyPropertyDelegate { TestEnvironment.dependencies.getDependencyState(T::class) }
+            return DependencyPropertyDelegate {
+                try {
+                    TestEnvironment.dependencies.getDependencyState(T::class)
+                } catch (throwable: Throwable) {
+                    throw SweetestException(
+                        "Providing dependency for \"dependency<${T::class.simpleName}>\" failed",
+                        throwable
+                    )
+                }
+            }
         } catch (throwable: Throwable) {
             throw RuntimeException(
                 "Call on \"dependency<${T::class.simpleName}>\" failed",

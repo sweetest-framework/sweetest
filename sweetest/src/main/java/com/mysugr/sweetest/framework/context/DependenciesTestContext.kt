@@ -110,9 +110,9 @@ class DependenciesTestContext {
         if (mode == DependencyMode.PROVIDED || mode == DependencyMode.AUTO_PROVIDED) {
             throw SweetestException(
                 "Dependency \"${clazz.simpleName}\" has already been configured with " +
-                    "`provide`, it can't be configured again at a different place " +
+                    "`provide`, it can't be configured again at a different place with " +
                     "`provide<${clazz.simpleName}>`. Please eliminate duplicates!\n" +
-                    "Reason: different places configuring the same dependency could lead to ambiguities."
+                    "Reason: configuring the same dependency in different places could lead to ambiguities."
             )
         }
     }

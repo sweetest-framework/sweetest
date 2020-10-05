@@ -53,31 +53,30 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
         clazz: KClass<T>
     ) {
         if (states.isForcedToPreciseMatching(configuration)) {
-            if (configuration.clazz != clazz) {
-                throw SweetestException( // TODO add extra test case for that
-                    "There is a dependency \"${configuration.clazz.simpleName}\" configured in the module " +
-                        "testing configuration, but you are requesting type \"${clazz.simpleName}\". To avoid " +
-                        "ambiguities please specify \"provide<${clazz.simpleName}>...\" explicitly!"
-                )
-            } else {
-                throw SweetestException(
-                    "There is a dependency \"${configuration.clazz.simpleName}\" configured in the module " +
-                        "testing configuration, but as there is a chance for ambiguities between " +
-                        "different types you have to specify \"provide<${clazz.simpleName}>...\" " +
-                        "explicitly nonetheless!"
-                )
-            }
+            throw SweetestException(
+                getNotProvidedErrorMessage(clazz) +
+                    "\nLegacy note: you are seeing this error because you use the new `provide` " +
+                    "function but there is still an old module testing configuration entry for the type " +
+                    "\"${configuration.clazz.simpleName}\". While the old way allowed requesting types that are " +
+                    "derived from the configured type (loose matching), the new way doesn't support that anymore " +
+                    "(strict matching)."
+            )
         }
     }
 
     private fun <T : Any> getDependencyConfigurationLoosely(clazz: KClass<T>): DependencyConfiguration<T> {
         return (configurations.getAssignableTo(clazz)
             ?: throw SweetestException(
-                "No configuration for \"${clazz.simpleName}\" found! Please configure the type by using " +
-                    "`provide<${clazz.simpleName}>...`.\nLegacy note: Adding the type to the module " +
-                    "testing configuration also fixes this problem, but these are deprecated. Please use " +
-                    "`provide` in your test and steps classes instead!"
+                getNotProvidedErrorMessage(clazz) +
+                    "\nLegacy note: adding the type to the module  testing configuration also fixes this problem, " +
+                    "but these are deprecated. Please use `provide` instead!"
             ))
+    }
+
+    private fun <T : Any> getNotProvidedErrorMessage(clazz: KClass<T>): String {
+        return "You requested the dependency \"${clazz.simpleName}\", but it has not been yet provided. Please " +
+            "specify how to provide this type by placing a `provide<${clazz.simpleName}>` call at the " +
+            "appropriate place."
     }
 
     private fun <T : Any> getDependencyStateByClassPrecisely(clazz: KClass<T>) = states.getOrNull(clazz)
