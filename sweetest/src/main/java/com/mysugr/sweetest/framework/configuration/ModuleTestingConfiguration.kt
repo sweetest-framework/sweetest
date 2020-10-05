@@ -32,10 +32,6 @@ fun moduleTestingConfiguration(
     val scope = Dsl.MainScope()
     run?.invoke(scope)
 
-    if (scope.dependencies.isEmpty()) {
-        println("Please remove all empty module configurations as this will no longer be supported in version 2.0.0")
-    }
-
     return ModuleTestingConfiguration(baseModuleTestingConfigurations.toList(), scope.factories.toList())
 }
 
