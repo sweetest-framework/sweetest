@@ -57,8 +57,7 @@ class LoginViewModel(private val authManager: AuthManager) {
     sealed class State(val loggedIn: Boolean) {
         class LoggedOut : State(false)
         class Busy : State(false)
-        data class Error(val emailError: Int? = null, val passwordError: Int? = null) :
-                State(false)
+        data class Error(val emailError: Int? = null, val passwordError: Int? = null) : State(false)
         data class LoggedIn(val isNewUser: Boolean) : State(true)
     }
 }

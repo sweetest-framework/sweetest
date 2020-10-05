@@ -7,6 +7,7 @@ import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.dependency.DependencyManager
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
+import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.dependency.DependencyStatesConsumer
 import kotlin.reflect.KClass
 
@@ -57,4 +58,14 @@ interface DependencySetupHandler {
 interface DependencyAccessor {
     val configurations: DependencyConfigurationConsumer
     val states: DependencyStatesConsumer
+
+    /**
+     * Returns the dependency state for _consumption_ (e.g. `val instance by dependency<T>()`).
+     */
+    fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T>
+
+    /**
+     * Returns the dependency state for _configuration_ (e.g. `provide<T>()`).
+     */
+    fun getDependencyStateForConfiguration(clazz: KClass<*>, preciseTypeMatching: Boolean): DependencyState<*>
 }

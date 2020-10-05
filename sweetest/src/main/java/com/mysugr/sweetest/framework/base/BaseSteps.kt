@@ -8,10 +8,15 @@ import kotlin.coroutines.CoroutineContext
 
 interface Steps : CoroutineScope
 
-abstract class BaseSteps(
+abstract class BaseSteps @Deprecated(
+    "No module configuration needed anymore.",
+    ReplaceWith("BaseSteps(testContext)", imports = ["com.mysugr.sweetest.framework.base.BaseSteps"])
+) constructor(
     private val testContext: TestContext,
-    private val moduleTestingConfiguration: ModuleTestingConfiguration
+    private val moduleTestingConfiguration: ModuleTestingConfiguration? = null
 ) : Steps, TestingAccessor {
+
+    constructor(testContext: TestContext) : this(testContext, null)
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 

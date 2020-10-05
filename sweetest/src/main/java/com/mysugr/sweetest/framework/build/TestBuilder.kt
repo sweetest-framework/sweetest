@@ -5,7 +5,7 @@ import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_STEPS
 
-class TestBuilder(moduleTestingConfiguration: ModuleTestingConfiguration) :
+class TestBuilder(moduleTestingConfiguration: ModuleTestingConfiguration?) :
     BaseBuilder<TestBuilder, TestAccessor>(TestContext(), moduleTestingConfiguration) {
 
     override fun buildInternal(): TestAccessor {

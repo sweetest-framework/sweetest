@@ -19,11 +19,11 @@ private const val dependencyModeDeprecationMessage = "Dependency modes like \"RE
 
 abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     @PublishedApi internal val testContext: TestContext,
-    moduleTestingConfiguration: ModuleTestingConfiguration
+    @PublishedApi internal val moduleTestingConfiguration: ModuleTestingConfiguration?
 ) {
 
     init {
-        testContext.configurations.put(moduleTestingConfiguration)
+        moduleTestingConfiguration?.let { testContext.configurations.put(it) }
     }
 
     private var built = false
@@ -53,23 +53,28 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     /**
      * Provides an [initializer] for type [T] to sweetest.
+     *
      * That [initializer] will be used when an instance of [T] is needed in the test.
      *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the [initializer] is used.
+     * Can only by called once per type!
+     *
+     * **Legacy note:** [provide] doesn't know about constraints configured with [requireReal], [requireMock] etc.
+     * (configuration in test and steps classes) or `realOnly` and `mockOnly` (module testing configuration) and thus
+     * overrides these constraints.
      */
     inline fun <reified T : Any> provide(noinline initializer: DependencyInitializer<T>) = apply {
         testContext.dependencies.provide(T::class, initializer)
     }
 
     /**
-     * Provides an instance of [T] to sweetest that is automatically instantiated using the default
-     * constructor and the built-in dependency injection.
+     * Provides an instance of [T] to sweetest that is automatically instantiated using the default constructor and the
+     * built-in dependency injection.
      *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the automatically created instance is used.
+     * Can only by called once per type!
+     *
+     * **Legacy note:** [provide] doesn't know about constraints configured with [requireReal], [requireMock] etc.
+     * (configuration in test and steps classes) or `realOnly` and `mockOnly` (module testing configuration) and thus
+     * overrides these constraints.
      */
     inline fun <reified T : Any> provide() = apply {
         testContext.dependencies.provide(T::class)
@@ -81,39 +86,64 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireReal() = apply {
-        testContext.dependencies.requireReal(T::class)
+        testContext.dependencies.requireReal(
+            clazz = T::class,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerReal(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerReal(T::class, initializer)
+        testContext.dependencies.offerReal(
+            clazz = T::class,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) =
         apply {
-            testContext.dependencies.offerRealRequired(T::class, initializer)
+            testContext.dependencies.offerRealRequired(
+                clazz = T::class,
+                initializer = initializer,
+                hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            )
         }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireMock() = apply {
-        testContext.dependencies.requireMock(T::class)
+        testContext.dependencies.requireMock(
+            clazz = T::class,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMock(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerMock(T::class, initializer)
+        testContext.dependencies.offerMock(
+            clazz = T::class,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) =
         apply {
-            testContext.dependencies.offerMockRequired(T::class, initializer)
+            testContext.dependencies.offerMockRequired(
+                clazz = T::class,
+                initializer = initializer,
+                hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            )
         }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireSpy() = apply {
-        testContext.dependencies.requireSpy(T::class)
+        testContext.dependencies.requireSpy(
+            clazz = T::class,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
     }
 
     inline fun <reified R : Any> offerFactory(noinline createObject: () -> R) = apply {

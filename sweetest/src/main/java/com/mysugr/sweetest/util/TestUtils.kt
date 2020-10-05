@@ -16,9 +16,11 @@ inline fun <reified TException : Exception> expectException(block: () -> Unit) {
         fail("Expected exception of type ${TException::class.simpleName}, but no exception was thrown")
     } catch (e: Exception) {
         if (e !is TException) {
-            fail("Wrong exception type.\n" +
+            fail(
+                "Wrong exception type.\n" +
                     "expected: ${TException::class.simpleName}\n" +
-                    "actual: ${e::class.simpleName}")
+                    "actual: ${e::class.simpleName}"
+            )
         }
     }
 }

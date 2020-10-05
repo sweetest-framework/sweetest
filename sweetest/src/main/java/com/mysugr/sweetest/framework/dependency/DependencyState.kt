@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.dependency
 
+import com.mysugr.sweetest.framework.base.SweetestException
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
@@ -45,26 +46,43 @@ class DependencyState<T : Any>(
     var mode: DependencyMode
         get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
         set(value) {
-            if (value != modeField) {
-                if (modeField != null) {
-                    throw IllegalStateException(
-                        "Can't change dependency mode or \"${configuration.clazz}\", it " +
-                            "has already been set before and can't be changed afterwards"
+            when {
+                value == modeField -> {
+                    return
+                }
+                modeField != null -> {
+                    throw SweetestException(
+                        "Dependency \"${configuration.clazz.simpleName}\" can't be configured to be " +
+                            "${getModeDescription(value)}: it has already been configured to be " +
+                            "${getModeDescription(modeField)}."
                     )
                 }
-                if (instanceField != null) {
-                    throw IllegalStateException(
-                        "Can't set dependency mode of \"${configuration.clazz}\", instance " +
-                            "has already been created"
+                instanceField != null -> {
+                    throw SweetestException(
+                        "Can't set dependency mode of \"${configuration.clazz.simpleName}\": instance " +
+                            "has already been created."
                     )
                 }
-                modeField = value
+                else -> {
+                    modeField = value
+                }
             }
         }
 
+    private fun getModeDescription(mode: DependencyMode? = null): String {
+        return when (mode) {
+            DependencyMode.SPY -> "spy (`requireSpy<${configuration.clazz.simpleName}>()`)"
+            DependencyMode.AUTO_PROVIDED -> "provided (`provide<${configuration.clazz.simpleName}>()`)"
+            DependencyMode.PROVIDED -> "provided (`provide<${configuration.clazz.simpleName}> { ... }`)"
+            DependencyMode.REAL -> "real (`requireReal`, `realOnly`, etc.)"
+            DependencyMode.MOCK -> "mock (`requireMock`, `mockOnly`, etc.)"
+            null -> "not set"
+        }
+    }
+
     private fun initializeInstance(): T {
         val instance = when (mode) {
-            DependencyMode.REAL -> createInstance()
+            DependencyMode.REAL, DependencyMode.AUTO_PROVIDED -> createInstance()
             DependencyMode.MOCK -> createMock()
             DependencyMode.SPY -> Mockito.spy(createInstance())
             DependencyMode.PROVIDED -> createProvidedInstance()
@@ -87,8 +105,19 @@ class DependencyState<T : Any>(
     private fun createInstanceAutomatically(): T {
         return try {
             val constructors = configuration.clazz.constructors
+            if (configuration.clazz.isAbstract) {
+                throw IllegalArgumentException(
+                    "Dependencies like \"${configuration.clazz.simpleName}\" which are abstract can not be " +
+                        "auto-initialized. Please define how to instantiate it by adding a `provide { ... }` " +
+                        "configuration!"
+                )
+            }
             if (constructors.size > 1) {
-                throw IllegalArgumentException("Can't auto-initialize dependency which has more than one constructor")
+                throw IllegalArgumentException(
+                    "Dependencies like \"${configuration.clazz.simpleName}\" which have more than one constructor " +
+                        "can't be auto-initialized. Please define how to instantiate it by adding a " +
+                        "`provide { ... }` configuration!"
+                )
             }
             val constructor = constructors.first()
             val argumentTypes = constructor.parameters.map { it.type.classifier as KClass<*> }
@@ -98,7 +127,8 @@ class DependencyState<T : Any>(
             } catch (exception: Exception) {
                 throw RuntimeException(
                     "At least one dependency required by the constructor could " +
-                        "not be found.", exception
+                        "not be found.",
+                    exception
                 )
             }
 
@@ -107,7 +137,8 @@ class DependencyState<T : Any>(
             throw RuntimeException(
                 "Couldn't automatically construct dependency \"$configuration\". Either you need " +
                     "a manual initializer, the class should have a single constructor or one of the dependencies " +
-                    "required by the constructor could not be initialized.", exception
+                    "required by the constructor could not be initialized.",
+                exception
             )
         }
     }
@@ -128,10 +159,7 @@ class DependencyState<T : Any>(
         } catch (mockitoException: MockitoException) {
             throw mockitoException
         } catch (throwable: Throwable) {
-            throw DependencyInstanceInitializationException(
-                "Initializer for \"$configuration\" " +
-                    "failed", throwable
-            )
+            throw DependencyInstanceInitializationException("Initializer for \"$configuration\" failed", throwable)
         }
     }
 

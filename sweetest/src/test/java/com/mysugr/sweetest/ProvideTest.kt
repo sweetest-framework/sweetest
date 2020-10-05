@@ -1,30 +1,23 @@
 package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.framework.dependency.DependencyConfigurations
-import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.util.isMock
 import com.mysugr.sweetest.util.mock
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 
-class ProvideTest {
+class ProvideTest : BaseTest() {
 
     interface TestUserService
 
     class FakeTestUserService : TestUserService
 
     class TestViewModel(internal val userService: TestUserService)
-
-    @Before
-    fun setUp() {
-        TestEnvironment.fullReset()
-    }
 
     @Test
     fun `provide can be used when dependency is configured with any`() {
@@ -103,11 +96,9 @@ class ProvideTest {
         }
     }
 
-    @Test(expected = DependencyConfigurations.NotFoundException::class)
-    fun `exception if dependency is not declared in module configuration`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration { }
-
-        class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
+    @Test
+    fun `no exception if dependency is not declared in module configuration`() {
+        class TestClass : BaseJUnitTest() {
             override fun configure() = super.configure()
                 .provide<TestUserService> { FakeTestUserService() }
 
@@ -120,8 +111,8 @@ class ProvideTest {
         }
     }
 
-    @Test(expected = RuntimeException::class)
-    fun `provide cannot be used twice for the same type`() {
+    @Test(expected = SweetestException::class)
+    fun `provide cannot be used twice for the same type (once with, once without lambda)`() {
         val moduleTestingConfiguration = moduleTestingConfiguration {
             dependency any of<TestViewModel>()
         }
@@ -134,6 +125,133 @@ class ProvideTest {
 
         TestClass().run {
             junitBefore()
+        }
+    }
+
+    @Test(expected = SweetestException::class)
+    fun `provide cannot be used twice for the same type (once without, once with lambda)`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency any of<TestViewModel>()
+        }
+
+        class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .provide<TestViewModel>()
+                .provide { TestViewModel(mock()) }
+        }
+
+        TestClass().run {
+            junitBefore()
+        }
+    }
+
+    @Test(expected = SweetestException::class)
+    fun `provide cannot be used twice for the same type (with lambda)`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency any of<TestViewModel>()
+        }
+
+        class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .provide { TestViewModel(mock()) }
+                .provide { TestViewModel(mock()) }
+        }
+
+        TestClass().run {
+            junitBefore()
+        }
+    }
+
+    @Test(expected = SweetestException::class)
+    fun `provide cannot be used twice for the same type (without lambda)`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency any of<TestViewModel>()
+        }
+
+        class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
+            override fun configure() = super.configure()
+                .provide<TestViewModel>()
+                .provide<TestViewModel>()
+        }
+
+        TestClass().run {
+            junitBefore()
+        }
+    }
+
+    @Test
+    fun `provide without lambda overrides global mockOnly configuration`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency mockOnly of<FakeTestUserService>()
+        }
+
+        val test = object : BaseJUnitTest(moduleTestingConfiguration) {
+            val testUserService by dependency<FakeTestUserService>()
+            override fun configure() = super.configure()
+                .provide<FakeTestUserService>()
+        }
+
+        test.run {
+            junitBefore()
+
+            assert(!testUserService.isMock)
+        }
+    }
+
+    @Test
+    fun `provide with lambda overrides global mockOnly configuration`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency mockOnly of<FakeTestUserService>()
+        }
+
+        val test = object : BaseJUnitTest(moduleTestingConfiguration) {
+            val testUserService by dependency<FakeTestUserService>()
+            override fun configure() = super.configure()
+                .provide<FakeTestUserService> { FakeTestUserService() }
+        }
+
+        test.run {
+            junitBefore()
+
+            assert(!testUserService.isMock)
+        }
+    }
+
+    @Test
+    fun `provide without lambda goes hand in hand with global realOnly configuration`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency realOnly of<FakeTestUserService>()
+        }
+
+        val test = object : BaseJUnitTest(moduleTestingConfiguration) {
+            val testUserService by dependency<FakeTestUserService>()
+            override fun configure() = super.configure()
+                .provide<FakeTestUserService>()
+        }
+
+        test.run {
+            junitBefore()
+
+            assert(!testUserService.isMock)
+        }
+    }
+
+    @Test
+    fun `provide with lambda overrides global realOnly configuration`() {
+        val moduleTestingConfiguration = moduleTestingConfiguration {
+            dependency realOnly of<FakeTestUserService>()
+        }
+
+        val test = object : BaseJUnitTest(moduleTestingConfiguration) {
+            val testUserService by dependency<FakeTestUserService>()
+            override fun configure() = super.configure()
+                .provide<FakeTestUserService> { mock() }
+        }
+
+        test.run {
+            junitBefore()
+
+            assert(testUserService.isMock)
         }
     }
 }

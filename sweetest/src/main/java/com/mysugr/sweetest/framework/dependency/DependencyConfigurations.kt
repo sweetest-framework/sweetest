@@ -5,14 +5,12 @@ import kotlin.reflect.KClass
 
 interface DependencyConfigurationConsumer {
     val all: Collection<DependencyConfiguration<*>>
-    operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T>
-    fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>
-    fun <T : Any> getAssignableFrom(clazz: KClass<T>): DependencyConfiguration<T>
+    fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>?
 }
 
 class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetupHandler {
 
-    private val configurations = hashMapOf<KClass<*>, DependencyConfiguration<*>>()
+    private val configurations = linkedMapOf<KClass<*>, DependencyConfiguration<*>>()
 
     override val all = configurations.values
 
@@ -23,7 +21,7 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
         configurations[configuration.clazz] = configuration
     }
 
-    @Deprecated("Use addConfiguration(config")
+    @Deprecated("Use addConfiguration(config)")
     override fun <T : Any> addConfiguration(
         clazz: KClass<T>,
         realInitializer: DependencyInitializer<T>?,
@@ -51,26 +49,9 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
         }
     }
 
-    override operator fun <T : Any> get(clazz: KClass<T>): DependencyConfiguration<T> =
-        configurations[clazz] as? DependencyConfiguration<T>
-            ?: throw NotFoundException(clazz)
-
-    override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T> {
+    override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>? {
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }
-            as? DependencyConfiguration<T>
-            ?: throw NotFoundException(
-                clazz, "No dependency " +
-                    "assignable to \"${clazz.simpleName}\" found."
-            )
-    }
-
-    override fun <T : Any> getAssignableFrom(clazz: KClass<T>): DependencyConfiguration<T> {
-        return configurations.values.find { it.clazz.java.isAssignableFrom(clazz.java) }
-            as? DependencyConfiguration<T>
-            ?: throw NotFoundException(
-                clazz, "No dependency " +
-                    "assignable from \"${clazz.simpleName}\" found."
-            )
+            as DependencyConfiguration<T>?
     }
 
     class NotFoundException(val clazz: KClass<*>, message: String? = null) :
@@ -78,8 +59,7 @@ class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetu
 
         companion object {
             private fun transformMessage(clazz: KClass<*>, message: String?): String {
-                val firstPart = message ?: "No dependency configuration for class " +
-                "\"${clazz.simpleName}\" found."
+                val firstPart = message ?: "No dependency configuration for class \"${clazz.simpleName}\" found."
                 return firstPart + " Possible solution: Add the dependency to the module configuration. " +
                     "Make sure you add it at the correct MODULE depending on where it is implemented!"
             }

@@ -4,6 +4,7 @@ import com.mysugr.sweetest.framework.base.Steps
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyMode
+import com.mysugr.sweetest.framework.dependency.DependencySetup
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.framework.factory.FactoryRunner
 import com.mysugr.sweetest.framework.factory.FactoryRunner0
@@ -52,7 +53,7 @@ class Dsl {
         @PublishedApi
         internal fun addDependency(configuration: DependencyConfiguration<*>) {
             dependencies.add(configuration)
-            com.mysugr.sweetest.framework.dependency.DependencySetup.addConfiguration(configuration)
+            DependencySetup.addConfiguration(configuration)
         }
 
         // Supplier configuration
@@ -74,8 +75,12 @@ class Dsl {
         inline fun <reified T1 : Steps, reified T2 : Steps, reified T3 : Steps, reified R : Any> factory(
             noinline createObject: (T1, T2, T3) -> R
         ) {
-            factories.add(FactoryRunner3(R::class.java, T1::class.java, T2::class.java, T3::class.java,
-                createObject))
+            factories.add(
+                FactoryRunner3(
+                    R::class.java, T1::class.java, T2::class.java, T3::class.java,
+                    createObject
+                )
+            )
         }
 
         // Dependency configuration

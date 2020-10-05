@@ -8,7 +8,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 class StepsBuilder(
     instance: BaseSteps,
     testContext: TestContext,
-    moduleTestingConfiguration: ModuleTestingConfiguration
+    moduleTestingConfiguration: ModuleTestingConfiguration?
 ) :
     BaseBuilder<StepsBuilder, StepsAccessor>(testContext, moduleTestingConfiguration) {
 

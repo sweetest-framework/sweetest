@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.environment.TestEnvironment
@@ -7,83 +8,138 @@ import kotlin.reflect.KClass
 
 class DependenciesTestContext {
 
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun requireReal(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.REAL
-    }
-
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerReal(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = TestEnvironment.dependencies.configurations.getAssignableFrom(clazz)
-        TestEnvironment.dependencies.states[dependency].realInitializerUnknown = initializer
-    }
-
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerRealRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].run {
-            realInitializerUnknown = initializer
-            mode = DependencyMode.REAL
-        }
-    }
-
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun requireMock(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.MOCK
-    }
-
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mockInitializerUnknown = initializer
-    }
-
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun offerMockRequired(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].run {
-            mockInitializerUnknown = initializer
-            mode = DependencyMode.MOCK
-        }
-    }
-
-    @Deprecated("Use \"provide\" instead.", replaceWith = ReplaceWith("provide"))
-    fun requireSpy(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.SPY
-    }
-
-    private fun getDependencyConfiguration(clazz: KClass<*>) =
-        TestEnvironment.dependencies.configurations.getAssignableTo(clazz)
-
-    /**
-     * Provides an [initializer] for type [clazz] to sweetest.
-     * That [initializer] will be used when an instance of [clazz] is needed in the test.
-     *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the [initializer] is used.
-     */
     fun provide(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].run {
-            providedInitializerUnknown = initializer
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = true).run {
+            checkNotAlreadyProvided(clazz, mode)
             mode = DependencyMode.PROVIDED
+            providedInitializerUnknown = initializer
         }
     }
 
-    /**
-     * Provides an instance of [clazz] to sweetest that is automatically instantiated using the default
-     * constructor and the built-in dependency injection.
-     *
-     * Note:
-     *  Require functions like [requireReal], [requireMock], etc. cannot be used on a type that uses
-     *  [provide]. [provide] automatically requires that the automatically created instance is used.
-     */
     fun provide(clazz: KClass<*>) {
-        val dependency = getDependencyConfiguration(clazz)
-        TestEnvironment.dependencies.states[dependency].mode = DependencyMode.REAL
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = true).run {
+            checkNotAlreadyProvided(clazz, mode)
+            mode = DependencyMode.AUTO_PROVIDED
+        }
     }
+
+    fun requireReal(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
+        checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                mode = DependencyMode.REAL
+            }
+    }
+
+    fun offerReal(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean
+    ) {
+        checkInvalidLegacyFunctionCall("offerReal", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                realInitializerUnknown = initializer
+            }
+    }
+
+    fun offerRealRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean
+    ) {
+        checkInvalidLegacyFunctionCall("offerRealRequired", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                mode = DependencyMode.REAL
+                realInitializerUnknown = initializer
+            }
+    }
+
+    fun requireMock(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
+        checkInvalidLegacyFunctionCall("requireMock", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                mode = DependencyMode.MOCK
+            }
+    }
+
+    fun offerMock(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean
+    ) {
+        checkInvalidLegacyFunctionCall("offerMock", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                mockInitializerUnknown = initializer
+            }
+    }
+
+    fun offerMockRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>,
+        hasModuleTestingConfiguration: Boolean
+    ) {
+        checkInvalidLegacyFunctionCall("offerMockRequired", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                mockInitializerUnknown = initializer
+                mode = DependencyMode.MOCK
+            }
+    }
+
+    fun requireSpy(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
+        checkInvalidLegacyFunctionCall("requireSpy", hasModuleTestingConfiguration)
+        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
+            .run {
+                mode = DependencyMode.SPY
+            }
+    }
+
+    private fun checkInvalidLegacyFunctionCall(functionName: String, hasModuleTestingConfiguration: Boolean) {
+        if (!hasModuleTestingConfiguration) {
+            throw SweetestException(
+                "`$functionName` is a legacy function and can't be used " +
+                    "when using new API without module testing configuration!"
+            )
+        }
+    }
+
+    private fun checkNotAlreadyProvided(clazz: KClass<*>, mode: DependencyMode) {
+        if (mode == DependencyMode.PROVIDED || mode == DependencyMode.AUTO_PROVIDED) {
+            throw SweetestException(
+                "Dependency \"${clazz.simpleName}\" has already been configured with " +
+                    "`provide`, it can't be configured again at a different place with " +
+                    "`provide<${clazz.simpleName}>`. Please eliminate duplicates!\n" +
+                    "Reason: configuring the same dependency in different places could lead to ambiguities."
+            )
+        }
+    }
+
+    // --- region: legacy binary compatibility API:
+
+    fun requireReal(clazz: KClass<*>) = requireReal(clazz, hasModuleTestingConfiguration = true)
+
+    fun offerReal(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>
+    ) = offerReal(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun offerRealRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>
+    ) = offerRealRequired(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun requireMock(clazz: KClass<*>) = requireMock(clazz, hasModuleTestingConfiguration = true)
+
+    fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) =
+        offerMock(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun offerMockRequired(
+        clazz: KClass<*>,
+        initializer: DependencyInitializer<*>
+    ) = offerMockRequired(clazz, initializer, hasModuleTestingConfiguration = true)
+
+    fun requireSpy(clazz: KClass<*>) = requireSpy(clazz, hasModuleTestingConfiguration = true)
 }
