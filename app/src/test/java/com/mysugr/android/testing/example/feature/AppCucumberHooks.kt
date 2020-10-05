@@ -24,13 +24,28 @@ class AppCucumberHooks(private val testContext: TestContext) {
         testContext.workflow.proceedTo(InitializationStep.INITIALIZE_DEPENDENCIES)
     }
 
-    @Before(order = HookOrder.SETUP)
+    @Before(order = HookOrder.BEFORE_SET_UP)
+    fun beforeSetUp() {
+        testContext.workflow.proceedTo(InitializationStep.BEFORE_SET_UP)
+    }
+
+    @Before(order = HookOrder.SET_UP)
     fun setUp() {
         testContext.workflow.proceedTo(InitializationStep.SET_UP)
     }
 
-    @After
+    @Before(order = HookOrder.AFTER_SET_UP)
+    fun afterSetUp() {
+        testContext.workflow.proceedTo(InitializationStep.AFTER_SET_UP)
+    }
+
+    @After(order = HookOrder.TEAR_DOWN)
     fun tearDown() {
         testContext.workflow.proceedTo(InitializationStep.TEAR_DOWN)
+    }
+
+    @After(order = HookOrder.AFTER_TEAR_DOWN)
+    fun afterTearDown() {
+        testContext.workflow.proceedTo(InitializationStep.AFTER_TEAR_DOWN)
     }
 }

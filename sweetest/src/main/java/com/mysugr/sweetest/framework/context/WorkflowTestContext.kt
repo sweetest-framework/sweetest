@@ -9,9 +9,12 @@ class WorkflowTestContext internal constructor(private val steps: StepsTestConte
     private val supportedSubscriptionSteps = listOf(
         InitializationStep.INITIALIZE_STEPS,
         InitializationStep.INITIALIZE_DEPENDENCIES,
+        InitializationStep.BEFORE_SET_UP,
         InitializationStep.SET_UP,
+        InitializationStep.AFTER_SET_UP,
         InitializationStep.RUNNING,
-        InitializationStep.TEAR_DOWN
+        InitializationStep.TEAR_DOWN,
+        InitializationStep.AFTER_TEAR_DOWN
     )
 
     private val subscriptionHandlers =

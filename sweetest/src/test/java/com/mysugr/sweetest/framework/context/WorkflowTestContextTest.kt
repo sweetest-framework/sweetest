@@ -26,7 +26,9 @@ class WorkflowTestContextTest {
                 "INITIALIZE_STEPS",
                 "finalize steps setup",
                 "INITIALIZE_DEPENDENCIES",
+                "BEFORE_SET_UP",
                 "SET_UP",
+                "AFTER_SET_UP",
                 "RUNNING"
             ), trackedEvents
         )
@@ -38,9 +40,12 @@ class WorkflowTestContextTest {
                 "INITIALIZE_STEPS",
                 "finalize steps setup",
                 "INITIALIZE_DEPENDENCIES",
+                "BEFORE_SET_UP",
                 "SET_UP",
+                "AFTER_SET_UP",
                 "RUNNING",
-                "TEAR_DOWN"
+                "TEAR_DOWN",
+                "AFTER_TEAR_DOWN"
             ), trackedEvents
         )
     }
@@ -88,6 +93,7 @@ class WorkflowTestContextTest {
                 "INITIALIZE_STEPS",
                 "finalize steps setup",
                 "INITIALIZE_DEPENDENCIES",
+                "BEFORE_SET_UP",
                 "SET_UP"
             ), trackedEvents
         )
@@ -136,9 +142,12 @@ class WorkflowTestContextTest {
     private fun trackEvents() {
         sut.subscribe(InitializationStep.INITIALIZE_STEPS) { trackedEvents += "INITIALIZE_STEPS" }
         sut.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES) { trackedEvents += "INITIALIZE_DEPENDENCIES" }
+        sut.subscribe(InitializationStep.BEFORE_SET_UP) { trackedEvents += "BEFORE_SET_UP" }
         sut.subscribe(InitializationStep.SET_UP) { trackedEvents += "SET_UP" }
+        sut.subscribe(InitializationStep.AFTER_SET_UP) { trackedEvents += "AFTER_SET_UP" }
         sut.subscribe(InitializationStep.RUNNING) { trackedEvents += "RUNNING" }
         sut.subscribe(InitializationStep.TEAR_DOWN) { trackedEvents += "TEAR_DOWN" }
+        sut.subscribe(InitializationStep.AFTER_TEAR_DOWN) { trackedEvents += "AFTER_TEAR_DOWN" }
 
         `when`(stepsContext.finalizeSetUp()).then {
             trackedEvents += "finalize steps setup"
