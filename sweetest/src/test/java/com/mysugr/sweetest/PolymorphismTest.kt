@@ -178,6 +178,24 @@ class PolymorphismTest : BaseTest() {
     }
 
     /**
+     * Variant with global config, but the dependency is not configured in it
+     */
+    @Test
+    fun `Global config YES - NEW local config 4`() {
+
+        val globalConfig = moduleTestingConfiguration {}
+
+        val test = object : BaseJUnitTest(globalConfig) {
+            val cat by dependency<Cat>() // matches only Cat
+
+            override fun configure() = super.configure()
+                .provide<Cat>()
+        }
+
+        assertNotNull(test.cat)
+    }
+
+    /**
      * No matter whether we have global configuration or not, `provide` should force the algorithm
      * to use precise type matching.
      */
