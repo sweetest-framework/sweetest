@@ -9,9 +9,7 @@ import com.mysugr.sweetest.framework.factory.FactoryRunner0
 import com.mysugr.sweetest.framework.factory.FactoryRunner1
 import com.mysugr.sweetest.framework.factory.FactoryRunner2
 import com.mysugr.sweetest.framework.factory.FactoryRunner3
-import com.mysugr.sweetest.framework.flow.InitializationStep.INITIALIZE_DEPENDENCIES
-import com.mysugr.sweetest.framework.flow.InitializationStep.SET_UP
-import com.mysugr.sweetest.framework.flow.InitializationStep.TEAR_DOWN
+import com.mysugr.sweetest.framework.flow.InitializationStep
 import kotlin.reflect.KClass
 
 private const val dependencyModeDeprecationMessage = "Dependency modes like \"REAL\" or \"MOCK\" " +
@@ -187,16 +185,31 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(INITIALIZE_DEPENDENCIES, run)
+        testContext.workflow.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES, run)
+    }
+
+    fun onBeforeSetUp(run: () -> Unit) = apply {
+        checkNotYetBuilt()
+        testContext.workflow.subscribe(InitializationStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(SET_UP, run)
+        testContext.workflow.subscribe(InitializationStep.SET_UP, run)
+    }
+
+    fun onAfterSetUp(run: () -> Unit) = apply {
+        checkNotYetBuilt()
+        testContext.workflow.subscribe(InitializationStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(TEAR_DOWN, run)
+        testContext.workflow.subscribe(InitializationStep.TEAR_DOWN, run)
+    }
+
+    fun onAfterTearDown(run: () -> Unit) = apply {
+        checkNotYetBuilt()
+        testContext.workflow.subscribe(InitializationStep.AFTER_TEAR_DOWN, run)
     }
 }
