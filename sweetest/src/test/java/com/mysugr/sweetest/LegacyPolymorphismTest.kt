@@ -12,6 +12,7 @@ class LegacyPolymorphismTest {
     interface Animal
 
     class Cat : Animal
+    class Dog : Animal
 
     @After
     fun tearDown() {
@@ -30,6 +31,23 @@ class LegacyPolymorphismTest {
         }
 
         assert(test.animal::class == Cat::class)
+    }
+
+    @Test
+    fun `Consuming supertype gives subtype (two subtypes present)`() {
+
+        val config = moduleTestingConfiguration {
+            dependency realOnly of<Cat>()
+            dependency realOnly of<Dog>()
+        }
+
+        val test = object : BaseJUnitTest(config) {
+            val animal by dependency<Animal>()
+        }
+
+        // loose type matching lead to the behavior that the resulting type is not really deterministic
+        // therefore we introduced strict type matching (see PolymorphismTest)
+        assert(test.animal::class == Dog::class || test.animal::class == Cat::class)
     }
 
     @Test(expected = Exception::class)

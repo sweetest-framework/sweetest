@@ -145,7 +145,7 @@ class DependenciesTest : BaseTest() {
     }
 
     @Test(expected = SweetestException::class)
-    fun `Given module dependency configuration, changing REAL to MOCK throws no exception`() {
+    fun `Given module dependency configuration, changing REAL to MOCK throws exception`() {
         givenAllAny()
 
         val testInstance = object : BaseJUnitTest(moduleTestingConfiguration) {
