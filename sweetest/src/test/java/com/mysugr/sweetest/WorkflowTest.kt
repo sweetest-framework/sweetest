@@ -1,7 +1,6 @@
 package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -12,12 +11,15 @@ class WorkflowTest {
 
         val trackedEvents = mutableListOf<String>()
 
-        val test = object : BaseJUnitTest(moduleTestingConfiguration()) {
+        val test = object : BaseJUnitTest() {
             override fun configure() = super.configure()
                 .onInitializeSteps { trackedEvents += "initializeSteps" }
                 .onInitializeDependencies { trackedEvents += "initializeDependencies" }
+                .onBeforeSetUp { trackedEvents += "beforeSetUp" }
                 .onSetUp { trackedEvents += "setUp" }
+                .onAfterSetUp { trackedEvents += "afterSetUp" }
                 .onTearDown { trackedEvents += "tearDown" }
+                .onAfterTearDown { trackedEvents += "afterTearDown" }
 
             fun testFunction() {
                 trackedEvents += "run test function"
@@ -32,9 +34,12 @@ class WorkflowTest {
             listOf(
                 "initializeSteps",
                 "initializeDependencies",
+                "beforeSetUp",
                 "setUp",
+                "afterSetUp",
                 "run test function",
-                "tearDown"
+                "tearDown",
+                "afterTearDown"
             ), trackedEvents
         )
     }
