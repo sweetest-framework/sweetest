@@ -1,8 +1,10 @@
 package com.mysugr.sweetest.framework.context
 
-import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.internal.Steps
+import com.mysugr.sweetest.internal.TestContext
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
 interface StepsProvider {
@@ -48,15 +50,13 @@ class StepsTestContext(private val testContext: TestContext) {
         map[clazz] ?: create(clazz)
     }
 
-    @PublishedApi
-    internal fun <T : Steps> get(clazz: KClass<T>): T {
+    fun <T : Steps> get(clazz: KClass<T>): T {
         checkSetUp(clazz)
         @Suppress("UNCHECKED_CAST")
         return map[clazz.java] as? T ?: create(clazz.java)
     }
 
-    @PublishedApi
-    internal val provider = object : StepsProvider {
+    val provider = object : StepsProvider {
         override fun <T : Steps> getOf(clazz: Class<T>) = get(clazz.kotlin)
     }
 
@@ -98,7 +98,7 @@ class StepsTestContext(private val testContext: TestContext) {
             }
             val constructor = constructors.first()
             if (constructor.parameters.size > 1 ||
-                constructor.parameters.first().type != TestContext::class.starProjectedType
+                !constructor.parameters.first().type.isSubtypeOf(TestContext::class.starProjectedType)
             ) {
                 throw RuntimeException("Wrong constructor")
             }
@@ -111,8 +111,7 @@ class StepsTestContext(private val testContext: TestContext) {
         }
     }
 
-    @PublishedApi
-    internal fun setUpInstance(instance: Steps) {
+    fun setUpInstance(instance: Steps) {
         checkNotYetSetUp(instance::class)
         checkType(instance::class)
         val clazz = instance::class.java
@@ -126,8 +125,7 @@ class StepsTestContext(private val testContext: TestContext) {
         map[clazz] = instance
     }
 
-    @PublishedApi
-    internal fun setUpAsRequired(kClass: KClass<Steps>) {
+    fun setUpAsRequired(kClass: KClass<Steps>) {
         checkNotYetSetUp(kClass)
         val clazz = kClass.java
         if (!required.contains(clazz)) {

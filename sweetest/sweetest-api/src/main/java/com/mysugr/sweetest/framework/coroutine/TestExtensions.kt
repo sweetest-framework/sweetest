@@ -1,7 +1,7 @@
 package com.mysugr.sweetest.framework.coroutine
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.internal.Steps
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job

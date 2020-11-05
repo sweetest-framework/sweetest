@@ -1,8 +1,10 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.flow.InitializationStep
+import com.mysugr.sweetest.framework.flow.WorkflowProvider
 
-class WorkflowTestContext internal constructor(private val steps: StepsTestContext) {
+class WorkflowTestContext(private val steps: StepsTestContext) : WorkflowController,
+    WorkflowProvider {
 
     private var currentStep: InitializationStep = InitializationStep.INITIALIZE_FRAMEWORK
 
@@ -20,27 +22,27 @@ class WorkflowTestContext internal constructor(private val steps: StepsTestConte
     private val subscriptionHandlers =
         supportedSubscriptionSteps.associate { it to mutableListOf<StepHandler>() }
 
-    fun subscribe(step: InitializationStep, handler: () -> Unit) {
+    override fun subscribe(step: InitializationStep, handler: () -> Unit) {
         val handlers =
             requireNotNull(subscriptionHandlers[step]) { "Step \"$step\" isn't possible to be subscribed to" }
         require(step.isAfter(currentStep)) { "Can't subscribe to step that was already executed" }
         handlers += StepHandler(handler)
     }
 
-    fun run() {
+    override fun run() {
         proceedToInternal(InitializationStep.RUNNING)
     }
 
-    fun finish() {
+    override fun finish() {
         proceedToInternal(InitializationStep.DONE)
     }
 
-    fun proceedTo(step: InitializationStep) {
+    override fun proceedTo(step: InitializationStep) {
         require(step != InitializationStep.DONE) { "Can't proceed to final step from outside the class" }
         proceedToInternal(step)
     }
 
-    fun proceedToInternal(step: InitializationStep) {
+    private fun proceedToInternal(step: InitializationStep) {
         require(step != InitializationStep.INITIALIZE_FRAMEWORK) { "Can't proceed to initial step" }
         require(step.isAfter(currentStep)) { "Can't proceed to step already executed" }
         while (currentStep.isBefore(step)) {

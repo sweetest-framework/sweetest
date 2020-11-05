@@ -1,7 +1,5 @@
 package com.mysugr.sweetest.framework.dependency
 
-import com.mysugr.sweetest.framework.build.BaseBuilder
-
 enum class DependencyMode {
 
     // Legacy:
@@ -16,7 +14,7 @@ enum class DependencyMode {
     // configured from new `provide` or old `requireReal` or `realOnly`
 
     /**
-     * Dependency that is provided with a custom initializer with [BaseBuilder.provide].
+     * Dependency that is provided with a custom initializer with BaseBuilder.provide.
      *
      * This mode is distinct from the other modes like [REAL], [MOCK] because [PROVIDED] instances
      * are not classified as either [REAL], [MOCK] or [SPY].

@@ -1,7 +1,7 @@
 package com.mysugr.sweetest.framework.build
 
 import com.mysugr.sweetest.framework.accessor.BaseAccessor
-import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
@@ -185,31 +185,31 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES, run)
+        testContext.workflowProvider.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(InitializationStep.BEFORE_SET_UP, run)
+        testContext.workflowProvider.subscribe(InitializationStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(InitializationStep.SET_UP, run)
+        testContext.workflowProvider.subscribe(InitializationStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(InitializationStep.AFTER_SET_UP, run)
+        testContext.workflowProvider.subscribe(InitializationStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(InitializationStep.TEAR_DOWN, run)
+        testContext.workflowProvider.subscribe(InitializationStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(InitializationStep.AFTER_TEAR_DOWN, run)
+        testContext.workflowProvider.subscribe(InitializationStep.AFTER_TEAR_DOWN, run)
     }
 }

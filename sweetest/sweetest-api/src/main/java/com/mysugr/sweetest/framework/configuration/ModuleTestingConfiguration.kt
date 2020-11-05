@@ -1,6 +1,6 @@
 package com.mysugr.sweetest.framework.configuration
 
-import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyMode

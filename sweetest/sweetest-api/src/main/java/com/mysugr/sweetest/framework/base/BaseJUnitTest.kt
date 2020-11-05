@@ -20,11 +20,11 @@ abstract class BaseJUnitTest @Deprecated(
 
     @Before
     fun junitBefore() {
-        accessor.testContext.workflow.run()
+        accessor.testContext.workflowController.run()
     }
 
     @After
     fun junitAfter() {
-        accessor.testContext.workflow.finish()
+        accessor.testContext.workflowController.finish()
     }
 }

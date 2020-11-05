@@ -1,6 +1,6 @@
 package com.mysugr.sweetest.framework.accessor
 
-import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment

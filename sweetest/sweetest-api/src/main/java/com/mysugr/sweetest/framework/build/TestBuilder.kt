@@ -14,6 +14,6 @@ class TestBuilder(moduleTestingConfiguration: ModuleTestingConfiguration?) :
 
     fun onInitializeSteps(run: () -> Unit) = apply {
         checkNotYetBuilt()
-        testContext.workflow.subscribe(INITIALIZE_STEPS, run)
+        testContext.workflowProvider.subscribe(INITIALIZE_STEPS, run)
     }
 }

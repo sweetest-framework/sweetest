@@ -1,6 +1,6 @@
 package com.mysugr.sweetest.framework.dependency
 
-import com.mysugr.sweetest.framework.base.BaseSteps
+import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
@@ -30,7 +30,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
      * Returns the dependency state for _consumption_ (e.g. `val instance by dependency<T>()`).
      */
     override fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T> {
-        if (clazz.isSubclassOf(BaseSteps::class)) {
+        if (clazz.isSubclassOf(Steps::class)) {
             throw RuntimeException(
                 "Steps classes can't be accessed via `dependency<T>`, please " +
                     "use `steps<T>` to access steps classes!"
@@ -105,7 +105,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
     /**
      * If there is a configuration that would match with this type: tag it to force precise type matching!
      *
-     *  **Reason:** when the user utilizes the "new" precise type matching (`provide<T>`, see [provide]) for configuring
+     *  **Reason:** when the user utilizes the "new" precise type matching (`provide<T>`, see provide) for configuring
      *  the dependency here, it makes no sense to use the legacy loose type matching during consumption of the type
      *  later on.
      */

@@ -1,11 +1,7 @@
 package com.mysugr.sweetest.framework.factory
 
-import com.mysugr.sweetest.framework.base.Steps
+import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.context.StepsProvider
-
-abstract class FactoryRunner<R : Any>(val returnType: Class<R>) {
-    abstract fun run(stepsProvider: StepsProvider): R
-}
 
 class FactoryRunner0<R : Any>(
     returnType: Class<R>,
@@ -57,4 +53,8 @@ class FactoryRunner3<T1 : Steps, T2 : Steps, T3 : Steps, R : Any>(
         val argument3 = stepsProvider.getOf(parameterType3)
         return run(argument1, argument2, argument3)
     }
+}
+
+abstract class FactoryRunner<R : Any>(val returnType: Class<R>) {
+    abstract fun run(stepsProvider: StepsProvider): R
 }
