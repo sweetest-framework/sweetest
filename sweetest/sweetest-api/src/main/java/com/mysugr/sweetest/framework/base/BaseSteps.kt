@@ -10,7 +10,7 @@ interface Steps : CoroutineScope
 
 abstract class BaseSteps @Deprecated(
     "No module configuration needed anymore.",
-    ReplaceWith("BaseSteps(testContext)", imports = ["com.mysugr.sweetest.framework.base.BaseSteps"])
+    ReplaceWith("BaseSteps(testContext)", imports = ["BaseSteps"])
 ) constructor(
     private val testContext: TestContext,
     private val moduleTestingConfiguration: ModuleTestingConfiguration? = null

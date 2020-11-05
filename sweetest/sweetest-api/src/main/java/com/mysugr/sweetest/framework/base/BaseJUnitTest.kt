@@ -7,7 +7,7 @@ import org.junit.Before
 
 abstract class BaseJUnitTest @Deprecated(
     "No module configuration needed anymore.",
-    ReplaceWith("BaseJUnitTest()", imports = ["com.mysugr.sweetest.framework.base.BaseJUnitTest"])
+    ReplaceWith("BaseJUnitTest()", imports = ["BaseJUnitTest"])
 ) constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) : TestingAccessor {
 
     constructor() : this(moduleTestingConfiguration = null)
