@@ -21,6 +21,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation project(':sweetest:sweetest-base')
     api "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     api "org.mockito:mockito-core:$versions.mockito"
     api "io.cucumber:cucumber-junit:$versions.cucumber"
