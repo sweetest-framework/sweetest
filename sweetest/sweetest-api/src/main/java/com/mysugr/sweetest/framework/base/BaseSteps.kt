@@ -11,20 +11,20 @@ abstract class BaseSteps @Deprecated(
     "No module configuration needed anymore.",
     ReplaceWith("BaseSteps(testContext)", imports = ["BaseSteps"])
 ) constructor(
-    private val testContext: TestContext,
+    testContext: TestContext,
     private val moduleTestingConfiguration: ModuleTestingConfiguration? = null
-) : Steps, TestingAccessor, CoroutineScope {
+) : CommonBase(testContext), Steps, CoroutineScope {
 
     constructor(testContext: TestContext) : this(testContext, null)
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
+    init {
+        configure().build()
+    }
+
     override val coroutineContext: CoroutineContext
         get() = testContext.coroutines.coroutineContext
-
-    override val accessor = configure().build()
-    protected val dependencies = accessor.dependencies
-    protected val delegates = accessor.delegates
 }
 
 operator fun <T : Steps> T.invoke(run: T.() -> Unit) = run(this)

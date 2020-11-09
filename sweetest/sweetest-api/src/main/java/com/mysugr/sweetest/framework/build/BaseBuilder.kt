@@ -1,6 +1,5 @@
 package com.mysugr.sweetest.framework.build
 
-import com.mysugr.sweetest.framework.accessor.BaseAccessor
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
@@ -15,7 +14,7 @@ import kotlin.reflect.KClass
 private const val dependencyModeDeprecationMessage = "Dependency modes like \"REAL\" or \"MOCK\" " +
     "as well as \"required...\" are obsolete. Use \"provide\" instead."
 
-abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
+abstract class BaseBuilder<TSelf>(
     @PublishedApi internal val testContext: TestContext,
     @PublishedApi internal val moduleTestingConfiguration: ModuleTestingConfiguration?
 ) {
@@ -26,6 +25,7 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
 
     private var built = false
 
+    // TODO rename `build`, same below
     @PublishedApi
     internal fun checkNotYetBuilt() {
         if (built) {
@@ -34,14 +34,10 @@ abstract class BaseBuilder<TSelf, TResult : BaseAccessor>(
     }
 
     @PublishedApi
-    internal fun build(): TResult {
+    internal fun build() {
         checkNotYetBuilt()
-        return buildInternal().also {
-            built = true
-        }
+        built = true
     }
-
-    protected abstract fun buildInternal(): TResult
 
     @PublishedApi
     internal fun apply(run: () -> Unit): TSelf {

@@ -16,7 +16,7 @@ fun BaseJUnitTest.testCoroutine(
     testBlock: suspend CoroutineScope.() -> Unit
 ) {
     runBlocking {
-        val coroutinesTestContext = accessor.testContext.coroutines
+        val coroutinesTestContext = testContext.coroutines
         withContext(coroutinesTestContext.coroutineContext) {
             testBlock()
         }
