@@ -34,10 +34,4 @@ dependencies {
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     testImplementation 'junit:junit:4.12'
-
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$versions.espresso"
-    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
-    androidTestImplementation "org.mockito:mockito-android:$versions.mockito"
 }

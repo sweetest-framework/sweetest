@@ -7,8 +7,7 @@ import kotlin.concurrent.thread
 
 typealias StateListener = (State) -> Unit
 
-// Open for mocking in instrumentation test
-open class LoginViewModel(private val authManager: AuthManager) {
+class LoginViewModel(private val authManager: AuthManager) {
 
     lateinit var stateListener: StateListener
 
