@@ -98,54 +98,87 @@ class Dsl {
         val dependency = LeftOperand()
 
         inline infix fun <reified T : Any> LeftOperand.any(clazz: KClass<T>) {
-            dependencies.add(DependencyConfiguration(clazz, null, null))
+            anyInternal(this, clazz)
         }
 
         infix fun LeftOperand.any(rightOperand: RightOperand) {
-            rightOperand.addFunction(null, false)
+            anyInternal(this, rightOperand)
         }
 
         @Deprecated(dependencyModeDeprecationMessage)
         infix fun LeftOperand.mockOnly(rightOperand: RightOperand) {
-            rightOperand.addFunction(DependencyMode.MOCK, true)
+            mockOnlyInternal(this, rightOperand)
         }
 
         @Deprecated(dependencyModeDeprecationMessage)
         infix fun LeftOperand.realOnly(rightOperand: RightOperand) {
-            rightOperand.addFunction(DependencyMode.REAL, true)
+            realOnlyInternal(this, rightOperand)
         }
 
         @Deprecated(dependencyInitializationDeprecationMessage)
-        inline fun <reified T : Any> initializer(noinline initializer: DependencyInitializer<T>) =
-            RightOperand { dependencyMode, only ->
-                val finalDependencyMode = if (only) dependencyMode else null
-                if (dependencyMode == DependencyMode.MOCK) {
-                    addDependency(DependencyConfiguration(T::class, null, initializer, finalDependencyMode))
-                } else {
-                    addDependency(DependencyConfiguration(T::class, initializer, null, finalDependencyMode))
-                }
-            }
+        inline fun <reified T : Any> initializer(noinline initializer: DependencyInitializer<T>): RightOperand =
+            initializerInternal(T::class, initializer)
 
-        inline fun <reified T : Any> of() =
-            RightOperand { dependencyMode, only ->
-                val finalDependencyMode = if (only) dependencyMode else null
-                addDependency(DependencyConfiguration(T::class, null, null, finalDependencyMode))
-            }
+        inline fun <reified T : Any> of(): RightOperand =
+            ofInternal(T::class)
 
         @Deprecated(dependencyInitializationDeprecationMessage)
-        inline fun <reified T : Any> instance(instance: T) =
-            RightOperand { dependencyMode, only ->
-                val finalDependencyMode = if (only) dependencyMode else null
-                when (dependencyMode) {
-                    DependencyMode.MOCK ->
-                        addDependency(DependencyConfiguration(T::class, null, { instance }, finalDependencyMode))
-                    else ->
-                        addDependency(DependencyConfiguration(T::class, { instance }, null, finalDependencyMode))
-                }
-            }
+        inline fun <reified T : Any> instance(instance: T) = instanceInternal(T::class, instance)
 
         // Events
 
         fun onInitialization(run: () -> Unit) = run()
+
+        // Internal API
+
+        @PublishedApi
+        internal fun <T : Any> anyInternal(leftOperand: LeftOperand, type: KClass<T>) {
+            dependencies.add(DependencyConfiguration(type, null, null))
+        }
+
+        @PublishedApi
+        internal fun anyInternal(leftOperand: LeftOperand, rightOperand: RightOperand) {
+            rightOperand.addFunction(null, false)
+        }
+
+        @PublishedApi
+        internal fun mockOnlyInternal(leftOperand: LeftOperand, rightOperand: RightOperand) {
+            rightOperand.addFunction(DependencyMode.MOCK, true)
+        }
+
+        @PublishedApi
+        internal fun realOnlyInternal(leftOperand: LeftOperand, rightOperand: RightOperand) {
+            rightOperand.addFunction(DependencyMode.REAL, true)
+        }
+
+        @PublishedApi
+        internal fun <T : Any> initializerInternal(type: KClass<T>, initializer: DependencyInitializer<T>) =
+            RightOperand { dependencyMode, only ->
+                val finalDependencyMode = if (only) dependencyMode else null
+                if (dependencyMode == DependencyMode.MOCK) {
+                    addDependency(DependencyConfiguration(type, null, initializer, finalDependencyMode))
+                } else {
+                    addDependency(DependencyConfiguration(type, initializer, null, finalDependencyMode))
+                }
+            }
+
+        @PublishedApi
+        internal fun <T : Any> ofInternal(type: KClass<T>) =
+            RightOperand { dependencyMode, only ->
+                val finalDependencyMode = if (only) dependencyMode else null
+                addDependency(DependencyConfiguration(type, null, null, finalDependencyMode))
+            }
+
+        @PublishedApi
+        internal fun <T : Any> instanceInternal(type: KClass<T>, instance: T) =
+            RightOperand { dependencyMode, only ->
+                val finalDependencyMode = if (only) dependencyMode else null
+                when (dependencyMode) {
+                    DependencyMode.MOCK ->
+                        addDependency(DependencyConfiguration(type, null, { instance }, finalDependencyMode))
+                    else ->
+                        addDependency(DependencyConfiguration(type, { instance }, null, finalDependencyMode))
+                }
+            }
     }
 }

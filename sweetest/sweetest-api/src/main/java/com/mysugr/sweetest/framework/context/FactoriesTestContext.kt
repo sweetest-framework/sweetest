@@ -1,6 +1,7 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.factory.FactoryRunner
+import kotlin.reflect.KClass
 
 class FactoriesTestContext(private val parent: TestContext) {
 
@@ -20,10 +21,10 @@ class FactoriesTestContext(private val parent: TestContext) {
     }
 
     @PublishedApi
-    internal inline fun <reified R : Any> get(): FactoryRunner<R> =
-        map[R::class.java] as? FactoryRunner<R>
+    internal fun <R : Any> get(type: KClass<R>): FactoryRunner<R> =
+        map[type.java] as? FactoryRunner<R>
             ?: throw RuntimeException(
-                "Factory for type \"${R::class}\" is not configured! Please make sure " +
+                "Factory for type \"$type\" is not configured! Please make sure " +
                     "you have configured it in your module test configuration\" or in a steps class and the " +
                     "steps class has been instantiated!"
             )

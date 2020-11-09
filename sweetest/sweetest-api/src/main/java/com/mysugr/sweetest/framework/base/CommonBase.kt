@@ -9,68 +9,80 @@ import kotlin.reflect.KProperty
 
 abstract class CommonBase(@PublishedApi internal val testContext: TestContext)
 
-inline fun <reified T : Any> CommonBase.dependency(): DependencyPropertyDelegate<T> {
-    try {
-        return DependencyPropertyDelegate {
-            try {
-                TestEnvironment.dependencies.getDependencyState(T::class)
-            } catch (throwable: Throwable) {
-                throw SweetestException(
-                    "Providing dependency for \"dependency<${T::class.simpleName}>\" failed",
-                    throwable
-                )
-            }
-        }
-    } catch (throwable: Throwable) {
-        throw RuntimeException(
-            "Call on \"dependency<${T::class.simpleName}>\" failed",
-            throwable
-        )
-    }
-}
+// --- region: Published API (necessary to keep inlined footprint as small as possible)
 
-inline fun <reified T : BaseSteps> CommonBase.steps(): PropertyDelegate<T> {
-    try {
-        testContext.steps.setUpAsRequired(T::class as KClass<Steps>)
-        return PropertyDelegate {
-            try {
-                testContext.steps.get(T::class)
-            } catch (throwable: Throwable) {
-                throw SweetestException(
-                    "Providing steps class instance for \"steps<${T::class.simpleName}>\" failed",
-                    throwable
-                )
-            }
-        }
-    } catch (throwable: Throwable) {
-        throw RuntimeException(
-            "Call on \"steps<${T::class.simpleName}>\" failed",
-            throwable
-        )
-    }
-}
-
-inline fun <reified T : Any> CommonBase.factory(): PropertyDelegate<T> {
-    try {
-        return PropertyDelegate {
-            testContext.factories.get<T>().run(testContext.steps.provider)
-        }
-    } catch (throwable: Throwable) {
-        throw RuntimeException(
-            "Call on \"factory<${T::class.simpleName}>\" failed",
-            throwable
-        )
-    }
-}
+inline fun <reified T : Any> CommonBase.dependency(): DependencyPropertyDelegate<T> = dependency(this, T::class)
+inline fun <reified T : BaseSteps> CommonBase.steps(): PropertyDelegate<T> = steps(this, T::class)
+inline fun <reified T : Any> CommonBase.factory(): PropertyDelegate<T> = factory(T::class)
 
 class PropertyDelegate<out T>(private val getter: () -> T) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = getter()
 }
 
+// TODO remove
 class DependencyPropertyDelegate<out T : Any>(private val getDependencyState: (() -> DependencyState<T>)) {
 
     private var cachedDependencyState: DependencyState<T>? = null
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T =
         (cachedDependencyState ?: getDependencyState().also { cachedDependencyState = it }).instance
+}
+
+// --- region: Internal API
+
+@PublishedApi
+internal fun <T : Any> dependency(scope: CommonBase, type: KClass<T>): DependencyPropertyDelegate<T> {
+    try {
+        return DependencyPropertyDelegate {
+            try {
+                TestEnvironment.dependencies.getDependencyState(type)
+            } catch (throwable: Throwable) {
+                throw SweetestException(
+                    "Providing dependency for \"dependency<${type.simpleName}>\" failed",
+                    throwable
+                )
+            }
+        }
+    } catch (throwable: Throwable) {
+        throw RuntimeException(
+            "Call on \"dependency<${type.simpleName}>\" failed",
+            throwable
+        )
+    }
+}
+
+@PublishedApi
+internal fun <T : BaseSteps> steps(scope: CommonBase, type: KClass<T>): PropertyDelegate<T> {
+    try {
+        scope.testContext.steps.setUpAsRequired(type as KClass<Steps>)
+        return PropertyDelegate {
+            try {
+                scope.testContext.steps.get(type) as T
+            } catch (throwable: Throwable) {
+                throw SweetestException(
+                    "Providing steps class instance for \"steps<${type.simpleName}>\" failed",
+                    throwable
+                )
+            }
+        }
+    } catch (throwable: Throwable) {
+        throw RuntimeException(
+            "Call on \"steps<$type>\" failed",
+            throwable
+        )
+    }
+}
+
+@PublishedApi
+internal fun <T : Any> CommonBase.factory(type: KClass<T>): PropertyDelegate<T> {
+    try {
+        return PropertyDelegate {
+            testContext.factories.get(type).run(testContext.steps.provider)
+        }
+    } catch (throwable: Throwable) {
+        throw RuntimeException(
+            "Call on \"factory<${type.simpleName}>\" failed",
+            throwable
+        )
+    }
 }

@@ -25,7 +25,7 @@ abstract class BaseBuilder<TSelf>(
 
     private var built = false
 
-    // TODO rename `build`, same below
+    // TODO rename `build`, same below or completely remove
     @PublishedApi
     internal fun checkNotYetBuilt() {
         if (built) {
@@ -45,6 +45,8 @@ abstract class BaseBuilder<TSelf>(
         return this as TSelf
     }
 
+    // --- region: Published API (kept as small as possible)
+
     /**
      * Provides an [initializer] for type [T] to sweetest.
      *
@@ -57,7 +59,7 @@ abstract class BaseBuilder<TSelf>(
      * overrides these constraints.
      */
     inline fun <reified T : Any> provide(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.provide(T::class, initializer)
+        provideInternal(T::class, initializer)
     }
 
     /**
@@ -71,71 +73,121 @@ abstract class BaseBuilder<TSelf>(
      * overrides these constraints.
      */
     inline fun <reified T : Any> provide() = apply {
-        testContext.dependencies.provide(T::class)
+        provideInternal(T::class)
     }
 
     inline fun <reified T : Steps> requireSteps() = apply {
-        testContext.steps.setUpAsRequired(T::class as KClass<Steps>)
+        requireStepsInternal(T::class)
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireReal() = apply {
-        testContext.dependencies.requireReal(
-            clazz = T::class,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
-        )
+        requireRealInternal(T::class)
     }
+
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerReal(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerReal(
-            clazz = T::class,
-            initializer = initializer,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
-        )
+        offerRealInternal(T::class, initializer)
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) =
-        apply {
-            testContext.dependencies.offerRealRequired(
-                clazz = T::class,
-                initializer = initializer,
-                hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
-            )
-        }
+    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) = apply {
+        offerRealRequiredInternal(T::class, initializer)
+    }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireMock() = apply {
-        testContext.dependencies.requireMock(
-            clazz = T::class,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
-        )
+        requireMockInternal(T::class)
     }
 
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMock(noinline initializer: DependencyInitializer<T>) = apply {
-        testContext.dependencies.offerMock(
-            clazz = T::class,
+        offerMockInternal(T::class, initializer)
+    }
+
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) = apply {
+        offerMockRequiredInternal(T::class, initializer)
+    }
+
+    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> requireSpy() = apply {
+        requireSpyInternal(T::class)
+    }
+
+    // -- region: Internal API
+
+    @PublishedApi
+    internal fun <T : Any> provideInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        testContext.dependencies.provide(type, initializer)
+    }
+
+    @PublishedApi
+    internal fun <T : Any> provideInternal(type: KClass<T>) {
+        testContext.dependencies.provide(type)
+    }
+
+    @PublishedApi
+    internal fun <T : Steps> requireStepsInternal(type: KClass<T>) {
+        testContext.steps.setUpAsRequired(type as KClass<Steps>)
+    }
+
+    @PublishedApi
+    internal fun requireRealInternal(type: KClass<*>) {
+        testContext.dependencies.requireReal(
+            clazz = type,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
+    }
+
+    @PublishedApi
+    internal fun <T : Any> offerRealInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        testContext.dependencies.offerReal(
+            clazz = type,
             initializer = initializer,
             hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
         )
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) =
-        apply {
-            testContext.dependencies.offerMockRequired(
-                clazz = T::class,
-                initializer = initializer,
-                hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
-            )
-        }
+    @PublishedApi
+    internal fun <T : Any> offerRealRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        testContext.dependencies.offerRealRequired(
+            clazz = type,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
+    }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> requireSpy() = apply {
+    @PublishedApi
+    internal fun requireMockInternal(type: KClass<*>) {
+        testContext.dependencies.requireMock(
+            clazz = type,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
+    }
+
+    @PublishedApi
+    internal fun <T : Any> offerMockInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        testContext.dependencies.offerMock(
+            clazz = type,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
+    }
+    @PublishedApi
+    internal fun <T : Any> offerMockRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        testContext.dependencies.offerMockRequired(
+            clazz = type,
+            initializer = initializer,
+            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+        )
+    }
+
+    @PublishedApi
+    internal fun requireSpyInternal(type: KClass<*>) {
         testContext.dependencies.requireSpy(
-            clazz = T::class,
+            clazz = type,
             hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
         )
     }
@@ -178,6 +230,8 @@ abstract class BaseBuilder<TSelf>(
             )
         )
     }
+
+    // --- region: Callbacks
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetBuilt()
