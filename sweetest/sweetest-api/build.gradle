@@ -1,13 +1,4 @@
 buildscript {
-    ext.publishingInfo = [
-            version: '1.2.0',
-            org    : 'mysugr',
-            lib    : 'sweetest',
-            group  : 'com.mysugr',
-            site   : 'https://github.com/mysugr/sweetest',
-            git    : 'https://github.com/mysugr/sweetest.git',
-            tracker: 'https://github.com/mysugr/sweetest/issues'
-    ]
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
@@ -20,6 +11,8 @@ plugins {
     id 'java-library'
     id 'kotlin'
 }
+
+apply from: '../publish-info.gradle'
 
 group "${publishingInfo.group}.${publishingInfo.lib}"
 
@@ -39,8 +32,8 @@ artifacts {
     archives sourcesJar
 }
 
-apply from: 'publish-bintray.gradle'
-apply from: 'publish-maven.gradle'
+apply from: '../publish-bintray.gradle'
+apply from: '../publish-maven.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

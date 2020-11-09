@@ -1,0 +1,11 @@
+buildscript {
+    ext.publishingInfo = [
+            version: '2.0.0',
+            org    : 'mysugr',
+            lib    : 'sweetest',
+            group  : 'com.mysugr',
+            site   : 'https://github.com/mysugr/sweetest',
+            git    : 'https://github.com/mysugr/sweetest.git',
+            tracker: 'https://github.com/mysugr/sweetest/issues'
+    ]
+}
