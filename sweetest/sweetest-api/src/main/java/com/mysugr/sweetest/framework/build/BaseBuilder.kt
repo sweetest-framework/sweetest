@@ -186,7 +186,7 @@ abstract class BaseBuilder<TSelf>(
             clazz = type,
             hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
         )
-    }x
+    }
 
     // --- region: Callbacks
 

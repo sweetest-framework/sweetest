@@ -11,30 +11,25 @@ abstract class CommonBase(@PublishedApi internal val testContext: TestContext)
 
 // --- region: Published API (necessary to keep inlined footprint as small as possible)
 
-inline fun <reified T : Any> CommonBase.dependency(): DependencyPropertyDelegate<T> = dependency(this, T::class)
+inline fun <reified T : Any> CommonBase.dependency(): PropertyDelegate<T> = dependency(this, T::class)
 inline fun <reified T : BaseSteps> CommonBase.steps(): PropertyDelegate<T> = steps(this, T::class)
 
 class PropertyDelegate<out T>(private val getter: () -> T) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = getter()
 }
 
-// TODO remove
-class DependencyPropertyDelegate<out T : Any>(private val getDependencyState: (() -> DependencyState<T>)) {
-
-    private var cachedDependencyState: DependencyState<T>? = null
-
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T =
-        (cachedDependencyState ?: getDependencyState().also { cachedDependencyState = it }).instance
-}
-
 // --- region: Internal API
 
 @PublishedApi
-internal fun <T : Any> dependency(scope: CommonBase, type: KClass<T>): DependencyPropertyDelegate<T> {
+internal fun <T : Any> dependency(scope: CommonBase, type: KClass<T>): PropertyDelegate<T> {
     try {
-        return DependencyPropertyDelegate {
+        var cachedDependencyState: DependencyState<T>? = null
+        return PropertyDelegate {
             try {
-                TestEnvironment.dependencies.getDependencyState(type)
+                if (cachedDependencyState == null) {
+                    cachedDependencyState = TestEnvironment.dependencies.getDependencyState(type)
+                }
+                cachedDependencyState!!.instance
             } catch (throwable: Throwable) {
                 throw SweetestException(
                     "Providing dependency for \"dependency<${type.simpleName}>\" failed",
