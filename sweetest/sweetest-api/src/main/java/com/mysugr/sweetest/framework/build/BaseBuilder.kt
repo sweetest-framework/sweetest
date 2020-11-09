@@ -4,10 +4,6 @@ import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
-import com.mysugr.sweetest.framework.factory.FactoryRunner0
-import com.mysugr.sweetest.framework.factory.FactoryRunner1
-import com.mysugr.sweetest.framework.factory.FactoryRunner2
-import com.mysugr.sweetest.framework.factory.FactoryRunner3
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import kotlin.reflect.KClass
 
@@ -190,46 +186,7 @@ abstract class BaseBuilder<TSelf>(
             clazz = type,
             hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
         )
-    }
-
-    inline fun <reified R : Any> offerFactory(noinline createObject: () -> R) = apply {
-        testContext.factories.configure(FactoryRunner0(R::class.java, createObject))
-    }
-
-    inline fun <reified T : Steps, reified R : Any> offerFactory(noinline createObject: (T) -> R) =
-        apply {
-            testContext.factories.configure(
-                FactoryRunner1(
-                    R::class.java,
-                    T::class.java,
-                    createObject
-                )
-            )
-        }
-
-    inline fun <reified T1 : Steps, reified T2 : Steps, reified R : Any> offerFactory(
-        noinline createObject: (T1, T2) -> R
-    ) = apply {
-        testContext.factories.configure(
-            FactoryRunner2(
-                R::class.java,
-                T1::class.java,
-                T2::class.java,
-                createObject
-            )
-        )
-    }
-
-    inline fun <reified T1 : Steps, reified T2 : Steps, reified T3 : Steps, reified R : Any> offerFactory(
-        noinline createObject: (T1, T2, T3) -> R
-    ) = apply {
-        testContext.factories.configure(
-            FactoryRunner3(
-                R::class.java, T1::class.java, T2::class.java, T3::class.java,
-                createObject
-            )
-        )
-    }
+    }x
 
     // --- region: Callbacks
 

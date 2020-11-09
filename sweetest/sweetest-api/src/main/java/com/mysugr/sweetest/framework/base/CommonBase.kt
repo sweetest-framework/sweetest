@@ -13,7 +13,6 @@ abstract class CommonBase(@PublishedApi internal val testContext: TestContext)
 
 inline fun <reified T : Any> CommonBase.dependency(): DependencyPropertyDelegate<T> = dependency(this, T::class)
 inline fun <reified T : BaseSteps> CommonBase.steps(): PropertyDelegate<T> = steps(this, T::class)
-inline fun <reified T : Any> CommonBase.factory(): PropertyDelegate<T> = factory(T::class)
 
 class PropertyDelegate<out T>(private val getter: () -> T) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = getter()
@@ -68,20 +67,6 @@ internal fun <T : BaseSteps> steps(scope: CommonBase, type: KClass<T>): Property
     } catch (throwable: Throwable) {
         throw RuntimeException(
             "Call on \"steps<$type>\" failed",
-            throwable
-        )
-    }
-}
-
-@PublishedApi
-internal fun <T : Any> CommonBase.factory(type: KClass<T>): PropertyDelegate<T> {
-    try {
-        return PropertyDelegate {
-            testContext.factories.get(type).run(testContext.steps.provider)
-        }
-    } catch (throwable: Throwable) {
-        throw RuntimeException(
-            "Call on \"factory<${type.simpleName}>\" failed",
             throwable
         )
     }

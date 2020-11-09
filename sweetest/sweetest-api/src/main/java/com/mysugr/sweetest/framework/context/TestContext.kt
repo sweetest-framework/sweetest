@@ -11,10 +11,7 @@ class TestContext internal constructor() : TestContext {
     internal val steps = StepsTestContext(this)
 
     @PublishedApi
-    internal val factories = FactoriesTestContext(this)
-
-    @PublishedApi
-    internal val configurations = ConfigurationsTestContext(factories)
+    internal val configurations = ConfigurationsTestContext()
 
     @PublishedApi
     internal val dependencies = DependenciesTestContext()
