@@ -82,7 +82,6 @@ abstract class BaseBuilder<TSelf>(
         requireRealInternal(T::class)
     }
 
-
     @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerReal(noinline initializer: DependencyInitializer<T>) = apply {
         offerRealInternal(T::class, initializer)
