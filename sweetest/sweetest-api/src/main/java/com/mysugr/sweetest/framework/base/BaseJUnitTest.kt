@@ -16,7 +16,7 @@ abstract class BaseJUnitTest @Deprecated(
     open fun configure() = TestBuilder(testContext, moduleTestingConfiguration)
 
     init {
-        configure().build()
+        configure().setDone()
     }
 
     @Before

@@ -19,20 +19,21 @@ abstract class BaseBuilder<TSelf>(
         moduleTestingConfiguration?.let { testContext.configurations.put(it) }
     }
 
-    private var built = false
+    private var isDone = false
 
-    // TODO rename `build`, same below or completely remove
-    @PublishedApi
-    internal fun checkNotYetBuilt() {
-        if (built) {
-            throw IllegalStateException("build() already done")
-        }
+    /**
+     * Finalizes the configuration
+     */
+    internal fun setDone() {
+        // Just makes sure the setDone() function is called just once
+        checkNotYetDone()
+        isDone = true
     }
 
-    @PublishedApi
-    internal fun build() {
-        checkNotYetBuilt()
-        built = true
+    protected fun checkNotYetDone() {
+        if (isDone) {
+            throw IllegalStateException("build() already done")
+        }
     }
 
     @PublishedApi
@@ -191,32 +192,32 @@ abstract class BaseBuilder<TSelf>(
     // --- region: Callbacks
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(InitializationStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(InitializationStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(InitializationStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(InitializationStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(InitializationStep.AFTER_TEAR_DOWN, run)
     }
 }

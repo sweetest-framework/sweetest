@@ -8,7 +8,7 @@ class TestBuilder(testContext: TestContext, moduleTestingConfiguration: ModuleTe
     BaseBuilder<TestBuilder>(testContext, moduleTestingConfiguration) {
 
     fun onInitializeSteps(run: () -> Unit) = apply {
-        checkNotYetBuilt()
+        checkNotYetDone()
         testContext.workflowProvider.subscribe(INITIALIZE_STEPS, run)
     }
 }

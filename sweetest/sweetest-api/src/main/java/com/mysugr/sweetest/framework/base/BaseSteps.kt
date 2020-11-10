@@ -20,9 +20,10 @@ abstract class BaseSteps @Deprecated(
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
     init {
-        configure().build()
+        configure().setDone()
     }
 
+    // TODO deprecate
     override val coroutineContext: CoroutineContext
         get() = testContext.coroutines.coroutineContext
 }
