@@ -54,11 +54,6 @@ class Dsl {
             @PublishedApi internal val addFunction: (dependencyMode: DependencyMode?, only: Boolean) -> Unit
         )
 
-        // TODO not used?
-        data class AutoInitializerRightOperand(
-            @PublishedApi internal val addFunction: () -> Unit
-        )
-
         val dependency = LeftOperand()
 
         inline infix fun <reified T : Any> LeftOperand.any(clazz: KClass<T>) {
