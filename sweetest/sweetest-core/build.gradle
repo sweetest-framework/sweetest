@@ -20,6 +20,8 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
     implementation project(':sweetest:sweetest-base')
     api "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+
+    // TODO remove dependency to frameworks in core module
     api "org.mockito:mockito-core:$versions.mockito"
     api "io.cucumber:cucumber-junit:$versions.cucumber"
     api "io.cucumber:cucumber-jvm:$versions.cucumber"

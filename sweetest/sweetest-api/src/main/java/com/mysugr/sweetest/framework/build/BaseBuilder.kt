@@ -1,5 +1,9 @@
 package com.mysugr.sweetest.framework.build
 
+import com.mysugr.sweetest.api.configureDependencyProvision
+import com.mysugr.sweetest.api.configureAutomaticDependencyProvision
+import com.mysugr.sweetest.api.notifyStepsRequired
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
@@ -73,6 +77,8 @@ abstract class BaseBuilder<TSelf>(
         provideInternal(T::class)
     }
 
+    // --- region: Published API – LEGACY! (kept as small as possible)
+
     inline fun <reified T : Steps> requireSteps() = apply {
         requireStepsInternal(T::class)
     }
@@ -112,80 +118,91 @@ abstract class BaseBuilder<TSelf>(
         requireSpyInternal(T::class)
     }
 
-    // -- region: Internal API
+    // --- region: Internal API
 
     @PublishedApi
-    internal fun <T : Any> provideInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
-        testContext.dependencies.provide(type, initializer)
-    }
+    internal fun <T : Any> provideInternal(type: KClass<T>, initializer: DependencyInitializer<T>) =
+        configureDependencyProvision(testContext.dependencies, type, initializer)
 
     @PublishedApi
     internal fun <T : Any> provideInternal(type: KClass<T>) {
-        testContext.dependencies.provide(type)
+        configureAutomaticDependencyProvision(testContext.dependencies, type)
     }
 
     @PublishedApi
     internal fun <T : Steps> requireStepsInternal(type: KClass<T>) {
-        testContext.steps.setUpAsRequired(type as KClass<Steps>)
+        notifyStepsRequired(testContext.steps, type)
     }
+
+    // --- region: Internal API – LEGACY!
 
     @PublishedApi
     internal fun requireRealInternal(type: KClass<*>) {
+        checkInvalidLegacyFunctionCall("requireReal")
         testContext.dependencies.requireReal(
-            clazz = type,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            clazz = type
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerRealInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        checkInvalidLegacyFunctionCall("offerReal")
         testContext.dependencies.offerReal(
             clazz = type,
-            initializer = initializer,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            initializer = initializer
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerRealRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        checkInvalidLegacyFunctionCall("offerRealRequired")
         testContext.dependencies.offerRealRequired(
             clazz = type,
-            initializer = initializer,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            initializer = initializer
         )
     }
 
     @PublishedApi
     internal fun requireMockInternal(type: KClass<*>) {
+        checkInvalidLegacyFunctionCall("requireMock")
         testContext.dependencies.requireMock(
-            clazz = type,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            clazz = type
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerMockInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        checkInvalidLegacyFunctionCall("offerMock")
         testContext.dependencies.offerMock(
             clazz = type,
-            initializer = initializer,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            initializer = initializer
         )
     }
+
     @PublishedApi
     internal fun <T : Any> offerMockRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+        checkInvalidLegacyFunctionCall("offerMockRequired")
         testContext.dependencies.offerMockRequired(
             clazz = type,
-            initializer = initializer,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            initializer = initializer
         )
     }
 
     @PublishedApi
     internal fun requireSpyInternal(type: KClass<*>) {
+        checkInvalidLegacyFunctionCall("requireSpy")
         testContext.dependencies.requireSpy(
-            clazz = type,
-            hasModuleTestingConfiguration = this.moduleTestingConfiguration != null
+            clazz = type
         )
+    }
+
+    private fun checkInvalidLegacyFunctionCall(functionName: String) {
+        if (this.moduleTestingConfiguration == null) {
+            throw SweetestException(
+                "`$functionName` is a legacy function and can't be used " +
+                    "when using new API without module testing configuration!"
+            )
+        }
     }
 
     // --- region: Callbacks

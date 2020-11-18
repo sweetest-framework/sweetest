@@ -23,8 +23,7 @@ class DependenciesTestContext {
         }
     }
 
-    fun requireReal(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
-        checkInvalidLegacyFunctionCall("requireReal", hasModuleTestingConfiguration)
+    fun requireReal(clazz: KClass<*>) {
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 mode = DependencyMode.REAL
@@ -33,10 +32,8 @@ class DependenciesTestContext {
 
     fun offerReal(
         clazz: KClass<*>,
-        initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean
+        initializer: DependencyInitializer<*>
     ) {
-        checkInvalidLegacyFunctionCall("offerReal", hasModuleTestingConfiguration)
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 realInitializerUnknown = initializer
@@ -45,10 +42,8 @@ class DependenciesTestContext {
 
     fun offerRealRequired(
         clazz: KClass<*>,
-        initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean
+        initializer: DependencyInitializer<*>
     ) {
-        checkInvalidLegacyFunctionCall("offerRealRequired", hasModuleTestingConfiguration)
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 mode = DependencyMode.REAL
@@ -56,8 +51,7 @@ class DependenciesTestContext {
             }
     }
 
-    fun requireMock(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
-        checkInvalidLegacyFunctionCall("requireMock", hasModuleTestingConfiguration)
+    fun requireMock(clazz: KClass<*>) {
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 mode = DependencyMode.MOCK
@@ -66,10 +60,8 @@ class DependenciesTestContext {
 
     fun offerMock(
         clazz: KClass<*>,
-        initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean
+        initializer: DependencyInitializer<*>
     ) {
-        checkInvalidLegacyFunctionCall("offerMock", hasModuleTestingConfiguration)
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 mockInitializerUnknown = initializer
@@ -78,10 +70,8 @@ class DependenciesTestContext {
 
     fun offerMockRequired(
         clazz: KClass<*>,
-        initializer: DependencyInitializer<*>,
-        hasModuleTestingConfiguration: Boolean
+        initializer: DependencyInitializer<*>
     ) {
-        checkInvalidLegacyFunctionCall("offerMockRequired", hasModuleTestingConfiguration)
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 mockInitializerUnknown = initializer
@@ -89,21 +79,11 @@ class DependenciesTestContext {
             }
     }
 
-    fun requireSpy(clazz: KClass<*>, hasModuleTestingConfiguration: Boolean) {
-        checkInvalidLegacyFunctionCall("requireSpy", hasModuleTestingConfiguration)
+    fun requireSpy(clazz: KClass<*>) {
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
             .run {
                 mode = DependencyMode.SPY
             }
-    }
-
-    private fun checkInvalidLegacyFunctionCall(functionName: String, hasModuleTestingConfiguration: Boolean) {
-        if (!hasModuleTestingConfiguration) {
-            throw SweetestException(
-                "`$functionName` is a legacy function and can't be used " +
-                    "when using new API without module testing configuration!"
-            )
-        }
     }
 
     private fun checkNotAlreadyProvided(clazz: KClass<*>, mode: DependencyMode) {
@@ -116,30 +96,4 @@ class DependenciesTestContext {
             )
         }
     }
-
-    // --- region: legacy binary compatibility API:
-
-    fun requireReal(clazz: KClass<*>) = requireReal(clazz, hasModuleTestingConfiguration = true)
-
-    fun offerReal(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) = offerReal(clazz, initializer, hasModuleTestingConfiguration = true)
-
-    fun offerRealRequired(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) = offerRealRequired(clazz, initializer, hasModuleTestingConfiguration = true)
-
-    fun requireMock(clazz: KClass<*>) = requireMock(clazz, hasModuleTestingConfiguration = true)
-
-    fun offerMock(clazz: KClass<*>, initializer: DependencyInitializer<*>) =
-        offerMock(clazz, initializer, hasModuleTestingConfiguration = true)
-
-    fun offerMockRequired(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) = offerMockRequired(clazz, initializer, hasModuleTestingConfiguration = true)
-
-    fun requireSpy(clazz: KClass<*>) = requireSpy(clazz, hasModuleTestingConfiguration = true)
 }

@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 
 fun <T : Steps> getStepsFinal(stepsTestContext: StepsTestContext, type: KClass<T>): ReadOnlyProperty<CommonBase, T> {
     try {
-        stepsTestContext.setUpAsRequired(type as KClass<Steps>)
+        notifyStepsRequired(stepsTestContext, type)
         return PropertyDelegate {
             try {
                 stepsTestContext.get(type) as T
@@ -27,4 +27,8 @@ fun <T : Steps> getStepsFinal(stepsTestContext: StepsTestContext, type: KClass<T
             throwable
         )
     }
+}
+
+fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, type: KClass<T>) {
+    stepsTestContext.setUpAsRequired(type as KClass<Steps>)
 }
