@@ -1,18 +1,19 @@
 package com.mysugr.sweetest.framework.base
 
+import com.mysugr.sweetest.api.getStepsFinal
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.internal.Steps
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-abstract class CommonBase(@PublishedApi internal val testContext: TestContext)
+abstract class CommonBase(@PublishedApi internal val testContext: TestContext) : com.mysugr.sweetest.internal.CommonBase
 
 // --- region: Published API (necessary to keep inlined footprint as small as possible)
 
 inline fun <reified T : Any> CommonBase.dependency(): PropertyDelegate<T> = dependency(this, T::class)
-inline fun <reified T : BaseSteps> CommonBase.steps(): PropertyDelegate<T> = steps(this, T::class)
+inline fun <reified T : BaseSteps> CommonBase.steps(): ReadOnlyProperty<CommonBase, T> = steps(this, T::class)
 
 class PropertyDelegate<out T>(private val getter: () -> T) {
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T = getter()
@@ -46,23 +47,5 @@ internal fun <T : Any> dependency(scope: CommonBase, type: KClass<T>): PropertyD
 }
 
 @PublishedApi
-internal fun <T : BaseSteps> steps(scope: CommonBase, type: KClass<T>): PropertyDelegate<T> {
-    try {
-        scope.testContext.steps.setUpAsRequired(type as KClass<Steps>)
-        return PropertyDelegate {
-            try {
-                scope.testContext.steps.get(type) as T
-            } catch (throwable: Throwable) {
-                throw SweetestException(
-                    "Providing steps class instance for \"steps<${type.simpleName}>\" failed",
-                    throwable
-                )
-            }
-        }
-    } catch (throwable: Throwable) {
-        throw RuntimeException(
-            "Call on \"steps<$type>\" failed",
-            throwable
-        )
-    }
-}
+internal fun <T : BaseSteps> steps(scope: CommonBase, type: KClass<T>): ReadOnlyProperty<CommonBase, T> =
+    getStepsFinal(scope.testContext.steps, type)
