@@ -2,38 +2,17 @@ buildscript {
     dependencies {
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
         classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
-
     }
 }
 
 plugins {
-    id 'maven-publish'
     id 'java-library'
     id 'kotlin'
 }
 
-apply from: '../publish-info.gradle'
+apply from: '../publishing.gradle'
 
-group "${publishingInfo.group}.${publishingInfo.lib}"
-
-version publishingInfo.version
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.java.srcDirs
-    classifier 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-apply from: '../publish-bintray.gradle'
-apply from: '../publish-maven.gradle'
+setCustomArtifactName('sweetest')
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

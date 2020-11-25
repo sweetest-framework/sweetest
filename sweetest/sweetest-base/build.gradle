@@ -12,28 +12,7 @@ plugins {
     id 'kotlin'
 }
 
-apply from: '../publish-info.gradle'
-
-group "${publishingInfo.group}.${publishingInfo.lib}"
-
-version publishingInfo.version
-
-task javadocJar(type: Jar) {
-    from javadoc
-    archiveClassifier = 'javadoc'
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.java.srcDirs
-    classifier 'sources'
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-apply from: '../publish-bintray.gradle'
-apply from: '../publish-maven.gradle'
+apply from: '../publishing.gradle'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

@@ -1,0 +1,61 @@
+Properties properties = new Properties()
+if (rootProject.file('local.properties').exists()) {
+    properties.load(rootProject.file('local.properties').newDataInputStream())
+}
+
+def publishingInfo = [
+        org    : 'sweetest',
+        group  : 'dev.sweetest',
+        lib    : 'sweetest',
+        version: '2.0.0',
+]
+
+// --- GENERAL
+
+version publishingInfo.version
+group publishingInfo.group
+
+task javadocJar(type: Jar) {
+    from javadoc
+    archiveClassifier = 'javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier 'sources'
+}
+
+ext.setCustomArtifactName = { name ->
+    jar.baseName name
+    publishing.publications.mavenJava.artifactId name
+    bintray.pkg.name = name
+}
+
+// --- MAVEN
+
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+        }
+    }
+}
+
+// --- BINTRAY
+
+apply plugin: 'com.jfrog.bintray'
+
+bintray {
+    user properties.getProperty('bintray_user')
+    key properties.getProperty('bintray_key')
+    publications = ['mavenJava']
+    pkg {
+        repo = 'maven'
+        name = project.name
+        userOrg = publishingInfo.org
+    }
+}
