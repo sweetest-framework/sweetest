@@ -1,7 +1,7 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.dependency.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
@@ -22,6 +22,10 @@ class DependenciesTestContext {
             mode = DependencyMode.AUTO_PROVIDED
         }
     }
+
+    fun <T : Any> getInstanceOf(clazz: KClass<T>): T = TestEnvironment.dependencies.getDependencyState(clazz).instance
+
+    // --- region: Legacy functions
 
     fun requireReal(clazz: KClass<*>) {
         TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)

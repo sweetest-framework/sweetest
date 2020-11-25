@@ -5,10 +5,14 @@ import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
 import com.mysugr.sweetest.framework.environment.TestEnvironment
+import com.mysugr.sweetest.internal.DependencyInitializerArgumentProvider
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) : DependencyAccessor {
+class DependencyManager(
+    setupHandlerReceiver: (DependencySetupHandler) -> Unit,
+    private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider
+) : DependencyAccessor {
 
     private var _states: DependencyStates? = null
     private val configurationsField = DependencyConfigurations()
@@ -19,12 +23,6 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
 
     override val configurations: DependencyConfigurationConsumer
         get() = configurationsField
-
-    private val initializerContext = object : DependencyInitializerContext() {
-        override fun <T : Any> instanceOf(clazz: KClass<T>): T {
-            return getDependencyState(clazz).instance
-        }
-    }
 
     /**
      * Returns the dependency state for _consumption_ (e.g. `val instance by dependency<T>()`).
@@ -117,7 +115,7 @@ class DependencyManager(setupHandlerReceiver: (DependencySetupHandler) -> Unit) 
 
     override val states: DependencyStatesConsumer
         get() = if (_states == null) {
-            _states = DependencyStates(initializerContext)
+            _states = DependencyStates(dependencyInitializerArgumentProvider)
             _states!!
         } else {
             _states!!

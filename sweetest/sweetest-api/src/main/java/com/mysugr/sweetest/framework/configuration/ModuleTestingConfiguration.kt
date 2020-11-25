@@ -2,6 +2,7 @@ package com.mysugr.sweetest.framework.configuration
 
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
+import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
 import com.mysugr.sweetest.framework.environment.TestEnvironment
@@ -115,9 +116,23 @@ class Dsl {
             RightOperand { dependencyMode, only ->
                 val finalDependencyMode = if (only) dependencyMode else null
                 if (dependencyMode == DependencyMode.MOCK) {
-                    addDependency(DependencyConfiguration(type, null, initializer, finalDependencyMode))
+                    addDependency(
+                        DependencyConfiguration(
+                            clazz = type,
+                            defaultRealInitializer = null,
+                            defaultMockInitializer = { initializer(it as DependencyInitializerContext) },
+                            defaultDependencyMode = finalDependencyMode
+                        )
+                    )
                 } else {
-                    addDependency(DependencyConfiguration(type, initializer, null, finalDependencyMode))
+                    addDependency(
+                        DependencyConfiguration(
+                            clazz = type,
+                            defaultRealInitializer = { initializer(it as DependencyInitializerContext) },
+                            defaultMockInitializer = null,
+                            defaultDependencyMode = finalDependencyMode
+                        )
+                    )
                 }
             }
 

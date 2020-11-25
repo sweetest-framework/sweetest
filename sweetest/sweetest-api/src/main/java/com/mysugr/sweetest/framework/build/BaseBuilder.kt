@@ -1,14 +1,15 @@
 package com.mysugr.sweetest.framework.build
 
-import com.mysugr.sweetest.api.configureDependencyProvision
 import com.mysugr.sweetest.api.configureAutomaticDependencyProvision
+import com.mysugr.sweetest.api.configureDependencyProvision
 import com.mysugr.sweetest.api.notifyStepsRequired
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.dependency.DependencyInitializer
+import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.flow.InitializationStep
+import com.mysugr.sweetest.internal.Steps
 import kotlin.reflect.KClass
 
 private const val dependencyModeDeprecationMessage = "Dependency modes like \"REAL\" or \"MOCK\" " +
@@ -122,7 +123,7 @@ abstract class BaseBuilder<TSelf>(
 
     @PublishedApi
     internal fun <T : Any> provideInternal(type: KClass<T>, initializer: DependencyInitializer<T>) =
-        configureDependencyProvision(testContext.dependencies, type, initializer)
+        configureDependencyProvision(testContext.dependencies, type) { initializer(it as DependencyInitializerContext) }
 
     @PublishedApi
     internal fun <T : Any> provideInternal(type: KClass<T>) {
@@ -149,7 +150,7 @@ abstract class BaseBuilder<TSelf>(
         checkInvalidLegacyFunctionCall("offerReal")
         testContext.dependencies.offerReal(
             clazz = type,
-            initializer = initializer
+            initializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
@@ -158,7 +159,7 @@ abstract class BaseBuilder<TSelf>(
         checkInvalidLegacyFunctionCall("offerRealRequired")
         testContext.dependencies.offerRealRequired(
             clazz = type,
-            initializer = initializer
+            initializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
@@ -175,7 +176,7 @@ abstract class BaseBuilder<TSelf>(
         checkInvalidLegacyFunctionCall("offerMock")
         testContext.dependencies.offerMock(
             clazz = type,
-            initializer = initializer
+            initializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
@@ -184,7 +185,7 @@ abstract class BaseBuilder<TSelf>(
         checkInvalidLegacyFunctionCall("offerMockRequired")
         testContext.dependencies.offerMockRequired(
             clazz = type,
-            initializer = initializer
+            initializer = { initializer(it as DependencyInitializerContext) }
         )
     }
 

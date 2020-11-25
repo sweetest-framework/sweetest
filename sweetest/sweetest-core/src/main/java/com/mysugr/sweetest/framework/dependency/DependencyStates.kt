@@ -1,6 +1,7 @@
 package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.environment.TestEnvironment
+import com.mysugr.sweetest.internal.DependencyInitializerArgumentProvider
 import kotlin.reflect.KClass
 
 interface DependencyStatesConsumer {
@@ -38,7 +39,8 @@ interface DependencyStatesConsumer {
     fun isForcedToPreciseMatching(dependencyConfiguration: DependencyConfiguration<*>): Boolean
 }
 
-class DependencyStates(private val initializerContext: DependencyInitializerContext) : DependencyStatesConsumer {
+class DependencyStates(private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider) :
+    DependencyStatesConsumer {
 
     private val statesMap = linkedMapOf<DependencyConfiguration<*>, DependencyState<*>>()
     private val configurationsForcedToPreciseMatching = hashSetOf<DependencyConfiguration<*>>()
@@ -70,7 +72,7 @@ class DependencyStates(private val initializerContext: DependencyInitializerCont
     }
 
     private fun <T : Any> create(configuration: DependencyConfiguration<T>): DependencyState<T> {
-        val newState = DependencyState(initializerContext, configuration)
+        val newState = DependencyState(dependencyInitializerArgumentProvider, configuration)
         statesMap[configuration] = newState
         return newState
     }

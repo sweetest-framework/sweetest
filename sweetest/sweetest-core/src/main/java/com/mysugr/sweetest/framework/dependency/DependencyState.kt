@@ -1,12 +1,15 @@
 package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.base.SweetestException
+import com.mysugr.sweetest.framework.environment.TestEnvironment
+import com.mysugr.sweetest.internal.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyInitializerArgumentProvider
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
 class DependencyState<T : Any>(
-    private val initializerContext: DependencyInitializerContext,
+    private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider,
     val configuration: DependencyConfiguration<T>,
     initializer: DependencyInitializer<T>? = null,
     mode: DependencyMode? = null
@@ -92,7 +95,7 @@ class DependencyState<T : Any>(
     }
 
     private fun createMock(): T =
-        mockInitializer?.let { it(initializerContext) } ?: createDefaultMock()
+        mockInitializer?.let { it(dependencyInitializerArgumentProvider()) } ?: createDefaultMock()
 
     private fun createDefaultMock(): T = Mockito.mock(configuration.clazz.java)
 
@@ -123,7 +126,7 @@ class DependencyState<T : Any>(
             val argumentTypes = constructor.parameters.map { it.type.classifier as KClass<*> }
 
             val arguments = try {
-                argumentTypes.map { initializerContext.instanceOf(it) }.toTypedArray()
+                argumentTypes.map { TestEnvironment.dependencies.getDependencyState(it).instance }.toTypedArray()
             } catch (exception: Exception) {
                 throw RuntimeException(
                     "At least one dependency required by the constructor could " +
@@ -153,7 +156,7 @@ class DependencyState<T : Any>(
 
     private fun createInstanceBy(initializer: DependencyInitializer<T>): T {
         return try {
-            initializer(initializerContext)
+            initializer(dependencyInitializerArgumentProvider())
         } catch (dependencyException: DependencyInstanceInitializationException) {
             throw dependencyException
         } catch (mockitoException: MockitoException) {

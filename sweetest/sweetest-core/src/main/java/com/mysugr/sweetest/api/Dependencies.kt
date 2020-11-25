@@ -2,7 +2,7 @@ package com.mysugr.sweetest.api
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
-import com.mysugr.sweetest.framework.dependency.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.CommonBase
