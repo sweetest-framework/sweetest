@@ -3,6 +3,7 @@ package com.mysugr.sweetest.framework.context
 import com.mysugr.sweetest.framework.coroutine.CoroutinesTestContext
 import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.environment.TestEnvironment
+import com.mysugr.sweetest.framework.flow.WorkflowController
 import com.mysugr.sweetest.framework.flow.WorkflowProvider
 import com.mysugr.sweetest.internal.TestContext
 
@@ -21,7 +22,7 @@ class TestContext internal constructor() : TestContext {
 
     private val workflow = WorkflowTestContext(steps)
     val workflowController: WorkflowController = workflow
-    val workflowProvider: WorkflowProvider = workflow
+    internal val workflowProvider: WorkflowProvider = workflow
 
     init {
         val dependencyInitializerArgument = DependencyInitializerContext(dependencies)

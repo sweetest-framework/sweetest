@@ -1,6 +1,7 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.flow.InitializationStep
+import com.mysugr.sweetest.framework.flow.WorkflowController
 import com.mysugr.sweetest.framework.flow.WorkflowProvider
 
 class WorkflowTestContext(private val steps: StepsTestContext) : WorkflowController,

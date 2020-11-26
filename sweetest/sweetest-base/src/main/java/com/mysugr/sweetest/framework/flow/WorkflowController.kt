@@ -1,6 +1,4 @@
-package com.mysugr.sweetest.framework.context
-
-import com.mysugr.sweetest.framework.flow.InitializationStep
+package com.mysugr.sweetest.framework.flow
 
 interface WorkflowController {
     fun proceedTo(step: InitializationStep)
