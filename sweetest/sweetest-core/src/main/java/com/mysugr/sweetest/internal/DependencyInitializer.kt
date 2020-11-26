@@ -1,3 +1,3 @@
 package com.mysugr.sweetest.internal
 
-typealias DependencyInitializer<T> = (DependencyInitializerArgument) -> T
+internal typealias DependencyInitializer<T> = (DependencyInitializerArgument) -> T

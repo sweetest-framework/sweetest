@@ -2,32 +2,25 @@ package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.coroutine.CoroutinesTestContext
 import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
-import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.framework.flow.WorkflowController
-import com.mysugr.sweetest.framework.flow.WorkflowProvider
 import com.mysugr.sweetest.internal.TestContext
+import com.mysugr.sweetest.usecases.initializeDependencies
+import com.mysugr.sweetest.usecases.resetEnvironment
 
 class TestContext internal constructor() : TestContext {
 
-    @PublishedApi
     internal val steps = StepsTestContext(this)
-
-    @PublishedApi
-    internal val configurations = ConfigurationsTestContext()
-
-    @PublishedApi
     internal val dependencies = DependenciesTestContext()
-
     internal val coroutines = CoroutinesTestContext()
-
-    private val workflow = WorkflowTestContext(steps)
-    val workflowController: WorkflowController = workflow
-    internal val workflowProvider: WorkflowProvider = workflow
+    internal val workflow = WorkflowTestContext(steps)
 
     init {
         val dependencyInitializerArgument = DependencyInitializerContext(dependencies)
 
-        TestEnvironment.initialize(dependencyInitializerArgument)
-        TestEnvironment.reset()
+        initializeDependencies(
+            dependencies,
+            dependencyInitializerArgument
+        )
+
+        resetEnvironment()
     }
 }

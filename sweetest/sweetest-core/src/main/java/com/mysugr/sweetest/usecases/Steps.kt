@@ -1,4 +1,11 @@
-package com.mysugr.sweetest.api
+package com.mysugr.sweetest.usecases
+
+/**
+ * Use cases for steps.
+ *
+ * - achieves internal API stability for calls towards the core while the core can freely be refactored
+ * - adds user-facing exceptions that are shared among different versions of public APIs
+ */
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.StepsTestContext
@@ -8,12 +15,20 @@ import com.mysugr.sweetest.util.PropertyDelegate
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
-fun <T : Steps> getStepsFinal(stepsTestContext: StepsTestContext, type: KClass<T>): ReadOnlyProperty<CommonBase, T> {
+fun initializeSteps(stepsTestContext: StepsTestContext, instance: Steps) {
+    stepsTestContext.setUpInstance(instance)
+}
+
+fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, type: KClass<T>) {
+    stepsTestContext.setUpAsRequired(type as KClass<Steps>)
+}
+
+fun <T : Steps> getSteps(stepsTestContext: StepsTestContext, type: KClass<T>): ReadOnlyProperty<CommonBase, T> {
     try {
         notifyStepsRequired(stepsTestContext, type)
         return PropertyDelegate {
             try {
-                stepsTestContext.get(type) as T
+                stepsTestContext.get(type)
             } catch (throwable: Throwable) {
                 throw SweetestException(
                     "Providing steps class instance for \"steps<${type.simpleName}>\" failed",
@@ -27,8 +42,4 @@ fun <T : Steps> getStepsFinal(stepsTestContext: StepsTestContext, type: KClass<T
             throwable
         )
     }
-}
-
-fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, type: KClass<T>) {
-    stepsTestContext.setUpAsRequired(type as KClass<Steps>)
 }

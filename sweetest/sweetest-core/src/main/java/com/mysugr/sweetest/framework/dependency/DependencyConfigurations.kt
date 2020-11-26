@@ -4,12 +4,12 @@ import com.mysugr.sweetest.framework.environment.DependencySetupHandler
 import com.mysugr.sweetest.internal.DependencyInitializer
 import kotlin.reflect.KClass
 
-interface DependencyConfigurationConsumer {
+internal interface DependencyConfigurationConsumer {
     val all: Collection<DependencyConfiguration<*>>
     fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>?
 }
 
-class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetupHandler {
+internal class DependencyConfigurations : DependencyConfigurationConsumer, DependencySetupHandler {
 
     private val configurations = linkedMapOf<KClass<*>, DependencyConfiguration<*>>()
 

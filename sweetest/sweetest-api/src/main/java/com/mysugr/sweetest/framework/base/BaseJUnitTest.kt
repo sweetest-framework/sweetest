@@ -3,6 +3,8 @@ package com.mysugr.sweetest.framework.base
 import com.mysugr.sweetest.framework.build.TestBuilder
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.usecases.finishWorkflow
+import com.mysugr.sweetest.usecases.proceedWorkflow
 import org.junit.After
 import org.junit.Before
 
@@ -21,11 +23,11 @@ abstract class BaseJUnitTest @Deprecated(
 
     @Before
     fun junitBefore() {
-        testContext.workflowController.run()
+        proceedWorkflow(testContext.workflow)
     }
 
     @After
     fun junitAfter() {
-        testContext.workflowController.finish()
+        finishWorkflow(testContext.workflow)
     }
 }

@@ -7,10 +7,6 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
-interface StepsProvider {
-    fun <T : Steps> getOf(clazz: Class<T>): T
-}
-
 class StepsTestContext(private val testContext: TestContext) {
 
     private val required = mutableListOf<Class<Steps>>()
@@ -35,7 +31,7 @@ class StepsTestContext(private val testContext: TestContext) {
         }
     }
 
-    fun finalizeSetUp() {
+    internal fun finalizeSetUp() {
         if (!setUpDone) {
             // Not using iterator as list is possibly enlarged during iteration, which would cause an exception
             var i = 0
@@ -50,14 +46,10 @@ class StepsTestContext(private val testContext: TestContext) {
         map[clazz] ?: create(clazz)
     }
 
-    fun <T : Steps> get(clazz: KClass<T>): T {
+    internal fun <T : Steps> get(clazz: KClass<T>): T {
         checkSetUp(clazz)
         @Suppress("UNCHECKED_CAST")
         return map[clazz.java] as? T ?: create(clazz.java)
-    }
-
-    val provider = object : StepsProvider {
-        override fun <T : Steps> getOf(clazz: Class<T>) = get(clazz.kotlin)
     }
 
     private fun <T : Steps> create(clazz: Class<T>): T {
@@ -111,7 +103,7 @@ class StepsTestContext(private val testContext: TestContext) {
         }
     }
 
-    fun setUpInstance(instance: Steps) {
+    internal fun setUpInstance(instance: Steps) {
         checkNotYetSetUp(instance::class)
         checkType(instance::class)
         val clazz = instance::class.java
@@ -125,17 +117,11 @@ class StepsTestContext(private val testContext: TestContext) {
         map[clazz] = instance
     }
 
-    fun setUpAsRequired(kClass: KClass<Steps>) {
+    internal fun setUpAsRequired(kClass: KClass<Steps>) {
         checkNotYetSetUp(kClass)
         val clazz = kClass.java
         if (!required.contains(clazz)) {
             required.add(clazz)
         }
     }
-
-    class GetStepsClassException(clazz: KClass<*>) : RuntimeException(
-        "Could not get steps class of type \"$clazz\": " +
-            "it has not yet been registered. Are you sure you have created an instance of the steps class before? Is " +
-            "it created by Cucumber? Have you used the correct base class \"BaseNewSteps\" for the steps class?"
-    )
 }

@@ -11,19 +11,19 @@ import com.mysugr.sweetest.framework.dependency.DependencyStatesConsumer
 import com.mysugr.sweetest.internal.DependencyInitializerArgument
 import kotlin.reflect.KClass
 
-object TestEnvironment {
+internal object TestEnvironment {
 
     private lateinit var _dependencies: DependencyManager
     private lateinit var dependenciesController: DependencyManager.Controller
     private lateinit var dependencyInitializerArgument: DependencyInitializerArgument
 
-    val dependencies: DependencyAccessor get() = _dependencies
+    internal val dependencies: DependencyAccessor get() = _dependencies
 
     init {
         setUpDependencyManager()
     }
 
-    fun initialize(dependencyInitializerArgument: DependencyInitializerArgument) {
+    internal fun initializeDependencies(dependencyInitializerArgument: DependencyInitializerArgument) {
         this.dependencyInitializerArgument = dependencyInitializerArgument
     }
 
@@ -35,11 +35,11 @@ object TestEnvironment {
         dependenciesController = DependencyManager.Controller(_dependencies)
     }
 
-    fun fullReset() {
+    internal fun fullReset() {
         setUpDependencyManager()
     }
 
-    fun reset() {
+    internal fun reset() {
         dependenciesController.resetState()
     }
 }
@@ -60,7 +60,7 @@ interface DependencySetupHandler {
     ): DependencyConfiguration<T>
 }
 
-interface DependencyAccessor {
+internal interface DependencyAccessor {
     val configurations: DependencyConfigurationConsumer
     val states: DependencyStatesConsumer
 

@@ -1,8 +1,11 @@
 package com.mysugr.sweetest.framework.build
 
-import com.mysugr.sweetest.api.configureAutomaticDependencyProvision
-import com.mysugr.sweetest.api.configureDependencyProvision
-import com.mysugr.sweetest.api.notifyStepsRequired
+import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
+import com.mysugr.sweetest.usecases.configureDependencyMock
+import com.mysugr.sweetest.usecases.configureDependencyProvision
+import com.mysugr.sweetest.usecases.configureDependencyReal
+import com.mysugr.sweetest.usecases.configureDependencySpy
+import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
@@ -10,19 +13,16 @@ import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import com.mysugr.sweetest.internal.Steps
+import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.reflect.KClass
 
 private const val dependencyModeDeprecationMessage = "Dependency modes like \"REAL\" or \"MOCK\" " +
     "as well as \"required...\" are obsolete. Use \"provide\" instead."
 
 abstract class BaseBuilder<TSelf>(
-    @PublishedApi internal val testContext: TestContext,
-    @PublishedApi internal val moduleTestingConfiguration: ModuleTestingConfiguration?
+    internal val testContext: TestContext,
+    internal val moduleTestingConfiguration: ModuleTestingConfiguration?
 ) {
-
-    init {
-        moduleTestingConfiguration?.let { testContext.configurations.put(it) }
-    }
 
     private var isDone = false
 
@@ -41,13 +41,14 @@ abstract class BaseBuilder<TSelf>(
         }
     }
 
+    // This function is inlined so there won't be any external binary dependencies to it and it can be changed freely
     @PublishedApi
-    internal fun apply(run: () -> Unit): TSelf {
+    internal inline fun apply(run: () -> Unit): TSelf {
         run()
         return this as TSelf
     }
 
-    // --- region: Published API (kept as small as possible)
+    // --- region: Public API (inline functions should just be a wrapper over implementation functions!)
 
     /**
      * Provides an [initializer] for type [T] to sweetest.
@@ -78,7 +79,7 @@ abstract class BaseBuilder<TSelf>(
         provideInternal(T::class)
     }
 
-    // --- region: Published API – LEGACY! (kept as small as possible)
+    // --- region: Public API – LEGACY! (inline functions should just be a wrapper over implementation functions!)
 
     inline fun <reified T : Steps> requireSteps() = apply {
         requireStepsInternal(T::class)
@@ -123,11 +124,17 @@ abstract class BaseBuilder<TSelf>(
 
     @PublishedApi
     internal fun <T : Any> provideInternal(type: KClass<T>, initializer: DependencyInitializer<T>) =
-        configureDependencyProvision(testContext.dependencies, type) { initializer(it as DependencyInitializerContext) }
+        configureDependencyProvision(
+            testContext.dependencies,
+            type
+        ) { initializer(it as DependencyInitializerContext) }
 
     @PublishedApi
     internal fun <T : Any> provideInternal(type: KClass<T>) {
-        configureAutomaticDependencyProvision(testContext.dependencies, type)
+        configureDependencyProvisionAutomatic(
+            testContext.dependencies,
+            type
+        )
     }
 
     @PublishedApi
@@ -140,60 +147,73 @@ abstract class BaseBuilder<TSelf>(
     @PublishedApi
     internal fun requireRealInternal(type: KClass<*>) {
         checkInvalidLegacyFunctionCall("requireReal")
-        testContext.dependencies.requireReal(
-            clazz = type
+        configureDependencyReal(
+            testContext.dependencies,
+            type = type,
+            forceMode = true
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerRealInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
         checkInvalidLegacyFunctionCall("offerReal")
-        testContext.dependencies.offerReal(
-            clazz = type,
-            initializer = { argument -> initializer(argument as DependencyInitializerContext) }
+        configureDependencyReal(
+            testContext.dependencies,
+            type = type,
+            forceMode = false,
+            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerRealRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
         checkInvalidLegacyFunctionCall("offerRealRequired")
-        testContext.dependencies.offerRealRequired(
-            clazz = type,
-            initializer = { argument -> initializer(argument as DependencyInitializerContext) }
+        configureDependencyReal(
+            testContext.dependencies,
+            type = type,
+            forceMode = true,
+            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
     @PublishedApi
     internal fun requireMockInternal(type: KClass<*>) {
         checkInvalidLegacyFunctionCall("requireMock")
-        testContext.dependencies.requireMock(
-            clazz = type
+        configureDependencyMock(
+            testContext.dependencies,
+            type = type,
+            forceMode = true
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerMockInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
         checkInvalidLegacyFunctionCall("offerMock")
-        testContext.dependencies.offerMock(
-            clazz = type,
-            initializer = { argument -> initializer(argument as DependencyInitializerContext) }
+        configureDependencyMock(
+            testContext.dependencies,
+            type = type,
+            forceMode = false,
+            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerMockRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
         checkInvalidLegacyFunctionCall("offerMockRequired")
-        testContext.dependencies.offerMockRequired(
-            clazz = type,
-            initializer = { initializer(it as DependencyInitializerContext) }
+        configureDependencyMock(
+            testContext.dependencies,
+            type = type,
+            forceMode = true,
+            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
         )
     }
 
     @PublishedApi
     internal fun requireSpyInternal(type: KClass<*>) {
         checkInvalidLegacyFunctionCall("requireSpy")
-        testContext.dependencies.requireSpy(
-            clazz = type
+        configureDependencySpy(
+            testContext.dependencies,
+            type = type
         )
     }
 
@@ -210,31 +230,31 @@ abstract class BaseBuilder<TSelf>(
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetDone()
-        testContext.workflowProvider.subscribe(InitializationStep.INITIALIZE_DEPENDENCIES, run)
+        subscribeWorkflow(testContext.workflow, InitializationStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) = apply {
         checkNotYetDone()
-        testContext.workflowProvider.subscribe(InitializationStep.BEFORE_SET_UP, run)
+        subscribeWorkflow(testContext.workflow, InitializationStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
         checkNotYetDone()
-        testContext.workflowProvider.subscribe(InitializationStep.SET_UP, run)
+        subscribeWorkflow(testContext.workflow, InitializationStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) = apply {
         checkNotYetDone()
-        testContext.workflowProvider.subscribe(InitializationStep.AFTER_SET_UP, run)
+        subscribeWorkflow(testContext.workflow, InitializationStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
         checkNotYetDone()
-        testContext.workflowProvider.subscribe(InitializationStep.TEAR_DOWN, run)
+        subscribeWorkflow(testContext.workflow, InitializationStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) = apply {
         checkNotYetDone()
-        testContext.workflowProvider.subscribe(InitializationStep.AFTER_TEAR_DOWN, run)
+        subscribeWorkflow(testContext.workflow, InitializationStep.AFTER_TEAR_DOWN, run)
     }
 }

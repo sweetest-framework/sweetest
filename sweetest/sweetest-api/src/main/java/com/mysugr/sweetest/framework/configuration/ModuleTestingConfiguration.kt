@@ -5,7 +5,7 @@ import com.mysugr.sweetest.framework.dependency.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
-import com.mysugr.sweetest.framework.environment.TestEnvironment
+import com.mysugr.sweetest.usecases.ensureEnvironmentInitialized
 import kotlin.reflect.KClass
 
 private const val dependencyModeDeprecationMessage = "Dependency mode constraints " +
@@ -22,7 +22,7 @@ fun moduleTestingConfiguration(
 ): ModuleTestingConfiguration {
 
     // Force initialization before everything else
-    TestEnvironment
+    ensureEnvironmentInitialized()
 
     val scope = Dsl.MainScope()
     run?.invoke(scope)
@@ -38,11 +38,9 @@ class Dsl {
 
     class MainScope {
 
-        @PublishedApi
-        internal val dependencies = mutableListOf<DependencyConfiguration<*>>()
+        private val dependencies = mutableListOf<DependencyConfiguration<*>>()
 
-        @PublishedApi
-        internal fun addDependency(configuration: DependencyConfiguration<*>) {
+        private fun addDependency(configuration: DependencyConfiguration<*>) {
             dependencies.add(configuration)
             DependencySetup.addConfiguration(configuration)
         }
@@ -52,7 +50,7 @@ class Dsl {
         class LeftOperand
 
         data class RightOperand(
-            @PublishedApi internal val addFunction: (dependencyMode: DependencyMode?, only: Boolean) -> Unit
+            internal val addFunction: (dependencyMode: DependencyMode?, only: Boolean) -> Unit
         )
 
         val dependency = LeftOperand()

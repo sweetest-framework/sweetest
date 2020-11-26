@@ -1,96 +1,32 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.internal.DependencyInitializer
 import com.mysugr.sweetest.framework.dependency.DependencyMode
+import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
 
 class DependenciesTestContext {
 
-    fun provide(clazz: KClass<*>, initializer: DependencyInitializer<*>) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = true).run {
-            checkNotAlreadyProvided(clazz, mode)
-            mode = DependencyMode.PROVIDED
-            providedInitializerUnknown = initializer
-        }
+    internal fun editDependencyState(clazz: KClass<*>, edit: DependencyState<*>.() -> Unit) {
+        edit(
+            TestEnvironment.dependencies.getDependencyStateForConfiguration(
+                clazz = clazz,
+                preciseTypeMatching = true
+            )
+        )
     }
 
-    fun provide(clazz: KClass<*>) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = true).run {
-            checkNotAlreadyProvided(clazz, mode)
-            mode = DependencyMode.AUTO_PROVIDED
-        }
+    internal fun editLegacyDependencyState(clazz: KClass<*>, edit: DependencyState<*>.() -> Unit) {
+        edit(
+            TestEnvironment.dependencies.getDependencyStateForConfiguration(
+                clazz = clazz,
+                preciseTypeMatching = false
+            )
+        )
     }
 
-    fun <T : Any> getInstanceOf(clazz: KClass<T>): T = TestEnvironment.dependencies.getDependencyState(clazz).instance
-
-    // --- region: Legacy functions
-
-    fun requireReal(clazz: KClass<*>) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                mode = DependencyMode.REAL
-            }
-    }
-
-    fun offerReal(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                realInitializerUnknown = initializer
-            }
-    }
-
-    fun offerRealRequired(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                mode = DependencyMode.REAL
-                realInitializerUnknown = initializer
-            }
-    }
-
-    fun requireMock(clazz: KClass<*>) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                mode = DependencyMode.MOCK
-            }
-    }
-
-    fun offerMock(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                mockInitializerUnknown = initializer
-            }
-    }
-
-    fun offerMockRequired(
-        clazz: KClass<*>,
-        initializer: DependencyInitializer<*>
-    ) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                mockInitializerUnknown = initializer
-                mode = DependencyMode.MOCK
-            }
-    }
-
-    fun requireSpy(clazz: KClass<*>) {
-        TestEnvironment.dependencies.getDependencyStateForConfiguration(clazz = clazz, preciseTypeMatching = false)
-            .run {
-                mode = DependencyMode.SPY
-            }
-    }
-
-    private fun checkNotAlreadyProvided(clazz: KClass<*>, mode: DependencyMode) {
+    internal fun checkNotAlreadyProvided(clazz: KClass<*>, mode: DependencyMode) {
         if (mode == DependencyMode.PROVIDED || mode == DependencyMode.AUTO_PROVIDED) {
             throw SweetestException(
                 "Dependency \"${clazz.simpleName}\" has already been configured with " +

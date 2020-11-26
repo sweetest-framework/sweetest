@@ -8,7 +8,7 @@ import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
-class DependencyState<T : Any>(
+internal class DependencyState<T : Any>(
     private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider,
     val configuration: DependencyConfiguration<T>,
     initializer: DependencyInitializer<T>? = null,

@@ -9,7 +9,7 @@ import com.mysugr.sweetest.internal.DependencyInitializerArgumentProvider
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-class DependencyManager(
+internal class DependencyManager(
     setupHandlerReceiver: (DependencySetupHandler) -> Unit,
     private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider
 ) : DependencyAccessor {
