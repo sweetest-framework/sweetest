@@ -1,13 +1,12 @@
 package com.mysugr.sweetest.framework.dependency
 
-import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.internal.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyProvider
 import kotlin.reflect.KClass
 
 class DependencyConfiguration<T : Any>(
     val clazz: KClass<T>,
-    val defaultRealInitializer: DependencyInitializer<T>? = null,
-    val defaultMockInitializer: DependencyInitializer<T>?,
+    val defaultRealInitializer: DependencyProvider<T>? = null,
+    val defaultMockInitializer: DependencyProvider<T>?,
     val defaultDependencyMode: DependencyMode? = null
 ) {
 

@@ -1,7 +1,7 @@
 package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
-import com.mysugr.sweetest.internal.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyProvider
 import kotlin.reflect.KClass
 
 internal interface DependencyConfigurationConsumer {
@@ -25,8 +25,8 @@ internal class DependencyConfigurations : DependencyConfigurationConsumer, Depen
     @Deprecated("Use addConfiguration(config)")
     override fun <T : Any> addConfiguration(
         clazz: KClass<T>,
-        realInitializer: DependencyInitializer<T>?,
-        mockInitializer: DependencyInitializer<T>?,
+        realInitializer: DependencyProvider<T>?,
+        mockInitializer: DependencyProvider<T>?,
         dependencyMode: DependencyMode?,
         alias: KClass<*>?
     ): DependencyConfiguration<T> {

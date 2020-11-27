@@ -1,18 +1,18 @@
 package com.mysugr.sweetest.framework.configuration
 
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
-import com.mysugr.sweetest.framework.dependency.DependencyInitializer
-import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
+import com.mysugr.sweetest.framework.dependency.DependencyProvider
+import com.mysugr.sweetest.framework.dependency.DependencyProviderScope
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
 import com.mysugr.sweetest.usecases.ensureEnvironmentInitialized
 import kotlin.reflect.KClass
 
-private const val dependencyModeDeprecationMessage = "Dependency mode constraints " +
+private const val DEPENDENCY_MODE_DEPRECATION_MESSAGE = "Dependency mode constraints " +
     "(\"realOnly\", \"mockOnly\") are obsolete. Use \"any\" instead and add a `provide` " +
     "configuration in a test or steps class instead."
 
-private const val dependencyInitializationDeprecationMessage = "Dependency initialization in the " +
+private const val DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE = "Dependency initialization in the " +
     "module configuration level is obsolete. Add a `provide` configuration on a test or steps " +
     "class level instead."
 
@@ -63,24 +63,24 @@ class Dsl {
             anyInternal(this, rightOperand)
         }
 
-        @Deprecated(dependencyModeDeprecationMessage)
+        @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE)
         infix fun LeftOperand.mockOnly(rightOperand: RightOperand) {
             mockOnlyInternal(this, rightOperand)
         }
 
-        @Deprecated(dependencyModeDeprecationMessage)
+        @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE)
         infix fun LeftOperand.realOnly(rightOperand: RightOperand) {
             realOnlyInternal(this, rightOperand)
         }
 
-        @Deprecated(dependencyInitializationDeprecationMessage)
-        inline fun <reified T : Any> initializer(noinline initializer: DependencyInitializer<T>): RightOperand =
-            initializerInternal(T::class, initializer)
+        @Deprecated(DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE)
+        inline fun <reified T : Any> initializer(noinline provider: DependencyProvider<T>): RightOperand =
+            initializerInternal(T::class, provider)
 
         inline fun <reified T : Any> of(): RightOperand =
             ofInternal(T::class)
 
-        @Deprecated(dependencyInitializationDeprecationMessage)
+        @Deprecated(DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE)
         inline fun <reified T : Any> instance(instance: T) = instanceInternal(T::class, instance)
 
         // Events
@@ -110,7 +110,7 @@ class Dsl {
         }
 
         @PublishedApi
-        internal fun <T : Any> initializerInternal(type: KClass<T>, initializer: DependencyInitializer<T>) =
+        internal fun <T : Any> initializerInternal(type: KClass<T>, provider: DependencyProvider<T>) =
             RightOperand { dependencyMode, only ->
                 val finalDependencyMode = if (only) dependencyMode else null
                 if (dependencyMode == DependencyMode.MOCK) {
@@ -118,7 +118,7 @@ class Dsl {
                         DependencyConfiguration(
                             clazz = type,
                             defaultRealInitializer = null,
-                            defaultMockInitializer = { initializer(it as DependencyInitializerContext) },
+                            defaultMockInitializer = { provider(it as DependencyProviderScope) },
                             defaultDependencyMode = finalDependencyMode
                         )
                     )
@@ -126,7 +126,7 @@ class Dsl {
                     addDependency(
                         DependencyConfiguration(
                             clazz = type,
-                            defaultRealInitializer = { initializer(it as DependencyInitializerContext) },
+                            defaultRealInitializer = { provider(it as DependencyProviderScope) },
                             defaultMockInitializer = null,
                             defaultDependencyMode = finalDependencyMode
                         )

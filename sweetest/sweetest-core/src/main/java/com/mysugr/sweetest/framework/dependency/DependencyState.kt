@@ -2,44 +2,44 @@ package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.internal.DependencyInitializer
-import com.mysugr.sweetest.internal.DependencyInitializerArgumentProvider
+import com.mysugr.sweetest.internal.DependencyProvider
+import com.mysugr.sweetest.internal.DependencyProviderArgumentProvider
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 
 internal class DependencyState<T : Any>(
-    private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider,
+    private val dependencyProviderArgumentProvider: DependencyProviderArgumentProvider,
     val configuration: DependencyConfiguration<T>,
-    initializer: DependencyInitializer<T>? = null,
+    initializer: DependencyProvider<T>? = null,
     mode: DependencyMode? = null
 ) {
 
     private var instanceField: T? = null
     private var modeField: DependencyMode? = mode
 
-    var providedInitializer: DependencyInitializer<T>? = null
-    var providedInitializerUnknown: DependencyInitializer<*>?
+    var providedInitializer: DependencyProvider<T>? = null
+    var providedInitializerUnknown: DependencyProvider<*>?
         set(value) {
-            providedInitializer = value as? DependencyInitializer<T>
+            providedInitializer = value as? DependencyProvider<T>
         }
         get() = providedInitializer
 
-    var realInitializer: DependencyInitializer<T>? = initializer
+    var realInitializer: DependencyProvider<T>? = initializer
         ?: configuration.defaultRealInitializer
 
-    var realInitializerUnknown: DependencyInitializer<*>?
+    var realInitializerUnknown: DependencyProvider<*>?
         set(value) {
-            realInitializer = value as? DependencyInitializer<T>
+            realInitializer = value as? DependencyProvider<T>
         }
         get() = realInitializer
 
-    var mockInitializer: DependencyInitializer<T>? = initializer
+    var mockInitializer: DependencyProvider<T>? = initializer
         ?: configuration.defaultMockInitializer
 
-    var mockInitializerUnknown: DependencyInitializer<*>?
+    var mockInitializerUnknown: DependencyProvider<*>?
         set(value) {
-            mockInitializer = value as? DependencyInitializer<T>
+            mockInitializer = value as? DependencyProvider<T>
         }
         get() = mockInitializer
 
@@ -95,7 +95,7 @@ internal class DependencyState<T : Any>(
     }
 
     private fun createMock(): T =
-        mockInitializer?.let { it(dependencyInitializerArgumentProvider()) } ?: createDefaultMock()
+        mockInitializer?.let { it(dependencyProviderArgumentProvider()) } ?: createDefaultMock()
 
     private fun createDefaultMock(): T = Mockito.mock(configuration.clazz.java)
 
@@ -154,9 +154,9 @@ internal class DependencyState<T : Any>(
         )
     }
 
-    private fun createInstanceBy(initializer: DependencyInitializer<T>): T {
+    private fun createInstanceBy(initializer: DependencyProvider<T>): T {
         return try {
-            initializer(dependencyInitializerArgumentProvider())
+            initializer(dependencyProviderArgumentProvider())
         } catch (dependencyException: DependencyInstanceInitializationException) {
             throw dependencyException
         } catch (mockitoException: MockitoException) {

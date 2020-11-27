@@ -2,20 +2,20 @@ package com.mysugr.sweetest.framework.environment
 
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyConfigurationConsumer
-import com.mysugr.sweetest.internal.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyManager
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.dependency.DependencyStatesConsumer
-import com.mysugr.sweetest.internal.DependencyInitializerArgument
+import com.mysugr.sweetest.internal.DependencyProviderArgument
 import kotlin.reflect.KClass
 
 internal object TestEnvironment {
 
     private lateinit var _dependencies: DependencyManager
     private lateinit var dependenciesController: DependencyManager.Controller
-    private lateinit var dependencyInitializerArgument: DependencyInitializerArgument
+    private lateinit var dependencyProviderArgument: DependencyProviderArgument
 
     internal val dependencies: DependencyAccessor get() = _dependencies
 
@@ -23,14 +23,14 @@ internal object TestEnvironment {
         setUpDependencyManager()
     }
 
-    internal fun initializeDependencies(dependencyInitializerArgument: DependencyInitializerArgument) {
-        this.dependencyInitializerArgument = dependencyInitializerArgument
+    internal fun initializeDependencies(dependencyProviderArgument: DependencyProviderArgument) {
+        this.dependencyProviderArgument = dependencyProviderArgument
     }
 
     private fun setUpDependencyManager() {
         _dependencies = DependencyManager(
             setupHandlerReceiver = { DependencySetup.init(it) },
-            dependencyInitializerArgumentProvider = { dependencyInitializerArgument }
+            dependencyInitializerArgumentProvider = { dependencyProviderArgument }
         )
         dependenciesController = DependencyManager.Controller(_dependencies)
     }
@@ -53,8 +53,8 @@ interface DependencySetupHandler {
     @Suppress("LongParameterList")
     fun <T : Any> addConfiguration(
         clazz: KClass<T>,
-        realInitializer: DependencyInitializer<T>? = null,
-        mockInitializer: DependencyInitializer<T>? = null,
+        realInitializer: DependencyProvider<T>? = null,
+        mockInitializer: DependencyProvider<T>? = null,
         dependencyMode: DependencyMode? = null,
         alias: KClass<*>? = null
     ): DependencyConfiguration<T>

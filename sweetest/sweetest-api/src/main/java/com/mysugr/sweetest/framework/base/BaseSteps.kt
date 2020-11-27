@@ -7,7 +7,7 @@ import com.mysugr.sweetest.internal.Steps
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
-private const val coroutineScopeDeprecationMessage =
+private const val COROUTINE_SCOPE_DEPRECATION_MESSAGE =
     "Please don't use steps classes as CoroutineScope! " +
         "This feature is deprecated and will be removed in the next API version!"
 
@@ -27,11 +27,11 @@ abstract class BaseSteps @Deprecated(
         configure().setDone()
     }
 
-    @Deprecated(coroutineScopeDeprecationMessage)
+    @Deprecated(COROUTINE_SCOPE_DEPRECATION_MESSAGE)
     override val coroutineContext: CoroutineContext
         get() {
             // Unfortunately there is no way to mark the use of BaseSteps as CoroutineScope as deprecated so we need to print the message
-            println("\u001B[31mWARNING:\u001B[0m $coroutineScopeDeprecationMessage")
+            println("\u001B[31mWARNING:\u001B[0m $COROUTINE_SCOPE_DEPRECATION_MESSAGE")
             return testContext.coroutines.coroutineContext
         }
 }

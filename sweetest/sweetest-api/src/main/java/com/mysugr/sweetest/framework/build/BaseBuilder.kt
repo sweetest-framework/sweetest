@@ -9,14 +9,14 @@ import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
-import com.mysugr.sweetest.framework.dependency.DependencyInitializer
-import com.mysugr.sweetest.framework.dependency.DependencyInitializerContext
+import com.mysugr.sweetest.framework.dependency.DependencyProvider
+import com.mysugr.sweetest.framework.dependency.DependencyProviderScope
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.reflect.KClass
 
-private const val dependencyModeDeprecationMessage = "Dependency modes like \"REAL\" or \"MOCK\" " +
+private const val DEPEDENCY_MODE_DEPRECATION_MESSAGE = "Dependency modes like \"REAL\" or \"MOCK\" " +
     "as well as \"required...\" are obsolete. Use \"provide\" instead."
 
 abstract class BaseBuilder<TSelf>(
@@ -51,9 +51,9 @@ abstract class BaseBuilder<TSelf>(
     // --- region: Public API (inline functions should just be a wrapper over implementation functions!)
 
     /**
-     * Provides an [initializer] for type [T] to sweetest.
+     * Provides an [provider] for type [T] to sweetest.
      *
-     * That [initializer] will be used when an instance of [T] is needed in the test.
+     * That [provider] will be used when an instance of [T] is needed in the test.
      *
      * Can only by called once per type!
      *
@@ -61,8 +61,8 @@ abstract class BaseBuilder<TSelf>(
      * (configuration in test and steps classes) or `realOnly` and `mockOnly` (module testing configuration) and thus
      * overrides these constraints.
      */
-    inline fun <reified T : Any> provide(noinline initializer: DependencyInitializer<T>) = apply {
-        provideInternal(T::class, initializer)
+    inline fun <reified T : Any> provide(noinline provider: DependencyProvider<T>) = apply {
+        provideInternal(T::class, provider)
     }
 
     /**
@@ -85,37 +85,37 @@ abstract class BaseBuilder<TSelf>(
         requireStepsInternal(T::class)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireReal() = apply {
         requireRealInternal(T::class)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> offerReal(noinline initializer: DependencyInitializer<T>) = apply {
-        offerRealInternal(T::class, initializer)
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerReal(noinline provider: DependencyProvider<T>) = apply {
+        offerRealInternal(T::class, provider)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> offerRealRequired(noinline initializer: DependencyInitializer<T>) = apply {
-        offerRealRequiredInternal(T::class, initializer)
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerRealRequired(noinline provider: DependencyProvider<T>) = apply {
+        offerRealRequiredInternal(T::class, provider)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireMock() = apply {
         requireMockInternal(T::class)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> offerMock(noinline initializer: DependencyInitializer<T>) = apply {
-        offerMockInternal(T::class, initializer)
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerMock(noinline provider: DependencyProvider<T>) = apply {
+        offerMockInternal(T::class, provider)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
-    inline fun <reified T : Any> offerMockRequired(noinline initializer: DependencyInitializer<T>) = apply {
-        offerMockRequiredInternal(T::class, initializer)
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    inline fun <reified T : Any> offerMockRequired(noinline provider: DependencyProvider<T>) = apply {
+        offerMockRequiredInternal(T::class, provider)
     }
 
-    @Deprecated(dependencyModeDeprecationMessage, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireSpy() = apply {
         requireSpyInternal(T::class)
     }
@@ -123,11 +123,11 @@ abstract class BaseBuilder<TSelf>(
     // --- region: Internal API
 
     @PublishedApi
-    internal fun <T : Any> provideInternal(type: KClass<T>, initializer: DependencyInitializer<T>) =
+    internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) =
         configureDependencyProvision(
             testContext.dependencies,
             type
-        ) { initializer(it as DependencyInitializerContext) }
+        ) { provider(it as DependencyProviderScope) }
 
     @PublishedApi
     internal fun <T : Any> provideInternal(type: KClass<T>) {
@@ -155,24 +155,24 @@ abstract class BaseBuilder<TSelf>(
     }
 
     @PublishedApi
-    internal fun <T : Any> offerRealInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+    internal fun <T : Any> offerRealInternal(type: KClass<T>, provider: DependencyProvider<T>) {
         checkInvalidLegacyFunctionCall("offerReal")
         configureDependencyReal(
             testContext.dependencies,
             type = type,
             forceMode = false,
-            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
+            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
         )
     }
 
     @PublishedApi
-    internal fun <T : Any> offerRealRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+    internal fun <T : Any> offerRealRequiredInternal(type: KClass<T>, provider: DependencyProvider<T>) {
         checkInvalidLegacyFunctionCall("offerRealRequired")
         configureDependencyReal(
             testContext.dependencies,
             type = type,
             forceMode = true,
-            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
+            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
         )
     }
 
@@ -187,24 +187,24 @@ abstract class BaseBuilder<TSelf>(
     }
 
     @PublishedApi
-    internal fun <T : Any> offerMockInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+    internal fun <T : Any> offerMockInternal(type: KClass<T>, provider: DependencyProvider<T>) {
         checkInvalidLegacyFunctionCall("offerMock")
         configureDependencyMock(
             testContext.dependencies,
             type = type,
             forceMode = false,
-            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
+            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
         )
     }
 
     @PublishedApi
-    internal fun <T : Any> offerMockRequiredInternal(type: KClass<T>, initializer: DependencyInitializer<T>) {
+    internal fun <T : Any> offerMockRequiredInternal(type: KClass<T>, provider: DependencyProvider<T>) {
         checkInvalidLegacyFunctionCall("offerMockRequired")
         configureDependencyMock(
             testContext.dependencies,
             type = type,
             forceMode = true,
-            offerInitializer = { argument -> initializer(argument as DependencyInitializerContext) }
+            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
         )
     }
 

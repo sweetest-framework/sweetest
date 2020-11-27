@@ -13,11 +13,11 @@ package com.mysugr.sweetest.usecases
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.dependency.DependencyMode
-import com.mysugr.sweetest.internal.DependencyInitializer
+import com.mysugr.sweetest.internal.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.CommonBase
-import com.mysugr.sweetest.internal.DependencyInitializerArgument
+import com.mysugr.sweetest.internal.DependencyProviderArgument
 import com.mysugr.sweetest.util.PropertyDelegate
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
@@ -28,9 +28,9 @@ private const val DEPRECATION_MESSAGE = "Legacy dependency modes"
 
 fun initializeDependencies(
     dependenciesTestContext: DependenciesTestContext,
-    dependencyInitializerArgument: DependencyInitializerArgument
+    dependencyProviderArgument: DependencyProviderArgument
 ) {
-    TestEnvironment.initializeDependencies(dependencyInitializerArgument)
+    TestEnvironment.initializeDependencies(dependencyProviderArgument)
 }
 
 // --- region: Configuration
@@ -38,7 +38,7 @@ fun initializeDependencies(
 fun <T : Any> configureDependencyProvision(
     dependenciesTestContext: DependenciesTestContext,
     type: KClass<T>,
-    initializer: DependencyInitializer<T>
+    initializer: DependencyProvider<T>
 ) {
     dependenciesTestContext.editDependencyState(type) {
         dependenciesTestContext.checkNotAlreadyProvided(type, mode)
@@ -59,14 +59,14 @@ fun configureDependencyReal(
     dependenciesTestContext: DependenciesTestContext,
     type: KClass<*>,
     forceMode: Boolean = false,
-    offerInitializer: DependencyInitializer<*>? = null
+    offerProvider: DependencyProvider<*>? = null
 ) =
     dependenciesTestContext.editLegacyDependencyState(type) {
         if (forceMode) {
             mode = DependencyMode.REAL
         }
-        if (offerInitializer != null) {
-            realInitializerUnknown = offerInitializer
+        if (offerProvider != null) {
+            realInitializerUnknown = offerProvider
         }
     }
 
@@ -75,13 +75,13 @@ fun configureDependencyMock(
     dependenciesTestContext: DependenciesTestContext,
     type: KClass<*>,
     forceMode: Boolean = false,
-    offerInitializer: DependencyInitializer<*>? = null
+    offerProvider: DependencyProvider<*>? = null
 ) = dependenciesTestContext.editLegacyDependencyState(type) {
     if (forceMode) {
         mode = DependencyMode.MOCK
     }
-    if (offerInitializer != null) {
-        mockInitializerUnknown = offerInitializer
+    if (offerProvider != null) {
+        mockInitializerUnknown = offerProvider
     }
 }
 

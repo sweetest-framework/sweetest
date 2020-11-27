@@ -5,13 +5,13 @@ import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.environment.DependencyAccessor
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.internal.DependencyInitializerArgumentProvider
+import com.mysugr.sweetest.internal.DependencyProviderArgumentProvider
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 internal class DependencyManager(
     setupHandlerReceiver: (DependencySetupHandler) -> Unit,
-    private val dependencyInitializerArgumentProvider: DependencyInitializerArgumentProvider
+    private val dependencyProviderArgumentProvider: DependencyProviderArgumentProvider
 ) : DependencyAccessor {
 
     private var _states: DependencyStates? = null
@@ -115,7 +115,7 @@ internal class DependencyManager(
 
     override val states: DependencyStatesConsumer
         get() = if (_states == null) {
-            _states = DependencyStates(dependencyInitializerArgumentProvider)
+            _states = DependencyStates(dependencyProviderArgumentProvider)
             _states!!
         } else {
             _states!!
