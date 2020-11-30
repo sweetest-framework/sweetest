@@ -21,17 +21,15 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "com.google.android.material:material:$versions.material"
-    implementation "com.google.android.material:material:$versions.material"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
 
     testImplementation project(path: ':sweetest:sweetest-api')
-    testImplementation "org.mockito:mockito-core:$versions.mockito"
     testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
-    testImplementation 'junit:junit:4.12'
+    testImplementation "junit:junit:$versions.junit"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
 }
