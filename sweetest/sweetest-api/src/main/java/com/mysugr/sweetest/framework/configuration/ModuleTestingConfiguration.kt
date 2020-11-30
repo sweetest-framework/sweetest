@@ -77,9 +77,6 @@ class DslScope internal constructor() {
     inline fun <reified T : Any> of(): RightOperand =
         ofInternal(T::class)
 
-    @Deprecated(DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE)
-    inline fun <reified T : Any> instance(instance: T) = instanceInternal(T::class, instance)
-
     // Events
 
     fun onInitialization(run: () -> Unit) = run()
@@ -136,17 +133,5 @@ class DslScope internal constructor() {
         RightOperand { dependencyMode, only ->
             val finalDependencyMode = if (only) dependencyMode else null
             addDependency(DependencyConfiguration(type, null, null, finalDependencyMode))
-        }
-
-    @PublishedApi
-    internal fun <T : Any> instanceInternal(type: KClass<T>, instance: T) =
-        RightOperand { dependencyMode, only ->
-            val finalDependencyMode = if (only) dependencyMode else null
-            when (dependencyMode) {
-                DependencyMode.MOCK ->
-                    addDependency(DependencyConfiguration(type, null, { instance }, finalDependencyMode))
-                else ->
-                    addDependency(DependencyConfiguration(type, { instance }, null, finalDependencyMode))
-            }
         }
 }
