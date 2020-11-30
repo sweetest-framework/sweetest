@@ -475,7 +475,7 @@ As you can see, `backend` is directly used and this will allow for a lot of code
 
 #### Add the respective steps functions
 
-Still two functions are missing which sould be added to the `AuthManagerSteps` class to make the test run:
+Still two functions are missing which should be added to the `AuthManagerSteps` class to make the test run:
 
 ```kotlin
 // Interact with the class under test
@@ -735,7 +735,7 @@ override fun configure() = super.configure()
     .requireReal<FakeBackendGateway>() // <-- doesn't work 
 ```
 
-In cases of abstract types (abstract classes or interfaces) or when there are different types of an inheritance hierarchy under test you have to declare the top-most level type only in the module configuration! Never declare multiple types of the same type hierarchy because sweetest currently has troubles picking the right type (unfortunately the picked type can be indeterministic leading to hard to debug failing tests, but this will be fixed in one of the upcoming releases)!
+In cases of abstract types (abstract classes or interfaces) or when there are different types of an inheritance hierarchy under test you have to declare the top-most level type only in the module configuration! Never declare multiple types of the same type hierarchy because sweetest currently has troubles picking the right type (unfortunately the picked type can be undeterministic leading to hard to debug failing tests, but this will be fixed in one of the upcoming releases)!
 
 ##### Lazy-initialized approach
 
@@ -858,7 +858,7 @@ That also means that if you decide to move a type to a different module the depe
 
 Dependency declaration inside the module testing configuration in its current form is likely to be deprecated in the long run. So the focus in this guidelines is on the `any` keyword. This gives the user the freedom to do the configuration of dependencies on a steps class (and eventually test class) level with no further constraints from the module testing configuration. If you already wrote configurations using other keywords than `any`, it's strongly advised to change it to `any` wherever possible so the deprecation of the global dependency configuration will affect you in the least impacting way possible.
 
-But for the sake of completness here is a list of ways how dependencies can be declared in the module testing configuration:
+But for the sake of completeness here is a list of ways how dependencies can be declared in the module testing configuration:
 
 * `dependency any of<AuthManager>()` just declares the dependency type
 * `dependency mockOnly of<AuthManager>()` hard-wires dependency management to always create a **mock** for `AuthManager` (so an exception is thrown if somewhere `requireReal<AuthManager>` or `offerRealRequired<AuthManager> { ... }` is called)
