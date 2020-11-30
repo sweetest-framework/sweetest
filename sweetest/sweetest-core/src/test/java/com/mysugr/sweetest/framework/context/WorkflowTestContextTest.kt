@@ -1,6 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
-import com.mysugr.sweetest.framework.flow.InitializationStep
+import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
 import com.mysugr.sweetest.usecases.subscribeWorkflow
@@ -57,7 +57,7 @@ class WorkflowTestContextTest {
 
         trackEvents()
 
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_STEPS)
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_STEPS)
 
         assertEquals(
             listOf(
@@ -65,7 +65,7 @@ class WorkflowTestContextTest {
             ), trackedEvents
         )
 
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_DEPENDENCIES)
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_DEPENDENCIES)
 
         assertEquals(
             listOf(
@@ -80,7 +80,7 @@ class WorkflowTestContextTest {
     fun `Doesn't skip steps`() {
         trackEvents()
 
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_STEPS)
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_STEPS)
 
         assertEquals(
             listOf(
@@ -88,7 +88,7 @@ class WorkflowTestContextTest {
             ), trackedEvents
         )
 
-        proceedWorkflow(sut, InitializationStep.SET_UP)
+        proceedWorkflow(sut, WorkflowStep.SET_UP)
 
         assertEquals(
             listOf(
@@ -103,53 +103,53 @@ class WorkflowTestContextTest {
 
     @Test(expected = Exception::class)
     fun `Can't subscribe to INITIALIZE_FRAMEWORK`() {
-        subscribeWorkflow(sut, InitializationStep.INITIALIZE_FRAMEWORK) { }
+        subscribeWorkflow(sut, WorkflowStep.INITIALIZE_FRAMEWORK) { }
     }
 
     @Test(expected = Exception::class)
     fun `Can't subscribe to DONE`() {
-        subscribeWorkflow(sut, InitializationStep.DONE) { }
+        subscribeWorkflow(sut, WorkflowStep.DONE) { }
     }
 
     @Test(expected = Exception::class)
     fun `Can't subscribe step already executed`() {
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_STEPS)
-        subscribeWorkflow(sut, InitializationStep.INITIALIZE_STEPS) { }
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_STEPS)
+        subscribeWorkflow(sut, WorkflowStep.INITIALIZE_STEPS) { }
     }
 
     @Test(expected = Exception::class)
     fun `Can't proceed to to DONE`() {
-        proceedWorkflow(sut, InitializationStep.DONE)
+        proceedWorkflow(sut, WorkflowStep.DONE)
     }
 
     @Test(expected = Exception::class)
     fun `Can't proceed to step already executed`() {
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_DEPENDENCIES)
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_DEPENDENCIES)
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_DEPENDENCIES)
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_DEPENDENCIES)
     }
 
     @Test
     fun `Can add handler during execution of same event`() {
         var executed = false
-        subscribeWorkflow(sut, InitializationStep.INITIALIZE_STEPS) {
-            subscribeWorkflow(sut, InitializationStep.INITIALIZE_STEPS) {
+        subscribeWorkflow(sut, WorkflowStep.INITIALIZE_STEPS) {
+            subscribeWorkflow(sut, WorkflowStep.INITIALIZE_STEPS) {
                 executed = true
             }
         }
-        proceedWorkflow(sut, InitializationStep.INITIALIZE_STEPS)
+        proceedWorkflow(sut, WorkflowStep.INITIALIZE_STEPS)
 
         assertTrue(executed)
     }
 
     private fun trackEvents() {
-        subscribeWorkflow(sut, InitializationStep.INITIALIZE_STEPS) { trackedEvents += "INITIALIZE_STEPS" }
-        subscribeWorkflow(sut, InitializationStep.INITIALIZE_DEPENDENCIES) { trackedEvents += "INITIALIZE_DEPENDENCIES" }
-        subscribeWorkflow(sut, InitializationStep.BEFORE_SET_UP) { trackedEvents += "BEFORE_SET_UP" }
-        subscribeWorkflow(sut, InitializationStep.SET_UP) { trackedEvents += "SET_UP" }
-        subscribeWorkflow(sut, InitializationStep.AFTER_SET_UP) { trackedEvents += "AFTER_SET_UP" }
-        subscribeWorkflow(sut, InitializationStep.RUNNING) { trackedEvents += "RUNNING" }
-        subscribeWorkflow(sut, InitializationStep.TEAR_DOWN) { trackedEvents += "TEAR_DOWN" }
-        subscribeWorkflow(sut, InitializationStep.AFTER_TEAR_DOWN) { trackedEvents += "AFTER_TEAR_DOWN" }
+        subscribeWorkflow(sut, WorkflowStep.INITIALIZE_STEPS) { trackedEvents += "INITIALIZE_STEPS" }
+        subscribeWorkflow(sut, WorkflowStep.INITIALIZE_DEPENDENCIES) { trackedEvents += "INITIALIZE_DEPENDENCIES" }
+        subscribeWorkflow(sut, WorkflowStep.BEFORE_SET_UP) { trackedEvents += "BEFORE_SET_UP" }
+        subscribeWorkflow(sut, WorkflowStep.SET_UP) { trackedEvents += "SET_UP" }
+        subscribeWorkflow(sut, WorkflowStep.AFTER_SET_UP) { trackedEvents += "AFTER_SET_UP" }
+        subscribeWorkflow(sut, WorkflowStep.RUNNING) { trackedEvents += "RUNNING" }
+        subscribeWorkflow(sut, WorkflowStep.TEAR_DOWN) { trackedEvents += "TEAR_DOWN" }
+        subscribeWorkflow(sut, WorkflowStep.AFTER_TEAR_DOWN) { trackedEvents += "AFTER_TEAR_DOWN" }
 
         `when`(stepsContext.finalizeSetUp()).then {
             trackedEvents += "finalize steps setup"

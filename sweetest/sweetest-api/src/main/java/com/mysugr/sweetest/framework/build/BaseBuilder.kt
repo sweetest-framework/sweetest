@@ -11,7 +11,7 @@ import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.asCoreDependencyProvider
-import com.mysugr.sweetest.framework.flow.InitializationStep
+import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.reflect.KClass
@@ -236,31 +236,31 @@ abstract class BaseBuilder<TSelf>(
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, InitializationStep.INITIALIZE_DEPENDENCIES, run)
+        subscribeWorkflow(testContext.workflow, WorkflowStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, InitializationStep.BEFORE_SET_UP, run)
+        subscribeWorkflow(testContext.workflow, WorkflowStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, InitializationStep.SET_UP, run)
+        subscribeWorkflow(testContext.workflow, WorkflowStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, InitializationStep.AFTER_SET_UP, run)
+        subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, InitializationStep.TEAR_DOWN, run)
+        subscribeWorkflow(testContext.workflow, WorkflowStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, InitializationStep.AFTER_TEAR_DOWN, run)
+        subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_TEAR_DOWN, run)
     }
 }
