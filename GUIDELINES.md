@@ -676,7 +676,7 @@ offerReal { AuthManager(myBackendGateway, mySessionStore) }
 offerMock { FakeAuthManager() }
 ```
 
-This effectively tells sweetest how a certain type is initialized.
+This effectively tells sweetest how a certain type is provided.
 
 It might make sense to satisfy the constructor of `AuthManager` the way it's shown above, but in most cases you should not circumvent sweetest's dependency management. So you can use `instanceOf()` which is available in the receiver scope of the lambda you pass to the `offerX` functions:
 

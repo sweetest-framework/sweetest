@@ -111,8 +111,8 @@ class DslScope internal constructor() {
                 addDependency(
                     DependencyConfiguration(
                         clazz = type,
-                        defaultRealInitializer = null,
-                        defaultMockInitializer = provider.asCoreDependencyProvider(),
+                        defaultRealProvider = null,
+                        defaultMockProvider = provider.asCoreDependencyProvider(),
                         defaultDependencyMode = finalDependencyMode
                     )
                 )
@@ -120,8 +120,8 @@ class DslScope internal constructor() {
                 addDependency(
                     DependencyConfiguration(
                         clazz = type,
-                        defaultRealInitializer = provider.asCoreDependencyProvider(),
-                        defaultMockInitializer = null,
+                        defaultRealProvider = provider.asCoreDependencyProvider(),
+                        defaultMockProvider = null,
                         defaultDependencyMode = finalDependencyMode
                     )
                 )

@@ -52,8 +52,8 @@ interface DependencySetupHandler {
     @Suppress("LongParameterList") // since it is deprecated, we need no additional codacy warnings on this
     fun <T : Any> addConfiguration(
         clazz: KClass<T>,
-        realInitializer: DependencyProvider<T>? = null,
-        mockInitializer: DependencyProvider<T>? = null,
+        realProvider: DependencyProvider<T>? = null,
+        mockProvider: DependencyProvider<T>? = null,
         dependencyMode: DependencyMode? = null,
         alias: KClass<*>? = null
     ): DependencyConfiguration<T>

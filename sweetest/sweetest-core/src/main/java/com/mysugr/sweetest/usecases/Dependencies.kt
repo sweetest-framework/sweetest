@@ -43,7 +43,7 @@ fun <T : Any> configureDependencyProvision(
     dependenciesTestContext.editDependencyState(dependencyType) {
         dependenciesTestContext.checkNotAlreadyProvided(dependencyType, mode)
         mode = DependencyMode.PROVIDED
-        providedInitializerUnknown = provider
+        providerUnknown = provider
     }
 }
 
@@ -69,7 +69,7 @@ fun configureDependencyReal(
             mode = DependencyMode.REAL
         }
         if (offerProvider != null) {
-            realInitializerUnknown = offerProvider
+            realProviderUnknown = offerProvider
         }
     }
 
@@ -84,7 +84,7 @@ fun configureDependencyMock(
         mode = DependencyMode.MOCK
     }
     if (offerProvider != null) {
-        mockInitializerUnknown = offerProvider
+        mockProviderUnknown = offerProvider
     }
 }
 

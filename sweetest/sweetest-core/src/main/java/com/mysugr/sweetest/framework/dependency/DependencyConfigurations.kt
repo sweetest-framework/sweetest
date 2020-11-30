@@ -25,18 +25,15 @@ internal class DependencyConfigurations : DependencyConfigurationConsumer, Depen
     @Deprecated("Use addConfiguration(config)")
     override fun <T : Any> addConfiguration(
         clazz: KClass<T>,
-        realInitializer: DependencyProvider<T>?,
-        mockInitializer: DependencyProvider<T>?,
+        realProvider: DependencyProvider<T>?,
+        mockProvider: DependencyProvider<T>?,
         dependencyMode: DependencyMode?,
         alias: KClass<*>?
     ): DependencyConfiguration<T> {
 
         val found = configurations[clazz]
         return if (found == null) {
-            val newDependency = DependencyConfiguration(
-                clazz, realInitializer, mockInitializer,
-                dependencyMode
-            )
+            val newDependency = DependencyConfiguration(clazz, realProvider, mockProvider, dependencyMode)
             configurations[clazz] = newDependency
             if (alias != null) {
                 configurations[alias] = newDependency

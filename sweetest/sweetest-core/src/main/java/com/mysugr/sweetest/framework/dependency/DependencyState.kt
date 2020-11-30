@@ -11,40 +11,40 @@ import kotlin.reflect.KClass
 internal class DependencyState<T : Any>(
     private val dependencyProviderArgumentProvider: DependencyProviderArgumentProvider,
     val configuration: DependencyConfiguration<T>,
-    initializer: DependencyProvider<T>? = null,
+    provider: DependencyProvider<T>? = null,
     mode: DependencyMode? = null
 ) {
 
     private var instanceField: T? = null
     private var modeField: DependencyMode? = mode
 
-    var providedInitializer: DependencyProvider<T>? = null
-    var providedInitializerUnknown: DependencyProvider<*>?
+    var provider: DependencyProvider<T>? = null
+    var providerUnknown: DependencyProvider<*>?
         set(value) {
-            providedInitializer = value as? DependencyProvider<T>
+            provider = value as? DependencyProvider<T>
         }
-        get() = providedInitializer
+        get() = provider
 
-    var realInitializer: DependencyProvider<T>? = initializer
-        ?: configuration.defaultRealInitializer
+    var realProvider: DependencyProvider<T>? = provider
+        ?: configuration.defaultRealProvider
 
-    var realInitializerUnknown: DependencyProvider<*>?
+    var realProviderUnknown: DependencyProvider<*>?
         set(value) {
-            realInitializer = value as? DependencyProvider<T>
+            realProvider = value as? DependencyProvider<T>
         }
-        get() = realInitializer
+        get() = realProvider
 
-    var mockInitializer: DependencyProvider<T>? = initializer
-        ?: configuration.defaultMockInitializer
+    var mockProvider: DependencyProvider<T>? = provider
+        ?: configuration.defaultMockProvider
 
-    var mockInitializerUnknown: DependencyProvider<*>?
+    var mockProviderUnknown: DependencyProvider<*>?
         set(value) {
-            mockInitializer = value as? DependencyProvider<T>
+            mockProvider = value as? DependencyProvider<T>
         }
-        get() = mockInitializer
+        get() = mockProvider
 
     val instance: T
-        get() = instanceField ?: initializeInstance()
+        get() = instanceField ?: provideInstance()
 
     var mode: DependencyMode
         get() = modeField ?: configuration.defaultDependencyMode ?: DependencyMode.MOCK
@@ -83,7 +83,7 @@ internal class DependencyState<T : Any>(
         }
     }
 
-    private fun initializeInstance(): T {
+    private fun provideInstance(): T {
         val instance = when (mode) {
             DependencyMode.REAL, DependencyMode.AUTO_PROVIDED -> createInstance()
             DependencyMode.MOCK -> createMock()
@@ -95,12 +95,12 @@ internal class DependencyState<T : Any>(
     }
 
     private fun createMock(): T =
-        mockInitializer?.let { it(dependencyProviderArgumentProvider()) } ?: createDefaultMock()
+        mockProvider?.let { it(dependencyProviderArgumentProvider()) } ?: createDefaultMock()
 
     private fun createDefaultMock(): T = Mockito.mock(configuration.clazz.java)
 
     private fun createInstance(): T {
-        return realInitializer?.let {
+        return realProvider?.let {
             createInstanceBy(it)
         } ?: createInstanceAutomatically()
     }
@@ -111,15 +111,15 @@ internal class DependencyState<T : Any>(
             if (configuration.clazz.isAbstract) {
                 throw IllegalArgumentException(
                     "Dependencies like \"${configuration.clazz.simpleName}\" which are abstract can not be " +
-                        "auto-initialized. Please define how to instantiate it by adding a `provide { ... }` " +
-                        "configuration!"
+                        "auto-provided. Please define how to instantiate it by adding a " +
+                        "`provide<${configuration.clazz.simpleName}> { ... }` configuration!"
                 )
             }
             if (constructors.size > 1) {
                 throw IllegalArgumentException(
                     "Dependencies like \"${configuration.clazz.simpleName}\" which have more than one constructor " +
-                        "can't be auto-initialized. Please define how to instantiate it by adding a " +
-                        "`provide { ... }` configuration!"
+                        "can't be auto-provided. Please define how to instantiate it by adding a " +
+                        "`provide<${configuration.clazz.simpleName}> { ... }` configuration!"
                 )
             }
             val constructor = constructors.first()
@@ -129,8 +129,7 @@ internal class DependencyState<T : Any>(
                 argumentTypes.map { TestEnvironment.dependencies.getDependencyState(it).instance }.toTypedArray()
             } catch (exception: Exception) {
                 throw RuntimeException(
-                    "At least one dependency required by the constructor could " +
-                        "not be found.",
+                    "At least one dependency required by the constructor could not be found.",
                     exception
                 )
             }
@@ -139,7 +138,7 @@ internal class DependencyState<T : Any>(
         } catch (exception: Exception) {
             throw RuntimeException(
                 "Couldn't automatically construct dependency \"$configuration\". Either you need " +
-                    "a manual initializer, the class should have a single constructor or one of the dependencies " +
+                    "a manual provider, the class should have a single constructor or one of the dependencies " +
                     "required by the constructor could not be initialized.",
                 exception
             )
@@ -147,22 +146,22 @@ internal class DependencyState<T : Any>(
     }
 
     private fun createProvidedInstance(): T {
-        return providedInitializer?.let {
+        return provider?.let {
             createInstanceBy(it)
         } ?: throw RuntimeException(
-            "Cannot create provided instance, because providedInitializer is not set."
+            "Cannot create provided instance, because `provider` is not set."
         )
     }
 
-    private fun createInstanceBy(initializer: DependencyProvider<T>): T {
+    private fun createInstanceBy(provider: DependencyProvider<T>): T {
         return try {
-            initializer(dependencyProviderArgumentProvider())
+            provider(dependencyProviderArgumentProvider())
         } catch (dependencyException: DependencyInstanceInitializationException) {
             throw dependencyException
         } catch (mockitoException: MockitoException) {
             throw mockitoException
         } catch (throwable: Throwable) {
-            throw DependencyInstanceInitializationException("Initializer for \"$configuration\" failed", throwable)
+            throw DependencyInstanceInitializationException("Provider for \"$configuration\" failed", throwable)
         }
     }
 
