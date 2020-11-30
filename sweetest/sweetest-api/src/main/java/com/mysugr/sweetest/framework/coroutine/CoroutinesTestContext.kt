@@ -11,6 +11,7 @@ internal class CoroutinesTestContext {
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
 
+    @Suppress("DEPRECATION")
     val coroutineContext: CoroutineContext
         get() = SweetestCoroutineSupport.coroutineDispatcher + supervisorJob + name
 

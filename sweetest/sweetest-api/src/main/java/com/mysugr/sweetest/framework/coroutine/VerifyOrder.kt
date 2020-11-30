@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest.framework.coroutine
 
 import org.junit.Assert.fail

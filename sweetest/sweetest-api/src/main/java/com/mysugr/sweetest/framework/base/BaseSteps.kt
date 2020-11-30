@@ -14,11 +14,13 @@ constructor(
     private val moduleTestingConfiguration: ModuleTestingConfiguration? = null
 ) : CommonBase(testContext), Steps, CoroutineScope {
 
+    @Suppress("DEPRECATION")
     constructor(testContext: TestContext) : this(testContext, null)
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
     init {
+        @Suppress("LeakingThis")
         configure().freeze()
     }
 
