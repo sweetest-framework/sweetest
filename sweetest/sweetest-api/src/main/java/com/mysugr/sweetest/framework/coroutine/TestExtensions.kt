@@ -9,9 +9,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
 
-/**
- * Experimental
- */
+@Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
 fun BaseJUnitTest.testCoroutine(
     testBlock: suspend CoroutineScope.() -> Unit
 ) {
@@ -26,6 +24,7 @@ fun BaseJUnitTest.testCoroutine(
 
 suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
 
+@Deprecated(PHASE_OUT_DEPRECATION_MESSAGE)
 suspend fun Deferred<*>.throwExceptionIfFailed() {
     if (isCompleted) {
         await() // throws exception, if Deferred failed. Does nothing otherwise
@@ -36,6 +35,7 @@ suspend fun Deferred<*>.throwExceptionIfFailed() {
  * With multiple child jobs, you may want to yield multiple times to ensure each child can finish.
  * This function counts the number of child jobs and calls [yield] the number of times as jobs are present.
  */
+@Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
 suspend fun CoroutineScope.yieldForEachJob() {
     val job =
         coroutineContext[Job.Key] ?: kotlin.error("coroutineContext doesn't have a parent Job.")

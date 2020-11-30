@@ -7,6 +7,7 @@ import java.util.concurrent.Executors
 /**
  * Public access to undocumented, experimental coroutines feature
  */
+@Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
 object SweetestCoroutineSupport {
 
     val coroutineDispatcher: CoroutineDispatcher by lazy {
