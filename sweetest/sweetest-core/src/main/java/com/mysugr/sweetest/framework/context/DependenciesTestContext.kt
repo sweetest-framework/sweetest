@@ -8,30 +8,28 @@ import kotlin.reflect.KClass
 
 class DependenciesTestContext {
 
-    internal fun editDependencyState(clazz: KClass<*>, edit: DependencyState<*>.() -> Unit) {
-        edit(
-            TestEnvironment.dependencies.getDependencyStateForConfiguration(
-                clazz = clazz,
-                preciseTypeMatching = true
-            )
+    internal fun editDependencyState(dependencyType: KClass<*>, block: DependencyState<*>.() -> Unit) {
+        val dependencyState = TestEnvironment.dependencies.getDependencyStateForConfiguration(
+            clazz = dependencyType,
+            preciseTypeMatching = true
         )
+        block(dependencyState)
     }
 
-    internal fun editLegacyDependencyState(clazz: KClass<*>, edit: DependencyState<*>.() -> Unit) {
-        edit(
-            TestEnvironment.dependencies.getDependencyStateForConfiguration(
-                clazz = clazz,
-                preciseTypeMatching = false
-            )
+    internal fun editLegacyDependencyState(dependencyType: KClass<*>, block: DependencyState<*>.() -> Unit) {
+        val dependencyState = TestEnvironment.dependencies.getDependencyStateForConfiguration(
+            clazz = dependencyType,
+            preciseTypeMatching = false
         )
+        block(dependencyState)
     }
 
-    internal fun checkNotAlreadyProvided(clazz: KClass<*>, mode: DependencyMode) {
+    internal fun checkNotAlreadyProvided(dependencyType: KClass<*>, mode: DependencyMode) {
         if (mode == DependencyMode.PROVIDED || mode == DependencyMode.AUTO_PROVIDED) {
             throw SweetestException(
-                "Dependency \"${clazz.simpleName}\" has already been configured with " +
+                "Dependency \"${dependencyType.simpleName}\" has already been configured with " +
                     "`provide`, it can't be configured again at a different place with " +
-                    "`provide<${clazz.simpleName}>`. Please eliminate duplicates!\n" +
+                    "`provide<${dependencyType.simpleName}>`. Please eliminate duplicates!\n" +
                     "Reason: configuring the same dependency in different places could lead to ambiguities."
             )
         }

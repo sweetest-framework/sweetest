@@ -22,7 +22,7 @@ enum class DependencyMode {
     PROVIDED,
 
     /**
-     * Dependency that is configured with [BaseBuilder.provide] to be auto-provided.
+     * Dependency that is configured with `BaseBuilder.provide` to be auto-provided.
      *
      * This mode is distinct from the other modes like [REAL], [MOCK] because [PROVIDED] instances
      * are not classified as either [REAL], [MOCK] or [SPY].

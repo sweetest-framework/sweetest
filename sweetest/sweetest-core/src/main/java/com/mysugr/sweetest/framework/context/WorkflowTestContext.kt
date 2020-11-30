@@ -2,7 +2,7 @@ package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.flow.InitializationStep
 
-class WorkflowTestContext(private val steps: StepsTestContext) {
+class WorkflowTestContext(private val stepsTestContext: StepsTestContext) {
 
     private var currentStep: InitializationStep = InitializationStep.INITIALIZE_FRAMEWORK
 
@@ -57,7 +57,7 @@ class WorkflowTestContext(private val steps: StepsTestContext) {
     }
 
     private fun onBeforeInitializeDependencies() {
-        steps.finalizeSetUp()
+        stepsTestContext.finalizeSetUp()
     }
 
     private fun triggerHandlerFor(step: InitializationStep) {

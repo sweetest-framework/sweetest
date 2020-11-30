@@ -30,7 +30,7 @@ internal object TestEnvironment {
     private fun setUpDependencyManager() {
         _dependencies = DependencyManager(
             setupHandlerReceiver = { DependencySetup.init(it) },
-            dependencyInitializerArgumentProvider = { dependencyProviderArgument }
+            dependencyProviderArgumentProvider = { dependencyProviderArgument }
         )
         dependenciesController = DependencyManager.Controller(_dependencies)
     }

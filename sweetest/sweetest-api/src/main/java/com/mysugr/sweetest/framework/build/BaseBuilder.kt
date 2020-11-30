@@ -10,13 +10,13 @@ import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.dependency.DependencyProviderScope
+import com.mysugr.sweetest.framework.dependency.asCoreDependencyProvider
 import com.mysugr.sweetest.framework.flow.InitializationStep
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.reflect.KClass
 
-private const val DEPEDENCY_MODE_DEPRECATION_MESSAGE = "Dependency modes like \"REAL\" or \"MOCK\" " +
+private const val DEPENDENCY_MODE_DEPRECATION_MESSAGE = "Dependency modes like \"REAL\" or \"MOCK\" " +
     "as well as \"required...\" are obsolete. Use \"provide\" instead."
 
 abstract class BaseBuilder<TSelf>(
@@ -24,20 +24,16 @@ abstract class BaseBuilder<TSelf>(
     internal val moduleTestingConfiguration: ModuleTestingConfiguration?
 ) {
 
-    private var isDone = false
+    private var isFrozen = false
 
-    /**
-     * Finalizes the configuration
-     */
-    internal fun setDone() {
-        // Just makes sure the setDone() function is called just once
-        checkNotYetDone()
-        isDone = true
+    internal fun freeze() {
+        checkNotYetFrozen()
+        isFrozen = true
     }
 
-    protected fun checkNotYetDone() {
-        if (isDone) {
-            throw IllegalStateException("build() already done")
+    protected fun checkNotYetFrozen() {
+        if (isFrozen) {
+            error("Can't apply configuration after configuration is finished")
         }
     }
 
@@ -48,10 +44,10 @@ abstract class BaseBuilder<TSelf>(
         return this as TSelf
     }
 
-    // --- region: Public API (inline functions should just be a wrapper over implementation functions!)
+    // --- region: Public API (the following inline functions should just be wrappers over implementation functions!)
 
     /**
-     * Provides an [provider] for type [T] to sweetest.
+     * Provides a [provider] for type [T] to sweetest's dependency management.
      *
      * That [provider] will be used when an instance of [T] is needed in the test.
      *
@@ -79,43 +75,43 @@ abstract class BaseBuilder<TSelf>(
         provideInternal(T::class)
     }
 
-    // --- region: Public API – LEGACY! (inline functions should just be a wrapper over implementation functions!)
+    // --- region: Public API – LEGACY! (the following inline functions should just be wrappers over implementation functions!)
 
     inline fun <reified T : Steps> requireSteps() = apply {
         requireStepsInternal(T::class)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireReal() = apply {
         requireRealInternal(T::class)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerReal(noinline provider: DependencyProvider<T>) = apply {
         offerRealInternal(T::class, provider)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerRealRequired(noinline provider: DependencyProvider<T>) = apply {
         offerRealRequiredInternal(T::class, provider)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireMock() = apply {
         requireMockInternal(T::class)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMock(noinline provider: DependencyProvider<T>) = apply {
         offerMockInternal(T::class, provider)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> offerMockRequired(noinline provider: DependencyProvider<T>) = apply {
         offerMockRequiredInternal(T::class, provider)
     }
 
-    @Deprecated(DEPEDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
+    @Deprecated(DEPENDENCY_MODE_DEPRECATION_MESSAGE, replaceWith = ReplaceWith("provide"))
     inline fun <reified T : Any> requireSpy() = apply {
         requireSpyInternal(T::class)
     }
@@ -123,97 +119,107 @@ abstract class BaseBuilder<TSelf>(
     // --- region: Internal API
 
     @PublishedApi
-    internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) =
+    internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) {
+        checkNotYetFrozen()
         configureDependencyProvision(
             testContext.dependencies,
-            type
-        ) { provider(it as DependencyProviderScope) }
-
-    @PublishedApi
-    internal fun <T : Any> provideInternal(type: KClass<T>) {
-        configureDependencyProvisionAutomatic(
-            testContext.dependencies,
-            type
+            dependencyType = type,
+            provider = provider.asCoreDependencyProvider()
         )
     }
 
     @PublishedApi
-    internal fun <T : Steps> requireStepsInternal(type: KClass<T>) {
-        notifyStepsRequired(testContext.steps, type)
+    internal fun <T : Any> provideInternal(type: KClass<T>) {
+        checkNotYetFrozen()
+        configureDependencyProvisionAutomatic(
+            testContext.dependencies,
+            dependencyType = type
+        )
+    }
+
+    @PublishedApi
+    internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
+        checkNotYetFrozen()
+        notifyStepsRequired(testContext.steps, stepsType)
     }
 
     // --- region: Internal API – LEGACY!
 
     @PublishedApi
     internal fun requireRealInternal(type: KClass<*>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("requireReal")
         configureDependencyReal(
             testContext.dependencies,
-            type = type,
+            dependencyType = type,
             forceMode = true
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerRealInternal(type: KClass<T>, provider: DependencyProvider<T>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerReal")
         configureDependencyReal(
             testContext.dependencies,
-            type = type,
-            forceMode = false,
-            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
+            dependencyType = type,
+            offerProvider = provider.asCoreDependencyProvider()
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerRealRequiredInternal(type: KClass<T>, provider: DependencyProvider<T>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerRealRequired")
         configureDependencyReal(
             testContext.dependencies,
-            type = type,
+            dependencyType = type,
             forceMode = true,
-            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
+            offerProvider = provider.asCoreDependencyProvider()
         )
     }
 
     @PublishedApi
     internal fun requireMockInternal(type: KClass<*>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("requireMock")
         configureDependencyMock(
             testContext.dependencies,
-            type = type,
+            dependencyType = type,
             forceMode = true
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerMockInternal(type: KClass<T>, provider: DependencyProvider<T>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerMock")
         configureDependencyMock(
             testContext.dependencies,
-            type = type,
-            forceMode = false,
-            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
+            dependencyType = type,
+            offerProvider = provider.asCoreDependencyProvider()
         )
     }
 
     @PublishedApi
     internal fun <T : Any> offerMockRequiredInternal(type: KClass<T>, provider: DependencyProvider<T>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerMockRequired")
         configureDependencyMock(
             testContext.dependencies,
-            type = type,
+            dependencyType = type,
             forceMode = true,
-            offerProvider = { argument -> provider(argument as DependencyProviderScope) }
+            offerProvider = provider.asCoreDependencyProvider()
         )
     }
 
     @PublishedApi
     internal fun requireSpyInternal(type: KClass<*>) {
+        checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("requireSpy")
         configureDependencySpy(
             testContext.dependencies,
-            type = type
+            dependencyType = type
         )
     }
 
@@ -229,32 +235,32 @@ abstract class BaseBuilder<TSelf>(
     // --- region: Callbacks
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
-        checkNotYetDone()
+        checkNotYetFrozen()
         subscribeWorkflow(testContext.workflow, InitializationStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) = apply {
-        checkNotYetDone()
+        checkNotYetFrozen()
         subscribeWorkflow(testContext.workflow, InitializationStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
-        checkNotYetDone()
+        checkNotYetFrozen()
         subscribeWorkflow(testContext.workflow, InitializationStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) = apply {
-        checkNotYetDone()
+        checkNotYetFrozen()
         subscribeWorkflow(testContext.workflow, InitializationStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
-        checkNotYetDone()
+        checkNotYetFrozen()
         subscribeWorkflow(testContext.workflow, InitializationStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) = apply {
-        checkNotYetDone()
+        checkNotYetFrozen()
         subscribeWorkflow(testContext.workflow, InitializationStep.AFTER_TEAR_DOWN, run)
     }
 }

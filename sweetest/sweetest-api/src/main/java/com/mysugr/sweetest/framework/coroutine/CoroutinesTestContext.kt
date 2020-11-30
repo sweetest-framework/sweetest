@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Experimental
  */
-class CoroutinesTestContext {
+internal class CoroutinesTestContext {
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
     val coroutineContext: CoroutineContext

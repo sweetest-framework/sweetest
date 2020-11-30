@@ -11,34 +11,39 @@ import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.internal.CommonBase
 import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.util.PropertyDelegate
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
-fun initializeSteps(stepsTestContext: StepsTestContext, instance: Steps) {
+fun registerStepsInstance(stepsTestContext: StepsTestContext, instance: Steps) {
     stepsTestContext.setUpInstance(instance)
 }
 
-fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, type: KClass<T>) {
-    stepsTestContext.setUpAsRequired(type as KClass<Steps>)
+fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, stepsType: KClass<T>) {
+    stepsTestContext.setUpAsRequired(stepsType as KClass<Steps>)
 }
 
-fun <T : Steps> getSteps(stepsTestContext: StepsTestContext, type: KClass<T>): ReadOnlyProperty<CommonBase, T> {
+fun <T : Steps> getStepsDelegate(
+    stepsTestContext: StepsTestContext,
+    stepsType: KClass<T>
+): ReadOnlyProperty<CommonBase, T> {
     try {
-        notifyStepsRequired(stepsTestContext, type)
-        return PropertyDelegate {
-            try {
-                stepsTestContext.get(type)
-            } catch (throwable: Throwable) {
-                throw SweetestException(
-                    "Providing steps class instance for \"steps<${type.simpleName}>\" failed",
-                    throwable
-                )
+        notifyStepsRequired(stepsTestContext, stepsType = stepsType)
+        return object : ReadOnlyProperty<CommonBase, T> {
+            override fun getValue(thisRef: CommonBase, property: KProperty<*>): T {
+                return try {
+                    stepsTestContext.get(stepsType)
+                } catch (throwable: Throwable) {
+                    throw SweetestException(
+                        "Providing steps class instance for \"steps<${stepsType.simpleName}>\" failed",
+                        throwable
+                    )
+                }
             }
         }
     } catch (throwable: Throwable) {
         throw RuntimeException(
-            "Call on \"steps<$type>\" failed",
+            "Call on \"steps<$stepsType>\" failed",
             throwable
         )
     }

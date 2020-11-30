@@ -18,9 +18,9 @@ import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.CommonBase
 import com.mysugr.sweetest.internal.DependencyProviderArgument
-import com.mysugr.sweetest.util.PropertyDelegate
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 
 private const val DEPRECATION_MESSAGE = "Legacy dependency modes"
 
@@ -37,19 +37,22 @@ fun initializeDependencies(
 
 fun <T : Any> configureDependencyProvision(
     dependenciesTestContext: DependenciesTestContext,
-    type: KClass<T>,
-    initializer: DependencyProvider<T>
+    dependencyType: KClass<T>,
+    provider: DependencyProvider<T>
 ) {
-    dependenciesTestContext.editDependencyState(type) {
-        dependenciesTestContext.checkNotAlreadyProvided(type, mode)
+    dependenciesTestContext.editDependencyState(dependencyType) {
+        dependenciesTestContext.checkNotAlreadyProvided(dependencyType, mode)
         mode = DependencyMode.PROVIDED
-        providedInitializerUnknown = initializer
+        providedInitializerUnknown = provider
     }
 }
 
-fun <T : Any> configureDependencyProvisionAutomatic(dependenciesTestContext: DependenciesTestContext, type: KClass<T>) {
-    dependenciesTestContext.editDependencyState(type) {
-        dependenciesTestContext.checkNotAlreadyProvided(type, mode)
+fun <T : Any> configureDependencyProvisionAutomatic(
+    dependenciesTestContext: DependenciesTestContext,
+    dependencyType: KClass<T>
+) {
+    dependenciesTestContext.editDependencyState(dependencyType) {
+        dependenciesTestContext.checkNotAlreadyProvided(dependencyType, mode)
         mode = DependencyMode.AUTO_PROVIDED
     }
 }
@@ -57,11 +60,11 @@ fun <T : Any> configureDependencyProvisionAutomatic(dependenciesTestContext: Dep
 @Deprecated(DEPRECATION_MESSAGE)
 fun configureDependencyReal(
     dependenciesTestContext: DependenciesTestContext,
-    type: KClass<*>,
+    dependencyType: KClass<*>,
     forceMode: Boolean = false,
     offerProvider: DependencyProvider<*>? = null
 ) =
-    dependenciesTestContext.editLegacyDependencyState(type) {
+    dependenciesTestContext.editLegacyDependencyState(dependencyType) {
         if (forceMode) {
             mode = DependencyMode.REAL
         }
@@ -73,10 +76,10 @@ fun configureDependencyReal(
 @Deprecated(DEPRECATION_MESSAGE)
 fun configureDependencyMock(
     dependenciesTestContext: DependenciesTestContext,
-    type: KClass<*>,
+    dependencyType: KClass<*>,
     forceMode: Boolean = false,
     offerProvider: DependencyProvider<*>? = null
-) = dependenciesTestContext.editLegacyDependencyState(type) {
+) = dependenciesTestContext.editLegacyDependencyState(dependencyType) {
     if (forceMode) {
         mode = DependencyMode.MOCK
     }
@@ -86,15 +89,15 @@ fun configureDependencyMock(
 }
 
 @Deprecated(DEPRECATION_MESSAGE)
-fun configureDependencySpy(dependenciesTestContext: DependenciesTestContext, type: KClass<*>) =
-    dependenciesTestContext.editLegacyDependencyState(type) {
+fun configureDependencySpy(dependenciesTestContext: DependenciesTestContext, dependencyType: KClass<*>) =
+    dependenciesTestContext.editLegacyDependencyState(dependencyType) {
         mode = DependencyMode.SPY
     }
 
 // --- region: Consumption
 
-fun <T : Any> getDependencyInstance(dependenciesTestContext: DependenciesTestContext, type: KClass<T>): T {
-    return TestEnvironment.dependencies.getDependencyState(type).instance
+fun <T : Any> getDependencyInstance(dependenciesTestContext: DependenciesTestContext, dependencyType: KClass<T>): T {
+    return TestEnvironment.dependencies.getDependencyState(dependencyType).instance
 }
 
 fun <T : Any> getDependencyDelegate(
@@ -103,17 +106,19 @@ fun <T : Any> getDependencyDelegate(
 ): ReadOnlyProperty<CommonBase, T> {
     try {
         var cachedDependencyState: DependencyState<T>? = null
-        return PropertyDelegate {
-            try {
-                if (cachedDependencyState == null) {
-                    cachedDependencyState = TestEnvironment.dependencies.getDependencyState(type)
+        return object : ReadOnlyProperty<CommonBase, T> {
+            override fun getValue(thisRef: CommonBase, property: KProperty<*>): T {
+                return try {
+                    if (cachedDependencyState == null) {
+                        cachedDependencyState = TestEnvironment.dependencies.getDependencyState(type)
+                    }
+                    cachedDependencyState!!.instance
+                } catch (throwable: Throwable) {
+                    throw SweetestException(
+                        "Providing dependency for \"dependency<${type.simpleName}>\" failed",
+                        throwable
+                    )
                 }
-                cachedDependencyState!!.instance
-            } catch (throwable: Throwable) {
-                throw SweetestException(
-                    "Providing dependency for \"dependency<${type.simpleName}>\" failed",
-                    throwable
-                )
             }
         }
     } catch (throwable: Throwable) {

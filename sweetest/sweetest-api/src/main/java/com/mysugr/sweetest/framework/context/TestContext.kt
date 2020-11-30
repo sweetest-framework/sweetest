@@ -14,11 +14,10 @@ class TestContext internal constructor() : TestContext {
     internal val workflow = WorkflowTestContext(steps)
 
     init {
-        val dependencyInitializerArgument = DependencyProviderScope(dependencies)
 
         initializeDependencies(
             dependencies,
-            dependencyInitializerArgument
+            dependencyProviderArgument = DependencyProviderScope(dependencies)
         )
 
         resetEnvironment()

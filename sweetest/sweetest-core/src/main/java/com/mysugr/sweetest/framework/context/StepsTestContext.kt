@@ -86,13 +86,14 @@ class StepsTestContext(private val testContext: TestContext) {
         try {
             val constructors = clazz.constructors
             if (constructors.size > 1) {
-                throw RuntimeException("There is more than one constructor")
+                error("There is more than one constructor")
             }
             val constructor = constructors.first()
-            if (constructor.parameters.size > 1 ||
-                !constructor.parameters.first().type.isSubtypeOf(TestContext::class.starProjectedType)
-            ) {
-                throw RuntimeException("Wrong constructor")
+            if (constructor.parameters.size != 1) {
+                error("Wrong number of constructor parameters")
+            }
+            if (!constructor.parameters.first().type.isSubtypeOf(TestContext::class.starProjectedType)) {
+                error("Wrong constructor parameter type")
             }
         } catch (exception: Exception) {
             throw RuntimeException(

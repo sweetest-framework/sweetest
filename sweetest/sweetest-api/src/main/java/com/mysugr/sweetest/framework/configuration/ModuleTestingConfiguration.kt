@@ -2,9 +2,9 @@ package com.mysugr.sweetest.framework.configuration
 
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.dependency.DependencyProviderScope
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
+import com.mysugr.sweetest.framework.dependency.asCoreDependencyProvider
 import com.mysugr.sweetest.usecases.ensureEnvironmentInitialized
 import kotlin.reflect.KClass
 
@@ -27,14 +27,13 @@ fun moduleTestingConfiguration(
     val scope = Dsl.MainScope()
     run?.invoke(scope)
 
-    return ModuleTestingConfiguration(baseModuleTestingConfigurations.toList())
+    return ModuleTestingConfiguration()
 }
 
-data class ModuleTestingConfiguration internal constructor(
-    internal val baseModuleTestingConfigurations: List<ModuleTestingConfiguration>
-)
+// Placeholder class, as data is actually globally stored instead of in this data structure
+class ModuleTestingConfiguration internal constructor()
 
-class Dsl {
+object Dsl {
 
     class MainScope {
 
@@ -55,8 +54,8 @@ class Dsl {
 
         val dependency = LeftOperand()
 
-        inline infix fun <reified T : Any> LeftOperand.any(clazz: KClass<T>) {
-            anyInternal(this, clazz)
+        inline infix fun <reified T : Any> LeftOperand.any(dependencyType: KClass<T>) {
+            anyInternal(this, dependencyType)
         }
 
         infix fun LeftOperand.any(rightOperand: RightOperand) {
@@ -118,7 +117,7 @@ class Dsl {
                         DependencyConfiguration(
                             clazz = type,
                             defaultRealInitializer = null,
-                            defaultMockInitializer = { provider(it as DependencyProviderScope) },
+                            defaultMockInitializer = provider.asCoreDependencyProvider(),
                             defaultDependencyMode = finalDependencyMode
                         )
                     )
@@ -126,7 +125,7 @@ class Dsl {
                     addDependency(
                         DependencyConfiguration(
                             clazz = type,
-                            defaultRealInitializer = { provider(it as DependencyProviderScope) },
+                            defaultRealInitializer = provider.asCoreDependencyProvider(),
                             defaultMockInitializer = null,
                             defaultDependencyMode = finalDependencyMode
                         )

@@ -1,13 +1,13 @@
 package com.mysugr.sweetest.usecases
 
-import com.mysugr.sweetest.framework.environment.TestEnvironment
-
 /**
  * Use cases for the global sweetest environment.
  *
  * - achieves internal API stability for calls towards the core while the core can freely be refactored
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
+
+import com.mysugr.sweetest.framework.environment.TestEnvironment
 
 // Temporary means of initializing the environment as long as TestEnvironment is still here
 fun ensureEnvironmentInitialized() {
