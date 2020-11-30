@@ -7,6 +7,7 @@ import com.mysugr.sweetest.internal.DependencyProviderArgumentProvider
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 
 internal class DependencyState<T : Any>(
     private val dependencyProviderArgumentProvider: DependencyProviderArgumentProvider,
@@ -107,39 +108,53 @@ internal class DependencyState<T : Any>(
 
     private fun createInstanceAutomatically(): T {
         return try {
-            val constructors = configuration.clazz.constructors
-            if (configuration.clazz.isAbstract) {
-                throw IllegalArgumentException(
-                    "Dependencies like \"${configuration.clazz.simpleName}\" which are abstract can not be " +
-                        "auto-provided. Please define how to instantiate it by adding a " +
-                        "`provide<${configuration.clazz.simpleName}> { ... }` configuration!"
-                )
-            }
-            if (constructors.size > 1) {
-                throw IllegalArgumentException(
-                    "Dependencies like \"${configuration.clazz.simpleName}\" which have more than one constructor " +
-                        "can't be auto-provided. Please define how to instantiate it by adding a " +
-                        "`provide<${configuration.clazz.simpleName}> { ... }` configuration!"
-                )
-            }
-            val constructor = constructors.first()
-            val argumentTypes = constructor.parameters.map { it.type.classifier as KClass<*> }
-
-            val arguments = try {
-                argumentTypes.map { TestEnvironment.dependencies.getDependencyState(it).instance }.toTypedArray()
-            } catch (exception: Exception) {
-                throw RuntimeException(
-                    "At least one dependency required by the constructor could not be found.",
-                    exception
-                )
-            }
-
-            constructor.call(*arguments)
+            val constructor = getConstructor()
+            val constructorArguments = getConstructorArguments(constructor)
+            constructor.call(*constructorArguments)
         } catch (exception: Exception) {
             throw RuntimeException(
-                "Couldn't automatically construct dependency \"$configuration\". Either you need " +
-                    "a manual provider, the class should have a single constructor or one of the dependencies " +
-                    "required by the constructor could not be initialized.",
+                "Couldn't automatically construct instance of dependency \"$configuration\"",
+                exception
+            )
+        }
+    }
+
+    private fun getConstructorArguments(constructor: KFunction<T>): Array<Any> {
+        return constructor.getParameterTypes()
+            .map(::getSubDependencyInstanceOfType)
+            .toTypedArray()
+    }
+
+    private fun KFunction<T>.getParameterTypes() =
+        this.parameters.map { it.type.classifier as KClass<*> }
+
+    private fun getConstructor(): KFunction<T> {
+        val constructors = configuration.clazz.constructors
+        if (configuration.clazz.isAbstract) {
+            throw IllegalArgumentException(
+                "Dependencies like \"${configuration.clazz.simpleName}\" which are abstract can not be " +
+                    "auto-provided. Please define how to instantiate it by adding a " +
+                    "`provide<${configuration.clazz.simpleName}> { ... }` configuration!"
+            )
+        }
+        if (constructors.size > 1) {
+            throw IllegalArgumentException(
+                "Dependencies like \"${configuration.clazz.simpleName}\" which have more than one constructor " +
+                    "can't be auto-provided. Please define how to instantiate it by adding a " +
+                    "`provide<${configuration.clazz.simpleName}> { ... }` configuration!"
+            )
+        }
+        val constructor = constructors.first()
+        return constructor
+    }
+
+    private fun getSubDependencyInstanceOfType(dependencyType: KClass<*>): Any {
+        return try {
+            TestEnvironment.dependencies.getDependencyState(dependencyType).instance
+        } catch (exception: Exception) {
+            throw RuntimeException(
+                "The constructor of \"${configuration.clazz.simpleName}\" needs an instance of dependency " +
+                    "\"${dependencyType.simpleName}\", but but it could not be retrieved.",
                 exception
             )
         }
