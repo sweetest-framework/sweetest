@@ -4,23 +4,11 @@ references:
   workspace: &workspace
     ~/sweetest
 
-  config_android_fast: &config_android_fast
-    working_directory: *workspace
-    docker:
-      - image: circleci/android:api-28-alpha
-    resource_class: large
-    
   config_android: &config_android
     working_directory: *workspace
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-30
     resource_class: medium
-
-  config_android_slow: &config_android_slow
-      working_directory: *workspace
-      docker:
-        - image: circleci/android:api-28-alpha
-      resource_class: small
 
   install_licenses: &install_licenses
     run:
@@ -56,7 +44,7 @@ references:
 
 jobs:
   assemble:
-    <<: *config_android_fast
+    <<: *config_android
 
     steps:
       - checkout
@@ -76,7 +64,7 @@ jobs:
       - *persist_to_workspace
 
   test_unit:
-    <<: *config_android_fast
+    <<: *config_android
 
     steps:
       - checkout
