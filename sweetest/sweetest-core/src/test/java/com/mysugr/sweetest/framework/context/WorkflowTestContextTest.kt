@@ -12,10 +12,9 @@ import org.mockito.Mockito.`when`
 
 class WorkflowTestContextTest {
 
-    val stepsContext = Mockito.mock(StepsTestContext::class.java)
-    val sut = WorkflowTestContext(stepsContext)
-
-    val trackedEvents = mutableListOf<String>()
+    private val stepsContext = Mockito.mock(StepsTestContext::class.java)
+    private val sut = WorkflowTestContext(stepsContext)
+    private val trackedEvents = mutableListOf<String>()
 
     @Test
     fun `Runs through all steps`() {

@@ -17,8 +17,7 @@ class WorkflowTestContext(private val stepsTestContext: StepsTestContext) {
         InitializationStep.AFTER_TEAR_DOWN
     )
 
-    private val subscriptionHandlers =
-        supportedSubscriptionSteps.associate { it to mutableListOf<StepHandler>() }
+    private val subscriptionHandlers = supportedSubscriptionSteps.associateWith { mutableListOf<StepHandler>() }
 
     internal fun subscribe(step: InitializationStep, handler: () -> Unit) {
         val handlers =

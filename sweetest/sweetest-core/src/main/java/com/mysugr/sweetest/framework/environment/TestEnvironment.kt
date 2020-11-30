@@ -49,8 +49,7 @@ interface DependencySetupHandler {
     fun addConfiguration(configuration: DependencyConfiguration<*>)
 
     @Deprecated("Use addConfiguration(configuration) instead")
-    // since it is deprecated, we need no additional codacy warnings on this
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList") // since it is deprecated, we need no additional codacy warnings on this
     fun <T : Any> addConfiguration(
         clazz: KClass<T>,
         realInitializer: DependencyProvider<T>? = null,
