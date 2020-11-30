@@ -73,15 +73,6 @@ class DependenciesTest : BaseTest() {
             .provide<BViewModel>()
     }
 
-    class TestClassMixedConfig : BaseJUnitTest() {
-        val a by steps<ASteps>()
-        val c by steps<CSteps>()
-
-        override fun configure() = super.configure()
-            .requireReal<BViewModel>()
-            .requireMock<AService>()
-    }
-
     @Test
     fun `A can be used as mock`() {
         givenAMockBReal()
@@ -267,16 +258,6 @@ class DependenciesTest : BaseTest() {
         }
 
         test.junitBefore()
-    }
-
-    private fun givenNothingConfigured() {
-        moduleTestingConfiguration = moduleTestingConfiguration { }
-    }
-
-    private fun givenAMock() {
-        moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly of<AService>()
-        }
     }
 
     private fun givenAMockBReal() {

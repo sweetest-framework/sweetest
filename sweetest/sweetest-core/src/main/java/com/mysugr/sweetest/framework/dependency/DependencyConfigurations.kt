@@ -54,16 +54,4 @@ internal class DependencyConfigurations : DependencyConfigurationConsumer, Depen
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }
             as DependencyConfiguration<T>?
     }
-
-    class NotFoundException(val clazz: KClass<*>, message: String? = null) :
-        Exception(transformMessage(clazz, message)) {
-
-        companion object {
-            private fun transformMessage(clazz: KClass<*>, message: String?): String {
-                val firstPart = message ?: "No dependency configuration for class \"${clazz.simpleName}\" found."
-                return firstPart + " Possible solution: Add the dependency to the module configuration. " +
-                    "Make sure you add it at the correct MODULE depending on where it is implemented!"
-            }
-        }
-    }
 }
