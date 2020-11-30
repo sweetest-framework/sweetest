@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.coroutine
 
+import com.mysugr.sweetest.OUT_OF_SCOPE_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.internal.Steps
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +25,7 @@ fun BaseJUnitTest.testCoroutine(
 
 suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
 
-@Deprecated(PHASE_OUT_DEPRECATION_MESSAGE)
+@Deprecated(OUT_OF_SCOPE_DEPRECATION_MESSAGE)
 suspend fun Deferred<*>.throwExceptionIfFailed() {
     if (isCompleted) {
         await() // throws exception, if Deferred failed. Does nothing otherwise

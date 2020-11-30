@@ -1,11 +1,9 @@
 package com.mysugr.sweetest.util
 
+import com.mysugr.sweetest.OUT_OF_SCOPE_DEPRECATION_MESSAGE
 import org.junit.Assert.fail
 import org.mockito.Mockito
 import org.mockito.internal.util.MockUtil
-
-private const val OUT_OF_SCOPE_DEPRECATION_MESSAGE =
-    "Phased out after v1 as out-of-scope."
 
 private const val MOCKITO_DEPRECATION_MESSAGE =
     "Phased out after v1 as sweetest becomes independent of specific mocking frameworks."
