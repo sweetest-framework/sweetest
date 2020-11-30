@@ -22,7 +22,7 @@ class WorkflowTestContext(private val stepsTestContext: StepsTestContext) {
     internal fun subscribe(step: WorkflowStep, handler: () -> Unit) {
         val handlers =
             requireNotNull(subscriptionHandlers[step]) { "Step \"$step\" isn't possible to be subscribed to" }
-        require(step.isAfter(currentStep)) { "Can't subscribe to step that was already executed" }
+        require(step > currentStep) { "Can't subscribe to step that was already executed" }
         handlers += StepHandler(handler)
     }
 
@@ -41,8 +41,8 @@ class WorkflowTestContext(private val stepsTestContext: StepsTestContext) {
 
     private fun proceedToInternal(step: WorkflowStep) {
         require(step != WorkflowStep.INITIALIZE_FRAMEWORK) { "Can't proceed to initial step" }
-        require(step.isAfter(currentStep)) { "Can't proceed to step already executed" }
-        while (currentStep.isBefore(step)) {
+        require(step > currentStep) { "Can't proceed to step already executed" }
+        while (currentStep < step) {
             runStep(currentStep.getNext())
         }
     }

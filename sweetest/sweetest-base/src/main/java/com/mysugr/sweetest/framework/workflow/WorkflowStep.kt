@@ -13,10 +13,5 @@ enum class WorkflowStep {
     AFTER_TEAR_DOWN,
     DONE;
 
-    fun isBeforeOrSame(other: WorkflowStep) = other.ordinal >= ordinal
-    fun isBefore(other: WorkflowStep) = other.ordinal > ordinal
-    fun isAfter(other: WorkflowStep) = other.ordinal < ordinal
-    fun isAfterOrSame(other: WorkflowStep) = other.ordinal <= ordinal
-
     fun getNext() = values()[ordinal + 1]
 }
