@@ -11,13 +11,11 @@ import kotlin.reflect.KFunction
 
 internal class DependencyState<T : Any>(
     private val dependencyProviderArgumentProvider: DependencyProviderArgumentProvider,
-    val configuration: DependencyConfiguration<T>,
-    provider: DependencyProvider<T>? = null,
-    mode: DependencyMode? = null
+    val configuration: DependencyConfiguration<T>
 ) {
 
     private var instanceField: T? = null
-    private var modeField: DependencyMode? = mode
+    private var modeField: DependencyMode? = null
 
     var provider: DependencyProvider<T>? = null
     var providerUnknown: DependencyProvider<*>?
@@ -26,8 +24,7 @@ internal class DependencyState<T : Any>(
         }
         get() = provider
 
-    var realProvider: DependencyProvider<T>? = provider
-        ?: configuration.defaultRealProvider
+    var realProvider: DependencyProvider<T>? = configuration.defaultRealProvider
 
     var realProviderUnknown: DependencyProvider<*>?
         set(value) {
@@ -35,8 +32,7 @@ internal class DependencyState<T : Any>(
         }
         get() = realProvider
 
-    var mockProvider: DependencyProvider<T>? = provider
-        ?: configuration.defaultMockProvider
+    var mockProvider: DependencyProvider<T>? = configuration.defaultMockProvider
 
     var mockProviderUnknown: DependencyProvider<*>?
         set(value) {
