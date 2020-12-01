@@ -16,6 +16,8 @@ import kotlin.reflect.KClass
 
 abstract class TestElement(protected val testContext: TestContext) : com.mysugr.sweetest.internal.TestElement {
 
+    internal val internalTestContext get() = testContext
+
     // --- region: Public configuration API
 
     // Caution: the following inline functions should just be wrappers over implementation functions!

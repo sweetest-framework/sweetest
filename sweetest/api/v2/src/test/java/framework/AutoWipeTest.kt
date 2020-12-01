@@ -1,9 +1,9 @@
-package dev.sweetest.api.v2.framework
+package framework
 
 import com.mysugr.sweetest.usecases.resetEnvironmentFully
 import org.junit.After
 
-open class BaseTest {
+open class AutoWipeTest {
 
     @After
     open fun setUp() {
