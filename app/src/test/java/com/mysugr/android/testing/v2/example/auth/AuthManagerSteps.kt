@@ -2,7 +2,6 @@ package com.mysugr.android.testing.v2.example.auth
 
 import com.mysugr.android.testing.example.auth.AuthManager
 import dev.sweetest.api.v2.Steps
-import dev.sweetest.api.v2.dependency
 import dev.sweetest.api.v2.TestContext
 
 class AuthManagerSteps(testContext: TestContext) : Steps(testContext) {

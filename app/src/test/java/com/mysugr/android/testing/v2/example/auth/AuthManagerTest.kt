@@ -5,7 +5,6 @@ import com.mysugr.android.testing.v2.example.net.BackendFakeUser.Companion.TEST_
 import com.mysugr.android.testing.v2.example.state.SessionStoreSteps
 import com.mysugr.sweetest.framework.base.invoke
 import dev.sweetest.api.v2.framework.base.JUnit4Test
-import dev.sweetest.api.v2.steps
 import org.junit.Test
 
 class AuthManagerTest : JUnit4Test() {

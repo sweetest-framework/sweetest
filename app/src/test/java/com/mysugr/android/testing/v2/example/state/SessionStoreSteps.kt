@@ -5,7 +5,6 @@ import com.mysugr.android.testing.example.user.User
 import com.mysugr.android.testing.util.nonNullable
 import com.mysugr.android.testing.util.nonNullableAny
 import dev.sweetest.api.v2.Steps
-import dev.sweetest.api.v2.dependency
 import dev.sweetest.api.v2.TestContext
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq

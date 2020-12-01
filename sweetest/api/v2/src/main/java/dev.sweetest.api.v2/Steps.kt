@@ -1,9 +1,9 @@
 package dev.sweetest.api.v2
 
-import com.mysugr.sweetest.internal.Steps
+import com.mysugr.sweetest.internal.Steps as InternalSteps
 import com.mysugr.sweetest.usecases.registerStepsInstance
 
-abstract class Steps(testContext: TestContext) : TestElement(testContext), Steps {
+abstract class Steps(testContext: TestContext) : TestElement(testContext), InternalSteps {
 
     init {
         registerStepsInstance(testContext.steps, this)

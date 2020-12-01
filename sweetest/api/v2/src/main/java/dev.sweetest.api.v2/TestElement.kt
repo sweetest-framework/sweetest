@@ -16,9 +16,9 @@ import kotlin.reflect.KClass
 
 abstract class TestElement(protected val testContext: TestContext) : com.mysugr.sweetest.internal.TestElement {
 
-    internal val internalTestContext = testContext
+    // --- region: Public configuration API
 
-    // --- region: Public API (the following inline functions should just be wrappers over implementation functions!)
+    // Caution: the following inline functions should just be wrappers over implementation functions!
 
     /**
      * Provides a [provider] for type [T] to sweetest's dependency management.
@@ -53,35 +53,6 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
         requireStepsInternal(T::class)
     }
 
-    // --- region: Internal API
-
-    @PublishedApi
-    internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) {
-        checkConfigurePossible()
-        configureDependencyProvision(
-            testContext.dependencies,
-            dependencyType = type,
-            provider = provider.asCoreDependencyProvider()
-        )
-    }
-
-    @PublishedApi
-    internal fun <T : Any> provideInternal(type: KClass<T>) {
-        checkConfigurePossible()
-        configureDependencyProvisionAutomatic(
-            testContext.dependencies,
-            dependencyType = type
-        )
-    }
-
-    @PublishedApi
-    internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
-        checkConfigurePossible()
-        notifyStepsRequired(testContext.steps, stepsType)
-    }
-
-    // --- region: Callbacks
-
     fun onInitializeDependencies(run: () -> Unit) {
         checkConfigurePossible()
         subscribeWorkflow(testContext.workflow, WorkflowStep.INITIALIZE_DEPENDENCIES, run)
@@ -112,27 +83,58 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
         subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_TEAR_DOWN, run)
     }
 
+    // --- region: Public consumption API
+
+    inline fun <reified T : Any> dependency(): ReadOnlyProperty<TestElement, T> =
+        dependencyInternal(this, T::class)
+
+    inline fun <reified T : dev.sweetest.api.v2.Steps> steps(): ReadOnlyProperty<TestElement, T> =
+        stepsInternal(this, T::class)
+
+    // --- region: Internals
+
+    @PublishedApi
+    internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) {
+        checkConfigurePossible()
+        configureDependencyProvision(
+            testContext.dependencies,
+            dependencyType = type,
+            provider = provider.asCoreDependencyProvider()
+        )
+    }
+
+    @PublishedApi
+    internal fun <T : Any> provideInternal(type: KClass<T>) {
+        checkConfigurePossible()
+        configureDependencyProvisionAutomatic(
+            testContext.dependencies,
+            dependencyType = type
+        )
+    }
+
+    @PublishedApi
+    internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
+        checkConfigurePossible()
+        notifyStepsRequired(testContext.steps, stepsType)
+    }
+
+    @PublishedApi
+    internal fun <T : Any> dependencyInternal(
+        scope: TestElement,
+        type: KClass<T>
+    ): ReadOnlyProperty<TestElement, T> =
+        getDependencyDelegate(scope.testContext.dependencies, type)
+
+    @PublishedApi
+    internal fun <T : dev.sweetest.api.v2.Steps> stepsInternal(
+        scope: TestElement,
+        type: KClass<T>
+    ): ReadOnlyProperty<TestElement, T> =
+        getStepsDelegate(scope.testContext.steps, type)
+
     protected fun checkConfigurePossible() {
         check(!hasWorkflowAlreadyStarted(testContext.workflow)) {
             "Can't perform configuration tasks, workflow has already started!"
         }
     }
 }
-
-// --- region: Public API (the following inline functions should just be wrappers over implementation functions!)
-
-inline fun <reified T : Any> TestElement.dependency(): ReadOnlyProperty<TestElement, T> =
-    dependencyInternal(this, T::class)
-
-inline fun <reified T : dev.sweetest.api.v2.Steps> TestElement.steps(): ReadOnlyProperty<TestElement, T> =
-    stepsInternal(this, T::class)
-
-// --- region: Internal API
-
-@PublishedApi
-internal fun <T : Any> dependencyInternal(scope: TestElement, type: KClass<T>): ReadOnlyProperty<TestElement, T> =
-    getDependencyDelegate(scope.internalTestContext.dependencies, type)
-
-@PublishedApi
-internal fun <T : dev.sweetest.api.v2.Steps> stepsInternal(scope: TestElement, type: KClass<T>): ReadOnlyProperty<TestElement, T> =
-    getStepsDelegate(scope.internalTestContext.steps, type)

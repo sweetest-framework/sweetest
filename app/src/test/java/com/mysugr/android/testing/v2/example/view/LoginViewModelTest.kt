@@ -5,7 +5,6 @@ import com.mysugr.android.testing.v2.example.auth.AuthManagerMockSteps
 import com.mysugr.android.testing.v2.example.net.BackendFakeUser
 import com.mysugr.sweetest.framework.base.invoke
 import dev.sweetest.api.v2.framework.base.JUnit4Test
-import dev.sweetest.api.v2.steps
 import org.junit.Test
 
 class LoginViewModelTest : JUnit4Test() {
