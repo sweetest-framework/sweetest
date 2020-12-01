@@ -15,8 +15,8 @@ apply from: '../../publishing.gradle'
 setCustomArtifactName('sweetest')
 
 dependencies {
-    api project(':sweetest:sweetest-base')
-    implementation project(':sweetest:sweetest-core')
+    api project(':sweetest:base')
+    implementation project(':sweetest:core')
 
     implementation "io.cucumber:cucumber-junit:$versions.cucumber"
     implementation "io.cucumber:cucumber-jvm:$versions.cucumber"

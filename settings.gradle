@@ -1,4 +1,4 @@
 include ':app',
         ':sweetest:api:v1',
-        ':sweetest:sweetest-core',
-        ':sweetest:sweetest-base'
+        ':sweetest:core',
+        ':sweetest:base'

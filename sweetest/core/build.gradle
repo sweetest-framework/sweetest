@@ -14,7 +14,7 @@ plugins {
 apply from: '../publishing.gradle'
 
 dependencies {
-    implementation project(':sweetest:sweetest-base')
+    implementation project(':sweetest:base')
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
