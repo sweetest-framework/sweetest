@@ -12,6 +12,7 @@ plugins {
 }
 
 apply from: '../publishing.gradle'
+setCustomArtifactName('sweetest-base')
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"

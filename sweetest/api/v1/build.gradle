@@ -11,8 +11,7 @@ plugins {
 }
 
 apply from: '../../publishing.gradle'
-
-setCustomArtifactName('sweetest')
+setCustomArtifactName('sweetest-compat-v1')
 
 dependencies {
     api project(':sweetest:base')

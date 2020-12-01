@@ -12,6 +12,7 @@ plugins {
 }
 
 apply from: '../publishing.gradle'
+setCustomArtifactName('sweetest-core')
 
 dependencies {
     implementation project(':sweetest:base')
