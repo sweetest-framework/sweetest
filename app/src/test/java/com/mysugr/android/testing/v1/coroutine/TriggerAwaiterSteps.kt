@@ -1,7 +1,6 @@
 package com.mysugr.android.testing.v1.coroutine
 
 import com.mysugr.android.testing.example.coroutine.TriggerAwaiter
-import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.context.TestContext
 import com.mysugr.sweetest.framework.coroutine.throwExceptionIfFailed
@@ -11,8 +10,7 @@ import kotlinx.coroutines.yield
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 
-class TriggerAwaiterSteps(testContext: TestContext) :
-    BaseSteps(testContext, appModuleTestingConfiguration) {
+class TriggerAwaiterSteps(testContext: TestContext) : BaseSteps(testContext) {
 
     private val sut = TriggerAwaiter()
 

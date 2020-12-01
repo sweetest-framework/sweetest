@@ -1,33 +1,33 @@
 package com.mysugr.android.testing.v1.example.view
 
-import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.auth.AuthManager
-import com.mysugr.android.testing.v1.example.auth.AuthManagerSteps
-import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.view.LoginViewModel
-import com.mysugr.android.testing.example.view.LoginViewModel.State.Error
-import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedIn
+import com.mysugr.android.testing.v1.example.auth.AuthManagerMockSteps
+import com.mysugr.android.testing.v1.example.net.BackendFakeUser
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
 import com.mysugr.sweetest.framework.base.steps
 import org.junit.Test
 
-class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
-
-    override fun configure() = super.configure()
-        .requireReal<LoginViewModel>()
-        .requireMock<AuthManager>()
-        .onSetUp { sut.givenStateListenerConnected() }
+class LoginViewModelTest : BaseJUnitTest() {
 
     private val sut by steps<LoginViewModelSteps>()
-    private val authManager by steps<AuthManagerSteps>()
-    private val user by steps<UserSteps>()
+    private val authManager by steps<AuthManagerMockSteps>()
+
+    private val user = BackendFakeUser("test@test.com", "supersecure")
+
+    override fun configure() = super.configure()
+        .onSetUp { sut.whenInitialized() }
 
     @Test
     fun `Login with existing email and correct password`() {
+        authManager.givenExistingUser()
         sut {
-            whenLoggingIn()
-            whenWaitForState(LoggedIn::class.java)
+            whenLoggingIn(user.email, user.password)
+            thenLastStateIs(
+                LoginViewModel.State.LoggedIn(
+                    isNewUser = false
+                )
+            )
         }
         authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsLoggedIn()
@@ -35,10 +35,14 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     @Test
     fun `Login with non-existent email`() {
-        user.givenRequestedUserDoesntExist()
         sut {
-            whenLoggingIn()
-            whenWaitForState(LoggedIn::class.java)
+            authManager.givenNewUser()
+            whenLoggingIn(user.email, user.password)
+            thenLastStateIs(
+                LoginViewModel.State.LoggedIn(
+                    isNewUser = true
+                )
+            )
         }
         authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsLoggedInAsNewUser()
@@ -46,10 +50,10 @@ class LoginViewModelTest : BaseJUnitTest(appModuleTestingConfiguration) {
 
     @Test
     fun `Login with wrong password`() {
-        user.givenEnteredPasswordIsIncorrect()
+        authManager.givenWrongPassword()
         sut {
-            whenLoggingIn()
-            whenWaitForState(Error::class.java)
+            whenLoggingIn(user.email, user.password)
+            thenLastStateIs(LoginViewModel.State.Error::class)
         }
         authManager.thenLoginOrRegisterIsCalled()
         sut.thenStateIsPasswordErrorWrongPassword()

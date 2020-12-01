@@ -22,6 +22,8 @@ android {
 
 dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "com.google.android.material:material:$versions.material"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
@@ -31,5 +33,6 @@ dependencies {
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     testImplementation "junit:junit:$versions.junit"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
     testImplementation "org.mockito:mockito-core:$versions.mockito"
 }

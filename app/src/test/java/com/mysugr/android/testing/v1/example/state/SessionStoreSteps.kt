@@ -1,37 +1,30 @@
 package com.mysugr.android.testing.v1.example.state
 
-import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.state.SessionStore
 import com.mysugr.android.testing.example.user.User
+import com.mysugr.android.testing.util.nonNullable
+import com.mysugr.android.testing.util.nonNullableAny
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.never
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.eq
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
-class SessionStoreSteps(testContext: TestContext) :
-    BaseSteps(testContext, appModuleTestingConfiguration) {
+class SessionStoreSteps(testContext: TestContext) : BaseSteps(testContext) {
 
     override fun configure() = super.configure()
-        .requireMock<SessionStore>()
-
-    private val user by steps<UserSteps>()
+        .provide<SessionStore> { mock(SessionStore::class.java) }
 
     private val instance by dependency<SessionStore>()
 
-    fun thenSessionIsStarted(email: String? = null) {
-        val expected = User(email ?: user.email)
-        verify(instance).beginSession(user.authToken, expected)
+    fun thenASessionIsStarted() {
+        verify(instance).beginSession(nonNullableAny(), nonNullableAny())
     }
 
-    fun thenSessionIsNotStarted() {
-        verify(instance, never()).beginSession(any() ?: "", any() ?: User("dummy"))
-    }
-
-    fun thenSessionIsEnded() {
-        verify(instance).endSession()
+    fun thenSessionIsStarted(email: String) {
+        val expectedUser = User(email)
+        verify(instance).beginSession(anyString().nonNullable, eq(expectedUser).nonNullable)
     }
 }

@@ -1,115 +1,82 @@
 package com.mysugr.android.testing.v1.example.view
 
 import com.mysugr.android.testing.example.app.R
-import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
 import com.mysugr.android.testing.example.view.LoginViewModel
+import com.mysugr.android.testing.v1.example.coroutine.CoroutineSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.base.steps
 import com.mysugr.sweetest.framework.context.TestContext
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.test.TestCoroutineScope
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
+import kotlin.reflect.KClass
 
-class LoginViewModelSteps(testContext: TestContext) :
-    BaseSteps(testContext, appModuleTestingConfiguration) {
+class LoginViewModelSteps(testContext: TestContext) : BaseSteps(testContext) {
 
+    override fun configure() = super.configure()
+        .requireSteps<CoroutineSteps>()
+        .provide<LoginViewModel>()
+
+    private val testCoroutineScope by dependency<TestCoroutineScope>()
     private val instance by dependency<LoginViewModel>()
-    private val user by steps<UserSteps>()
+    private val trackedStates = mutableListOf<LoginViewModel.State>()
 
-    private val recordedStateChanges = mutableListOf<LoginViewModel.State>()
-    private val stateChangeSync = Object()
-
-    fun givenStateListenerConnected() {
-        instance.stateListener = {
-            recordedStateChanges.add(it)
-            synchronized(stateChangeSync) {
-                stateChangeSync.notify()
-            }
-        }
+    fun whenInitialized() {
+        instance.state
+            .onEach { trackedStates.add(it) }
+            .launchIn(testCoroutineScope)
     }
 
-    fun whenLoggingIn() {
-        instance.loginOrRegister(user.email, user.password)
+    fun whenLoggingIn(email: String, password: String) {
+        instance.loginOrRegister(email, password)
     }
 
-    fun <R> whenWaitForState(ofType: Class<R>) = whenWaitForState(ofType, false)
-    fun <R> whenWaitForStateNot(ofType: Class<R>) = whenWaitForState(ofType, true)
+    fun thenLastStateIs(expected: LoginViewModel.State) {
+        val actual = trackedStates.lastOrNull()
+        assertEquals(expected, actual)
+    }
 
-    private fun <R> whenWaitForState(ofType: Class<R>, invert: Boolean): R {
-
-        var resultState: R? = null
-        val startedAtMillis = System.currentTimeMillis()
-        val maxTimeMillis = 1000L
-
-        fun checkLastState() =
-            if (recordedStateChanges.size == 0) {
-                false
-            } else {
-                val last = recordedStateChanges.last()
-                val matchesType = if (invert) {
-                    last::class.java != ofType
-                } else {
-                    last::class.java == ofType
-                }
-                if (matchesType) {
-                    @Suppress("UNCHECKED_CAST")
-                    resultState = last as R
-                }
-                matchesType
-            }
-
-        while (!checkLastState()) {
-            val timeToGo = maxTimeMillis - (System.currentTimeMillis() - startedAtMillis)
-            if (timeToGo > 0L) {
-                synchronized(stateChangeSync) {
-                    stateChangeSync.wait(timeToGo)
-                }
-            } else {
-                fail("Timed out waiting for state of type $ofType")
-            }
-        }
-
-        return resultState!!
+    fun thenLastStateIs(expectedType: KClass<*>) {
+        val actual = trackedStates.lastOrNull()
+        checkNotNull(actual)
+        assertEquals(expectedType, actual::class)
     }
 
     fun thenStateChangeWasNotified() {
-        assertTrue(recordedStateChanges.size > 0)
+        assertTrue(trackedStates.size > 0)
     }
 
     fun thenStateIsLoggedIn() {
         thenStateChangeWasNotified()
-        assertTrue(recordedStateChanges.last() is LoginViewModel.State.LoggedIn)
+        assertTrue(trackedStates.last() is LoginViewModel.State.LoggedIn)
     }
 
     fun thenStateIsNotLoggedIn() {
         thenStateChangeWasNotified()
-        assertTrue(recordedStateChanges.last() !is LoginViewModel.State.LoggedIn)
+        assertTrue(trackedStates.last() !is LoginViewModel.State.LoggedIn)
     }
 
     fun thenStateIsLoggedInAsNewUser() {
         thenStateChangeWasNotified()
-        val last = recordedStateChanges.last() as? LoginViewModel.State.LoggedIn
+        val last = trackedStates.last() as? LoginViewModel.State.LoggedIn
         assertNotNull(last)
         assertTrue(last!!.isNewUser)
     }
 
     fun thenStateIsLoggedInAsExistingUser() {
         thenStateChangeWasNotified()
-        val last = recordedStateChanges.last() as? LoginViewModel.State.LoggedIn
+        val last = trackedStates.last() as? LoginViewModel.State.LoggedIn
         assertNotNull(last)
         assertTrue(!last!!.isNewUser)
     }
 
-    fun thenStateIsError() {
-        thenStateChangeWasNotified()
-        assertTrue(recordedStateChanges.last() is LoginViewModel.State.Error)
-    }
-
     fun thenStateIsPasswordErrorWrongPassword() {
         thenStateChangeWasNotified()
-        (recordedStateChanges.last() as? LoginViewModel.State.Error)
+        (trackedStates.last() as? LoginViewModel.State.Error)
             ?.also { assertTrue(it.passwordError == R.string.error_incorrect_password) }
             ?: fail("The last state is not of type Error")
     }

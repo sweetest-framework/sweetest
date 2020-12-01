@@ -1,64 +1,37 @@
 package com.mysugr.android.testing.v1.example.auth
 
-import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.auth.AuthManager
-import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
-import com.mysugr.android.testing.v1.example.net.BackendGatewaySteps
+import com.mysugr.android.testing.v1.example.net.BackendFakeSteps
+import com.mysugr.android.testing.v1.example.net.BackendFakeUser.Companion.TEST_USER
 import com.mysugr.android.testing.v1.example.state.SessionStoreSteps
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.invoke
 import com.mysugr.sweetest.framework.base.steps
-
 import org.junit.Test
 
-class AuthManagerTest : BaseJUnitTest(appModuleTestingConfiguration) {
+class AuthManagerTest : BaseJUnitTest() {
 
-    override fun configure() = super.configure()
-        .requireReal<AuthManager>()
-
-    private val user by steps<UserSteps>()
     private val sut by steps<AuthManagerSteps>()
+    private val backend by steps<BackendFakeSteps>()
     private val sessionStore by steps<SessionStoreSteps>()
-    private val backendGateway by steps<BackendGatewaySteps>()
 
     @Test
-    fun `Login as existing user`() {
-        sut.whenLoggingInOrRegistering()
-        backendGateway {
-            thenEmailIsChecked()
-            thenLoginAttempted()
-        }
-        sessionStore.thenSessionIsStarted()
-    }
-
-    @Test(expected = AuthManager.WrongPasswordException::class)
-    fun `Login as existing user with wrong password`() {
-        user.givenEnteredPasswordIsIncorrect()
-        try {
-            sut.whenLoggingInOrRegistering()
-        } finally {
-            backendGateway {
-                thenEmailIsChecked()
-                thenLoginAttempted()
-            }
-            sessionStore.thenSessionIsNotStarted()
-        }
+    fun `Login as existing user, checks for existing email`() = sut {
+        backend.givenExistingUser(TEST_USER)
+        whenPassingCredentials(TEST_USER.email, TEST_USER.password)
+        backend.thenEmailWasChecked(TEST_USER.email)
     }
 
     @Test
-    fun `Register new user`() {
-        user.givenRequestedUserDoesntExist()
-        sut.whenLoggingInOrRegistering()
-        backendGateway {
-            thenEmailIsChecked()
-            thenRegistered()
-        }
-        sessionStore.thenSessionIsStarted()
+    fun `Login as existing user, attempts login`() = sut {
+        backend.givenExistingUser(TEST_USER)
+        whenPassingCredentials(TEST_USER.email, TEST_USER.password)
+        backend.thenLoginWasAttempted(TEST_USER.email, TEST_USER.password)
     }
 
     @Test
-    fun `Logging out`() {
-        sut.whenLoggingOut()
-        sessionStore.thenSessionIsEnded()
+    fun `Login as existing user, starts session`() = sut {
+        backend.givenExistingUser(TEST_USER)
+        whenPassingCredentials(TEST_USER.email, TEST_USER.password)
+        sessionStore.thenASessionIsStarted()
     }
 }

@@ -1,14 +1,13 @@
 package com.mysugr.android.testing.v1.coroutine
 
-import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import com.mysugr.sweetest.framework.coroutine.invoke
+import com.mysugr.sweetest.framework.coroutine.testCoroutine
 import com.mysugr.sweetest.util.expectException
 import org.junit.Test
 
-class TriggerAwaiterTest : BaseJUnitTest(appModuleTestingConfiguration) {
+class TriggerAwaiterTest : BaseJUnitTest() {
 
     private val triggerAwaiter by steps<TriggerAwaiterSteps>()
 
