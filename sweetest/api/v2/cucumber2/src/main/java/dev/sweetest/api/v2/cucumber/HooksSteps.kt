@@ -4,7 +4,7 @@ import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.usecases.proceedWorkflow
 import cucumber.api.java.After
 import cucumber.api.java.Before
-import dev.sweetest.api.v2.framework.context.TestContext
+import dev.sweetest.api.v2.TestContext
 
 /**
  * Use this steps class to wire Cucumber with sweetest by adding `dev.sweetest.api.v2.cucumber` to the list

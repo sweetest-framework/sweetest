@@ -1,7 +1,7 @@
 package dev.sweetest.api.v2.framework
 
 import dev.sweetest.api.v2.framework.base.JUnit4Test
-import dev.sweetest.api.v2.framework.base.dependency
+import dev.sweetest.api.v2.dependency
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotSame

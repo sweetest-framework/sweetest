@@ -1,4 +1,4 @@
-package dev.sweetest.api.v2.framework.dependency
+package dev.sweetest.api.v2.internal
 
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.internal.DependencyProviderArgument

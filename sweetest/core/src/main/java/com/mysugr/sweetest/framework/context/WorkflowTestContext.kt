@@ -4,7 +4,7 @@ import com.mysugr.sweetest.framework.workflow.WorkflowStep
 
 class WorkflowTestContext(private val stepsTestContext: StepsTestContext) {
 
-    private var currentStep: WorkflowStep = WorkflowStep.INITIALIZE_FRAMEWORK
+    internal var currentStep: WorkflowStep = WorkflowStep.INITIALIZE_FRAMEWORK
 
     private val supportedSubscriptionSteps = listOf(
         WorkflowStep.INITIALIZE_STEPS,

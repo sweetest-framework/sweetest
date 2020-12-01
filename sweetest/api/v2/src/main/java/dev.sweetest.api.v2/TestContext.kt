@@ -1,9 +1,9 @@
-package dev.sweetest.api.v2.framework.context
+package dev.sweetest.api.v2
 
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import dev.sweetest.api.v2.framework.dependency.DependencyProviderScope
+import dev.sweetest.api.v2.internal.DependencyProviderScope
 import com.mysugr.sweetest.internal.TestContext
 import com.mysugr.sweetest.usecases.initializeDependencies
 import com.mysugr.sweetest.usecases.resetEnvironment

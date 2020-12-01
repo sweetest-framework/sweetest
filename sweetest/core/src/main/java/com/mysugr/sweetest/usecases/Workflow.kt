@@ -28,3 +28,6 @@ fun proceedWorkflow(
 fun finishWorkflow(workflowTestContext: WorkflowTestContext) {
     workflowTestContext.finish()
 }
+
+fun hasWorkflowAlreadyStarted(workflowTestContext: WorkflowTestContext) =
+    workflowTestContext.currentStep > WorkflowStep.INITIALIZE_STEPS

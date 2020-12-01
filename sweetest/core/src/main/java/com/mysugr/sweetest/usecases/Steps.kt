@@ -9,7 +9,7 @@ package com.mysugr.sweetest.usecases
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.StepsTestContext
-import com.mysugr.sweetest.internal.CommonBase
+import com.mysugr.sweetest.internal.TestElement
 import com.mysugr.sweetest.internal.Steps
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
@@ -26,11 +26,11 @@ fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, stepsTyp
 fun <T : Steps> getStepsDelegate(
     stepsTestContext: StepsTestContext,
     stepsType: KClass<T>
-): ReadOnlyProperty<CommonBase, T> {
+): ReadOnlyProperty<TestElement, T> {
     try {
         notifyStepsRequired(stepsTestContext, stepsType = stepsType)
-        return object : ReadOnlyProperty<CommonBase, T> {
-            override fun getValue(thisRef: CommonBase, property: KProperty<*>): T {
+        return object : ReadOnlyProperty<TestElement, T> {
+            override fun getValue(thisRef: TestElement, property: KProperty<*>): T {
                 return try {
                     stepsTestContext.get(stepsType)
                 } catch (throwable: Throwable) {

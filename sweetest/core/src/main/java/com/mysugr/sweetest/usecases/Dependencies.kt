@@ -16,7 +16,7 @@ import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.internal.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.internal.CommonBase
+import com.mysugr.sweetest.internal.TestElement
 import com.mysugr.sweetest.internal.DependencyProviderArgument
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
@@ -103,11 +103,11 @@ fun <T : Any> getDependencyInstance(dependenciesTestContext: DependenciesTestCon
 fun <T : Any> getDependencyDelegate(
     dependenciesTestContext: DependenciesTestContext,
     type: KClass<T>
-): ReadOnlyProperty<CommonBase, T> {
+): ReadOnlyProperty<TestElement, T> {
     try {
         var cachedDependencyState: DependencyState<T>? = null
-        return object : ReadOnlyProperty<CommonBase, T> {
-            override fun getValue(thisRef: CommonBase, property: KProperty<*>): T {
+        return object : ReadOnlyProperty<TestElement, T> {
+            override fun getValue(thisRef: TestElement, property: KProperty<*>): T {
                 return try {
                     if (cachedDependencyState == null) {
                         cachedDependencyState = TestEnvironment.dependencies.getDependencyState(type)

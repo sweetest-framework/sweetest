@@ -16,9 +16,10 @@ class StepsTestContext(private val testContext: TestContext) {
     private fun checkSetUp(clazz: KClass<*>) {
         check(setUpDone) {
             "You are trying to access steps class \"$clazz\" before the all initialization steps had finished." +
-                "Probably you are retrieving the steps class outside an appropriate setup code block which " +
-                "should be registered in a steps or test class with `override fun configure() = " +
-                "super.configure().onSetUp { ... }`."
+                "Probably you are\n 1) retrieving the steps class outside an appropriate setup code block (e.g. " +
+                "`onSetUp { ... }`).\n2) the Cucumber hasn't correctly been set up (make sure you are using the " +
+                "appropriate `sweetest-cucumber*` dependency and `dev.sweetest.api.v2.cucumber` is in the list of " +
+                "glue code packages)."
         }
     }
 

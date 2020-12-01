@@ -6,7 +6,7 @@ import com.mysugr.sweetest.framework.context.TestContext
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
-abstract class CommonBase(internal val testContext: TestContext) : com.mysugr.sweetest.internal.CommonBase
+abstract class CommonBase(internal val testContext: TestContext) : com.mysugr.sweetest.internal.TestElement
 
 // --- region: Public API (the following inline functions should just be wrappers over implementation functions!)
 
