@@ -28,7 +28,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
 
-    testImplementation project(path: ':sweetest:api:v1')
+    testImplementation project(':sweetest:api:v1')
+    testImplementation project(':sweetest:api:v2:cucumber2')
+    testImplementation project(':sweetest:api:v2:junit4')
     testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
