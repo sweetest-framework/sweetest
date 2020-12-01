@@ -1,7 +1,8 @@
-package com.mysugr.android.testing.example.state
+package com.mysugr.android.testing.v1.example.state
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.state.SessionStore
 import com.mysugr.android.testing.example.user.User
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency

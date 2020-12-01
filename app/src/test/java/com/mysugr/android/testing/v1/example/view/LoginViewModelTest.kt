@@ -1,9 +1,10 @@
-package com.mysugr.android.testing.example.view
+package com.mysugr.android.testing.v1.example.view
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
 import com.mysugr.android.testing.example.auth.AuthManager
-import com.mysugr.android.testing.example.auth.AuthManagerSteps
-import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.v1.example.auth.AuthManagerSteps
+import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.example.view.LoginViewModel.State.Error
 import com.mysugr.android.testing.example.view.LoginViewModel.State.LoggedIn
 import com.mysugr.sweetest.framework.base.BaseJUnitTest

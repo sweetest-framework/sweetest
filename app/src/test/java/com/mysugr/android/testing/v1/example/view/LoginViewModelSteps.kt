@@ -1,8 +1,9 @@
-package com.mysugr.android.testing.example.view
+package com.mysugr.android.testing.v1.example.view
 
 import com.mysugr.android.testing.example.app.R
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
-import com.mysugr.android.testing.example.feature.auth.UserSteps
+import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.v1.example.feature.auth.UserSteps
+import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.base.steps

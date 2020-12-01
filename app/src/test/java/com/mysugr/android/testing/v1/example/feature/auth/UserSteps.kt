@@ -1,13 +1,15 @@
-package com.mysugr.android.testing.example.feature.auth
+package com.mysugr.android.testing.v1.example.feature.auth
 
-import com.mysugr.android.testing.example.appModuleTestingConfiguration
+import com.mysugr.android.testing.v1.example.appModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.context.TestContext
 import cucumber.api.java.Before
 import cucumber.api.java.en.Given
 import java.util.UUID
 
-class UserSteps(testContext: TestContext) : BaseSteps(testContext, appModuleTestingConfiguration) {
+class UserSteps(testContext: TestContext) : BaseSteps(testContext,
+    appModuleTestingConfiguration
+) {
 
     @Before("@login-integration")
     fun dummy() {
