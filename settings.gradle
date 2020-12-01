@@ -2,6 +2,7 @@ include ':app',
         ':sweetest',
         ':sweetest:api:v1',
         ':sweetest:api:v2',
+        ':sweetest:api:v2:cucumber2',
         ':sweetest:api:v2:junit4',
         ':sweetest:base',
         ':sweetest:core'
