@@ -15,6 +15,7 @@ setCustomArtifactName('sweetest-junit4')
 
 dependencies {
     api project(':sweetest:api:v2')
+    implementation project(':sweetest:core')
 
     implementation "junit:junit:$versions.junit"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
