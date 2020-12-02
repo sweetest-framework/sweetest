@@ -4,7 +4,6 @@ import com.mysugr.android.testing.example.net.AuthToken
 import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.net.UsernameOrPasswordWrongException
 import com.mysugr.android.testing.example.user.User
-import com.mysugr.sweetest.TestContext
 import cucumber.api.java.Before
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
@@ -12,7 +11,7 @@ import dev.sweetest.api.v2.Steps
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 
-class BackendFakeSteps(testContext: TestContext) : Steps(testContext) {
+class BackendFakeSteps : Steps() {
 
     // The steps class creates a fake and creates a Mockito spy from it (for the sake of being able to use `verify`)
     private val instance = spy(FakeBackendGateway())

@@ -53,15 +53,14 @@ fun configureDependencyReal(
     dependencyType: KClass<*>,
     forceMode: Boolean = false,
     offerProvider: DependencyProvider<*>? = null
-) =
-    dependenciesTestContext.editLegacyDependencyState(dependencyType) {
-        if (forceMode) {
-            mode = DependencyMode.REAL
-        }
-        if (offerProvider != null) {
-            realProviderUnknown = offerProvider
-        }
+) = dependenciesTestContext.editLegacyDependencyState(dependencyType) {
+    if (forceMode) {
+        mode = DependencyMode.REAL
     }
+    if (offerProvider != null) {
+        realProviderUnknown = offerProvider
+    }
+}
 
 @Deprecated(DEPRECATION_MESSAGE)
 fun configureDependencyMock(

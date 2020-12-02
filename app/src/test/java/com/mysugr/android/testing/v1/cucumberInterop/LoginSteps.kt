@@ -8,12 +8,11 @@ import com.mysugr.android.testing.v1.example.state.SessionStoreSteps
 import com.mysugr.android.testing.v1.example.view.LoginViewModelSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.TestContext
 import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
 
-class LoginSteps(testContext: TestContext) : BaseSteps(testContext) {
+class LoginSteps : BaseSteps() {
 
     override fun configure() = super.configure()
         .requireSteps<AuthManagerSteps>()

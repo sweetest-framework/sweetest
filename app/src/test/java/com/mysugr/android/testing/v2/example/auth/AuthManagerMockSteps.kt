@@ -3,14 +3,13 @@ package com.mysugr.android.testing.v2.example.auth
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.android.testing.example.auth.AuthManager.LoginOrRegisterResult
 import com.mysugr.android.testing.util.nonNullableAny
-import com.mysugr.sweetest.TestContext
 import dev.sweetest.api.v2.Steps
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
-class AuthManagerMockSteps(testContext: TestContext) : Steps(testContext) {
+class AuthManagerMockSteps : Steps() {
 
     init {
         provide<AuthManager> { mock(AuthManager::class.java) }

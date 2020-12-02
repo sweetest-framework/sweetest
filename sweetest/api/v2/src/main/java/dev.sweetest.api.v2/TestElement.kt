@@ -1,6 +1,5 @@
 package dev.sweetest.api.v2
 
-import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
@@ -9,6 +8,7 @@ import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.configureDependencyProvision
 import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
+import com.mysugr.sweetest.usecases.getCurrentTestContext
 import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
 import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
@@ -17,10 +17,9 @@ import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
-abstract class TestElement(protected val testContext: TestContext) : com.mysugr.sweetest.internal.TestElement {
+abstract class TestElement : com.mysugr.sweetest.internal.TestElement {
 
-    // For testability
-    internal val internalTestContext get() = testContext
+    protected val testContext = getCurrentTestContext()
 
     // --- region: Public configuration API
 

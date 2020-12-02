@@ -1,15 +1,17 @@
 package com.mysugr.sweetest.framework.base
 
-import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.internal.Steps
+import com.mysugr.sweetest.usecases.getCurrentTestContext
 import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
-abstract class CommonBase(internal val testContext: TestContext) : com.mysugr.sweetest.internal.TestElement
+abstract class CommonBase : com.mysugr.sweetest.internal.TestElement {
+    internal val testContext = getCurrentTestContext()
+}
 
 // --- region: Public API (the following inline functions should just be wrappers over implementation functions!)
 

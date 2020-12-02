@@ -1,6 +1,5 @@
 package com.mysugr.android.testing.v1v2Interop
 
-import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
@@ -17,14 +16,14 @@ private class B
 
 class V1V2InteropTest {
 
-    class AStepsV1(testContext: TestContext) : BaseSteps(testContext) {
+    class AStepsV1 : BaseSteps() {
         override fun configure() = super.configure()
             .provide<A> { aInstance!! }
 
         fun doDomethingA() {}
     }
 
-    class BStepsV2(testContext: TestContext) : Steps(testContext) {
+    class BStepsV2 : Steps() {
         init {
             provide<B> { bInstance!! }
         }

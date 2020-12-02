@@ -3,7 +3,6 @@ package com.mysugr.android.testing.v2.example.view
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.v2.example.coroutine.CoroutineSteps
-import com.mysugr.sweetest.TestContext
 import dev.sweetest.api.v2.Steps
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -14,7 +13,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import kotlin.reflect.KClass
 
-class LoginViewModelSteps(testContext: TestContext) : Steps(testContext) {
+class LoginViewModelSteps : Steps() {
 
     init {
         requireSteps<CoroutineSteps>()

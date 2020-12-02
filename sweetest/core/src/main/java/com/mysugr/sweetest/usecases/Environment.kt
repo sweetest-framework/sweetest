@@ -7,16 +7,26 @@ package com.mysugr.sweetest.usecases
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
 
+import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.environment.TestEnvironment
+
+private var currentTestContext: TestContext? = null
 
 // Temporary means of initializing the environment as long as TestEnvironment is still here
 fun ensureEnvironmentInitialized() {
     TestEnvironment
 }
 
+fun getCurrentTestContext(): TestContext {
+    return currentTestContext ?: TestContext().also {
+        currentTestContext = it
+    }
+}
+
 // Temporary means of resetting the state of the environment as long as TestEnvironment is still here
 fun resetEnvironment() {
     TestEnvironment.reset()
+    currentTestContext = null
 }
 
 /**
@@ -24,4 +34,5 @@ fun resetEnvironment() {
  */
 fun resetEnvironmentFully() {
     TestEnvironment.fullReset()
+    resetEnvironment()
 }

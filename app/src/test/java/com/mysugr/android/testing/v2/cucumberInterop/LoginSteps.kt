@@ -10,9 +10,8 @@ import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
 import dev.sweetest.api.v2.Steps
-import com.mysugr.sweetest.TestContext
 
-class LoginSteps(testContext: TestContext) : Steps(testContext) {
+class LoginSteps : Steps() {
 
     init {
         requireSteps<AuthManagerSteps>()

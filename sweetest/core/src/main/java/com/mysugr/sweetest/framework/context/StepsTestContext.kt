@@ -4,6 +4,7 @@ import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.TestContextElement
 import com.mysugr.sweetest.internal.Steps
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.starProjectedType
 
@@ -15,9 +16,9 @@ class StepsTestContext(private val testContext: TestContext) : TestContextElemen
 
     private fun checkSetUp(clazz: KClass<*>) {
         check(setUpDone) {
-            "You are trying to access steps class \"$clazz\" before the all initialization steps had finished." +
+            "You are trying to access steps class \"$clazz\" before all initialization steps had finished. " +
                 "Probably you are\n 1) retrieving the steps class outside an appropriate setup code block (e.g. " +
-                "`onSetUp { ... }`).\n2) the Cucumber hasn't correctly been set up (make sure you are using the " +
+                "`onSetUp { ... }`).\n2) Cucumber hasn't correctly been set up (make sure you are using the " +
                 "appropriate `sweetest-cucumber*` dependency and `dev.sweetest.api.v2.cucumber` is in the list of " +
                 "glue code packages)."
         }
@@ -62,9 +63,24 @@ class StepsTestContext(private val testContext: TestContext) : TestContextElemen
                         "has to be set up as required before it's used!"
                 )
             }
+
             checkType(kClass)
-            checkConstructor(kClass)
-            val newInstance = kClass.constructors.first().call(testContext)
+            checkConstructorExists(kClass)
+
+            val constructor = getConstructorWithArgument(kClass)
+                ?: getConstructorWithoutArgument(kClass)
+                ?: error(
+                    "Can't use \"${kClass.simpleName}\" as steps class. A steps class needs to have a suitable " +
+                        "constructor, which is either one with no parameters or with a TestContext as parameter."
+                )
+
+            val arguments = if (constructor.parameters.isEmpty()) {
+                emptyArray()
+            } else {
+                arrayOf(testContext)
+            }
+
+            val newInstance = constructor.call(*arguments)
             map[clazz] = newInstance
             newInstance
         } catch (exception: Exception) {
@@ -83,26 +99,18 @@ class StepsTestContext(private val testContext: TestContext) : TestContextElemen
         }
     }
 
-    private fun checkConstructor(clazz: KClass<*>) {
-        try {
-            val constructors = clazz.constructors
-            if (constructors.size > 1) {
-                error("There is more than one constructor")
-            }
-            val constructor = constructors.first()
-            if (constructor.parameters.size != 1) {
-                error("Wrong number of constructor parameters")
-            }
-            if (constructor.parameters.first().type != TestContext::class.starProjectedType) {
-                error("Wrong constructor parameter type")
-            }
-        } catch (exception: Exception) {
-            throw RuntimeException(
-                "\"$clazz\", as all steps classes which you want to auto-instantiate, should " +
-                    "have exactly one constructor receiving a TestContext object!",
-                exception
-            )
+    private fun <T : Any> getConstructorWithArgument(clazz: KClass<T>): KFunction<T>? {
+        return clazz.constructors.find {
+            it.parameters.size == 1 && it.parameters.first().type == TestContext::class.starProjectedType
         }
+    }
+
+    private fun <T : Any> getConstructorWithoutArgument(clazz: KClass<T>): KFunction<T>? {
+        return clazz.constructors.find { it.parameters.isEmpty() }
+    }
+
+    private fun checkConstructorExists(clazz: KClass<*>) {
+        if (clazz.constructors.isEmpty()) error("Steps class must have at least one constructor")
     }
 
     internal fun setUpInstance(instance: Steps) {
@@ -129,6 +137,7 @@ class StepsTestContext(private val testContext: TestContext) : TestContextElemen
 
     // Necessary for defining a TestContextElement:
     override val key = Key
+
     companion object Key : TestContextElement.Key<StepsTestContext> {
         override fun createInstance(testContext: TestContext) = StepsTestContext(testContext)
     }

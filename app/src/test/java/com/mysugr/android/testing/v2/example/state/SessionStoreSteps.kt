@@ -4,14 +4,13 @@ import com.mysugr.android.testing.example.state.SessionStore
 import com.mysugr.android.testing.example.user.User
 import com.mysugr.android.testing.util.nonNullable
 import com.mysugr.android.testing.util.nonNullableAny
-import com.mysugr.sweetest.TestContext
 import dev.sweetest.api.v2.Steps
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
-class SessionStoreSteps(testContext: TestContext) : Steps(testContext) {
+class SessionStoreSteps : Steps() {
 
     init {
         provide<SessionStore> { mock(SessionStore::class.java) }

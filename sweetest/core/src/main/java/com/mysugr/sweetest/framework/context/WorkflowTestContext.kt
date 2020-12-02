@@ -2,8 +2,8 @@ package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.TestContextElement
-import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
+import com.mysugr.sweetest.usecases.resetEnvironment
 
 class WorkflowTestContext(private val stepsTestContext: StepsTestContext) : TestContextElement {
 
@@ -35,7 +35,7 @@ class WorkflowTestContext(private val stepsTestContext: StepsTestContext) : Test
 
     internal fun finish() {
         proceedToInternal(WorkflowStep.DONE)
-        TestEnvironment.reset() // Preliminary solution until upcoming refactoring
+        resetEnvironment() // Preliminary solution until upcoming refactoring
     }
 
     internal fun proceedTo(step: WorkflowStep) {

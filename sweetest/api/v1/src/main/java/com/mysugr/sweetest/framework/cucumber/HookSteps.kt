@@ -1,9 +1,9 @@
 package com.mysugr.sweetest.framework.cucumber
 
-import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.usecases.finishWorkflow
+import com.mysugr.sweetest.usecases.getCurrentTestContext
 import com.mysugr.sweetest.usecases.proceedWorkflow
 import cucumber.api.java.After
 import cucumber.api.java.Before
@@ -12,7 +12,9 @@ import cucumber.api.java.Before
  * Use this steps class to wire Cucumber with sweetest by adding `com.mysugr.sweetest.framework.cucumber` to the list
  * of glue code packages.
  */
-class HookSteps(private val testContext: TestContext) {
+class HookSteps {
+
+    private val testContext = getCurrentTestContext()
 
     @Before(order = HookOrder.INITIALIZE_FRAMEWORK)
     fun initializeFramework() {
