@@ -16,4 +16,6 @@ setCustomArtifactName('sweetest-base')
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+
+    testImplementation "junit:junit:$versions.junit"
 }
