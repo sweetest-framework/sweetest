@@ -15,7 +15,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Ignore
 import org.junit.Test
 
-class DependenciesTest : BaseTest() {
+class DependenciesTest : AutoWipeTest() {
 
     companion object {
         lateinit var moduleTestingConfiguration: ModuleTestingConfiguration

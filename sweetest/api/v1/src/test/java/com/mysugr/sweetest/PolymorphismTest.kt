@@ -13,7 +13,7 @@ import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertSame
 import org.junit.Test
 
-class PolymorphismTest : BaseTest() {
+class PolymorphismTest : AutoWipeTest() {
 
     interface Being
 

@@ -3,7 +3,6 @@ package framework
 import dev.sweetest.api.v2.BaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotSame
 import org.junit.Test
 
 class PolymorphismTest : AutoWipeTest() {
@@ -18,7 +17,7 @@ class PolymorphismTest : AutoWipeTest() {
     class Dog : Animal
 
     @Test
-    fun `New polymorphism scenario`() {
+    fun `Polymorphism scenario`() {
 
         val test = object : BaseTest() {
 
@@ -42,26 +41,5 @@ class PolymorphismTest : AutoWipeTest() {
         assertEquals(test.being, test.human)
 
         test.startWorkflow()
-    }
-
-    /**
-     * No matter whether we have global configuration or not, `provide` should force the algorithm
-     * to use precise type matching.
-     */
-    @Test
-    fun `Global config NO - NEW local config`() {
-
-        val test = object : BaseTest() {
-            val cat by dependency<Cat>() // matches only Cat
-            val animal by dependency<Animal>() // matches only Animal
-
-            init {
-                provide<Cat>()
-                provide<Animal> { object :
-                    Animal {} }
-            }
-        }
-
-        assertNotSame(test.cat, test.animal) // precise matching --> different types
     }
 }

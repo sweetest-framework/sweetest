@@ -5,7 +5,7 @@ import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
 import org.junit.Test
 
-class LegacyPolymorphismTest : BaseTest() {
+class LegacyPolymorphismTest : AutoWipeTest() {
 
     interface Animal
 

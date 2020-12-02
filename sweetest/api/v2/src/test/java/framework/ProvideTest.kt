@@ -12,6 +12,28 @@ class ProvideTest : AutoWipeTest() {
 
     class TestViewModel(internal val userService: TestUserService)
 
+    @Test
+    fun `Simple provide usage`() {
+        val testInstance = FakeTestUserService()
+
+        class TestClass : BaseTest() {
+            init {
+                provide { testInstance }
+            }
+
+            val instance by dependency<FakeTestUserService>()
+        }
+
+        with(TestClass()) {
+            try {
+                startWorkflow()
+                assert(instance === testInstance)
+            } finally {
+                finishWorkflow()
+            }
+        }
+    }
+
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (once with, once without lambda)`() {
         class TestClass : BaseTest() {
@@ -71,6 +93,4 @@ class ProvideTest : AutoWipeTest() {
 
         TestClass().startWorkflow()
     }
-
-    // TODO more tests
 }
