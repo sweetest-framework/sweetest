@@ -48,11 +48,6 @@ class V1V2InteropTest {
     @Test
     fun withV1Test() {
         val testV1 = object : BaseJUnitTest() {
-
-            override fun configure() = super.configure()
-                .requireSteps<AStepsV1>()
-                .requireSteps<BStepsV2>()
-
             val aSteps by steps<AStepsV1>()
             val bSteps by steps<BStepsV2>()
             val a by dependency<A>()
@@ -77,12 +72,6 @@ class V1V2InteropTest {
     @Test
     fun withV2Test() {
         val testV2 = object : JUnit4Test() {
-
-            init {
-                requireSteps<AStepsV1>()
-                requireSteps<BStepsV2>()
-            }
-
             val aSteps by steps<AStepsV1>()
             val bSteps by steps<BStepsV2>()
             val a by dependency<A>()
