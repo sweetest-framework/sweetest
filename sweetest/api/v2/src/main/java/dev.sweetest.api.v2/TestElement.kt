@@ -4,6 +4,7 @@ import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
+import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.configureDependencyProvision
@@ -13,12 +14,12 @@ import com.mysugr.sweetest.usecases.getStepsDelegate
 import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
 import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
 abstract class TestElement(protected val testContext: TestContext) : com.mysugr.sweetest.internal.TestElement {
 
+    // For testability
     internal val internalTestContext get() = testContext
 
     // --- region: Public configuration API
@@ -93,7 +94,7 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
     inline fun <reified T : Any> dependency(): ReadOnlyProperty<TestElement, T> =
         dependencyInternal(this, T::class)
 
-    inline fun <reified T : dev.sweetest.api.v2.Steps> steps(): ReadOnlyProperty<TestElement, T> =
+    inline fun <reified T : Steps> steps(): ReadOnlyProperty<TestElement, T> =
         stepsInternal(this, T::class)
 
     // --- region: Internals
@@ -131,7 +132,7 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
         getDependencyDelegate(scope.testContext[DependenciesTestContext], type)
 
     @PublishedApi
-    internal fun <T : dev.sweetest.api.v2.Steps> stepsInternal(
+    internal fun <T : Steps> stepsInternal(
         scope: TestElement,
         type: KClass<T>
     ): ReadOnlyProperty<TestElement, T> =
