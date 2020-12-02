@@ -2,15 +2,14 @@ package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.environment.TestEnvironment
-import com.mysugr.sweetest.internal.DependencyProvider
-import com.mysugr.sweetest.internal.DependencyProviderArgumentProvider
+import com.mysugr.sweetest.internal.DependencyProviderScope
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
 internal class DependencyState<T : Any>(
-    private val dependencyProviderArgumentProvider: DependencyProviderArgumentProvider,
+    private val dependencyProviderScope: DependencyProviderScope,
     val configuration: DependencyConfiguration<T>
 ) {
 
@@ -92,7 +91,7 @@ internal class DependencyState<T : Any>(
     }
 
     private fun createMock(): T =
-        mockProvider?.let { it(dependencyProviderArgumentProvider()) } ?: createDefaultMock()
+        mockProvider?.let { it(dependencyProviderScope) } ?: createDefaultMock()
 
     private fun createDefaultMock(): T = Mockito.mock(configuration.clazz.java)
 
@@ -166,7 +165,7 @@ internal class DependencyState<T : Any>(
 
     private fun createInstanceBy(provider: DependencyProvider<T>): T {
         return try {
-            provider(dependencyProviderArgumentProvider())
+            provider(dependencyProviderScope)
         } catch (dependencyException: DependencyInstanceInitializationException) {
             throw dependencyException
         } catch (mockitoException: MockitoException) {

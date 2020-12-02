@@ -4,7 +4,6 @@ import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencySetup
-import com.mysugr.sweetest.framework.dependency.asCoreDependencyProvider
 import com.mysugr.sweetest.usecases.ensureEnvironmentInitialized
 import kotlin.reflect.KClass
 
@@ -112,7 +111,7 @@ class DslScope internal constructor() {
                     DependencyConfiguration(
                         clazz = type,
                         defaultRealProvider = null,
-                        defaultMockProvider = provider.asCoreDependencyProvider(),
+                        defaultMockProvider = provider,
                         defaultDependencyMode = finalDependencyMode
                     )
                 )
@@ -120,7 +119,7 @@ class DslScope internal constructor() {
                 addDependency(
                     DependencyConfiguration(
                         clazz = type,
-                        defaultRealProvider = provider.asCoreDependencyProvider(),
+                        defaultRealProvider = provider,
                         defaultMockProvider = null,
                         defaultDependencyMode = finalDependencyMode
                     )

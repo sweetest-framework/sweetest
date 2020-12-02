@@ -3,6 +3,7 @@ package dev.sweetest.api.v2.cucumber
 import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
+import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
 import cucumber.api.java.After
 import cucumber.api.java.Before
@@ -51,5 +52,10 @@ class HookSteps(private val testContext: TestContext) {
     @After(order = HookOrder.AFTER_TEAR_DOWN)
     fun afterTearDown() {
         proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_TEAR_DOWN)
+    }
+
+    @After(order = HookOrder.DONE)
+    fun done() {
+        finishWorkflow(testContext[WorkflowTestContext])
     }
 }

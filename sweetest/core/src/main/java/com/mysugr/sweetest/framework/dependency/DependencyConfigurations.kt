@@ -1,7 +1,6 @@
 package com.mysugr.sweetest.framework.dependency
 
 import com.mysugr.sweetest.framework.environment.DependencySetupHandler
-import com.mysugr.sweetest.internal.DependencyProvider
 import kotlin.reflect.KClass
 
 internal interface DependencyConfigurationConsumer {

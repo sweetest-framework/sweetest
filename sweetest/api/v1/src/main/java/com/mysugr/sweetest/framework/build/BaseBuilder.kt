@@ -7,7 +7,6 @@ import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.dependency.asCoreDependencyProvider
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.configureDependencyMock
@@ -127,7 +126,7 @@ abstract class BaseBuilder<TSelf>(
         configureDependencyProvision(
             testContext[DependenciesTestContext],
             dependencyType = type,
-            provider = provider.asCoreDependencyProvider()
+            provider = provider
         )
     }
 
@@ -166,7 +165,7 @@ abstract class BaseBuilder<TSelf>(
         configureDependencyReal(
             testContext[DependenciesTestContext],
             dependencyType = type,
-            offerProvider = provider.asCoreDependencyProvider()
+            offerProvider = provider
         )
     }
 
@@ -178,7 +177,7 @@ abstract class BaseBuilder<TSelf>(
             testContext[DependenciesTestContext],
             dependencyType = type,
             forceMode = true,
-            offerProvider = provider.asCoreDependencyProvider()
+            offerProvider = provider
         )
     }
 
@@ -200,7 +199,7 @@ abstract class BaseBuilder<TSelf>(
         configureDependencyMock(
             testContext[DependenciesTestContext],
             dependencyType = type,
-            offerProvider = provider.asCoreDependencyProvider()
+            offerProvider = provider
         )
     }
 
@@ -212,7 +211,7 @@ abstract class BaseBuilder<TSelf>(
             testContext[DependenciesTestContext],
             dependencyType = type,
             forceMode = true,
-            offerProvider = provider.asCoreDependencyProvider()
+            offerProvider = provider
         )
     }
 

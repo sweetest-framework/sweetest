@@ -11,4 +11,5 @@ object HookOrder {
 
     const val TEAR_DOWN = 2_000
     const val AFTER_TEAR_DOWN = 1_000
+    const val DONE = 0
 }

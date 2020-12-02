@@ -13,8 +13,7 @@ import com.mysugr.sweetest.usecases.getStepsDelegate
 import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
 import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
-import dev.sweetest.api.v2.internal.DependencyProvider
-import dev.sweetest.api.v2.internal.asCoreDependencyProvider
+import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
@@ -105,7 +104,7 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
         configureDependencyProvision(
             testContext[DependenciesTestContext],
             dependencyType = type,
-            provider = provider.asCoreDependencyProvider()
+            provider = provider
         )
     }
 

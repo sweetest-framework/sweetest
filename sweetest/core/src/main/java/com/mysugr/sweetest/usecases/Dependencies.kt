@@ -13,25 +13,15 @@ package com.mysugr.sweetest.usecases
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.dependency.DependencyMode
-import com.mysugr.sweetest.internal.DependencyProvider
+import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.TestElement
-import com.mysugr.sweetest.internal.DependencyProviderArgument
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 private const val DEPRECATION_MESSAGE = "Legacy dependency modes"
-
-// --- region: Initialization
-
-fun initializeDependencies(
-    dependenciesTestContext: DependenciesTestContext,
-    dependencyProviderArgument: DependencyProviderArgument
-) {
-    TestEnvironment.initializeDependencies(dependencyProviderArgument)
-}
 
 // --- region: Configuration
 
