@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.base
 
+import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.framework.build.TestBuilder
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
@@ -9,6 +10,7 @@ import com.mysugr.sweetest.usecases.proceedWorkflow
 import org.junit.After
 import org.junit.Before
 
+@Deprecated(BASE_CLASS_DEPRECATION_MESSAGE)
 abstract class BaseJUnitTest
 @Deprecated("$MODULE_CONFIG_DEPRECATION_MESSAGE.", ReplaceWith("BaseJUnitTest()"))
 constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) : CommonBase() {

@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.base
 
+import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.build.StepsBuilder
@@ -15,6 +16,7 @@ private const val TEST_CONTEXT_DEPRECATION_MESSAGE =
 
 private const val REPLACE_WITH = "BaseSteps()"
 
+@Deprecated(BASE_CLASS_DEPRECATION_MESSAGE)
 abstract class BaseSteps
 @Deprecated("$MODULE_CONFIG_DEPRECATION_MESSAGE.", ReplaceWith("BaseSteps(testContext)"))
 private constructor(

@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.configuration
 
+import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyMode
@@ -15,6 +16,10 @@ private const val DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE = "Dependency in
     "module configuration level is obsolete. Add a `provide` configuration on a test or steps " +
     "class level instead."
 
+@Deprecated(
+    "${MODULE_CONFIG_DEPRECATION_MESSAGE} If really necessary because migration " +
+        "of test code is not reasonable, only add dependencies with `dependency any of<T>`."
+)
 fun moduleTestingConfiguration(
     vararg baseModuleTestingConfigurations: ModuleTestingConfiguration,
     run: (DslScope.() -> Unit)? = null
