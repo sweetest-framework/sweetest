@@ -13,7 +13,7 @@ class TestContextTest {
      *    Element2   <--  Element3
      * ```
      *
-     * An element can exist just once. The elements provided via [TestContextElementProvider] have to be the same
+     * An element can exist just once. The elements provided via [TestContext] have to be the same
      * instance as provided before by the [TestContext].
      */
     @Test
@@ -48,7 +48,7 @@ class TestContextTest {
         override val key: TestContextElement.Key<*> = Key
 
         companion object Key : TestContextElement.Key<SomeTestContextElement1> {
-            override fun createInstance(elementProvider: TestContextElementProvider): SomeTestContextElement1 {
+            override fun createInstance(testContext: TestContext): SomeTestContextElement1 {
                 return SomeTestContextElement1()
             }
         }
@@ -59,8 +59,8 @@ class TestContextTest {
         override val key: TestContextElement.Key<*> = Key
 
         companion object Key : TestContextElement.Key<SomeTestContextElement2> {
-            override fun createInstance(elementProvider: TestContextElementProvider): SomeTestContextElement2 {
-                return SomeTestContextElement2(elementProvider[SomeTestContextElement1])
+            override fun createInstance(testContext: TestContext): SomeTestContextElement2 {
+                return SomeTestContextElement2(testContext[SomeTestContextElement1])
             }
         }
     }
@@ -73,10 +73,10 @@ class TestContextTest {
         override val key: TestContextElement.Key<*> = Key
 
         companion object Key : TestContextElement.Key<SomeTestContextElement3> {
-            override fun createInstance(elementProvider: TestContextElementProvider): SomeTestContextElement3 {
+            override fun createInstance(testContext: TestContext): SomeTestContextElement3 {
                 return SomeTestContextElement3(
-                    elementProvider[SomeTestContextElement1],
-                    elementProvider[SomeTestContextElement2]
+                    testContext[SomeTestContextElement1],
+                    testContext[SomeTestContextElement2]
                 )
             }
         }

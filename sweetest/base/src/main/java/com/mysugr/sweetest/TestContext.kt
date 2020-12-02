@@ -5,11 +5,11 @@ package com.mysugr.sweetest
  * There can only be one instance per type. [TestContextElement.Key] is here for type-safe, reflection-free
  * instantiation of a specific subtype of [TestContextElement].
  */
-class TestContext : TestContextElementProvider {
+class TestContext {
 
     private val elements = mutableMapOf<TestContextElement.Key<*>, TestContextElement>()
 
-    override operator fun <T : TestContextElement> get(key: TestContextElement.Key<T>): T {
+    operator fun <T : TestContextElement> get(key: TestContextElement.Key<T>): T {
         @Suppress("UNCHECKED_CAST")
         return elements.getOrPut(key) { key.createInstance(this) } as T
     }
@@ -29,10 +29,6 @@ interface TestContextElement {
      * [TestContextElement], so this emulates a simple kind of dependency management for [TestContextElement]s.
      */
     interface Key<T> {
-        fun createInstance(elementProvider: TestContextElementProvider): T
+        fun createInstance(testContext: TestContext): T
     }
-}
-
-interface TestContextElementProvider {
-    operator fun <T : TestContextElement> get(key: TestContextElement.Key<T>): T
 }

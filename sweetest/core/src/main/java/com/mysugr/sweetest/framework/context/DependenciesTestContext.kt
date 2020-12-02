@@ -1,12 +1,14 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.TestContext
+import com.mysugr.sweetest.TestContextElement
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import kotlin.reflect.KClass
 
-class DependenciesTestContext {
+class DependenciesTestContext : TestContextElement {
 
     internal fun editDependencyState(dependencyType: KClass<*>, block: DependencyState<*>.() -> Unit) {
         val dependencyState = TestEnvironment.dependencies.getDependencyStateForConfiguration(
@@ -33,5 +35,11 @@ class DependenciesTestContext {
                     "Reason: configuring the same dependency in different places could lead to ambiguities."
             )
         }
+    }
+
+    // Necessary for defining a TestContextElement:
+    override val key = Key
+    companion object Key : TestContextElement.Key<DependenciesTestContext> {
+        override fun createInstance(testContext: TestContext) = DependenciesTestContext()
     }
 }

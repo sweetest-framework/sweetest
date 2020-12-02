@@ -1,13 +1,12 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.TestContext
+import com.mysugr.sweetest.TestContextElement
 import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.internal.TestContext
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.starProjectedType
 
-class StepsTestContext(private val testContext: TestContext) {
+class StepsTestContext(private val testContext: TestContext) : TestContextElement {
 
     private val required = mutableListOf<Class<Steps>>()
     private val map = mutableMapOf<Class<*>, Steps>()
@@ -93,7 +92,7 @@ class StepsTestContext(private val testContext: TestContext) {
             if (constructor.parameters.size != 1) {
                 error("Wrong number of constructor parameters")
             }
-            if (!constructor.parameters.first().type.isSubtypeOf(TestContext::class.starProjectedType)) {
+            if (constructor.parameters.first().type != TestContext::class) {
                 error("Wrong constructor parameter type")
             }
         } catch (exception: Exception) {
@@ -125,5 +124,11 @@ class StepsTestContext(private val testContext: TestContext) {
         if (!required.contains(clazz)) {
             required.add(clazz)
         }
+    }
+
+    // Necessary for defining a TestContextElement:
+    override val key = Key
+    companion object Key : TestContextElement.Key<StepsTestContext> {
+        override fun createInstance(testContext: TestContext) = StepsTestContext(testContext)
     }
 }
