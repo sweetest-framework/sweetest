@@ -2,7 +2,8 @@ package com.mysugr.sweetest.framework.build
 
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.TestContext
+import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.usecases.registerStepsInstance
 
 class StepsBuilder(
@@ -13,6 +14,6 @@ class StepsBuilder(
     BaseBuilder<StepsBuilder>(testContext, moduleTestingConfiguration) {
 
     init {
-        registerStepsInstance(testContext.steps, instance)
+        registerStepsInstance(testContext[StepsTestContext], instance)
     }
 }

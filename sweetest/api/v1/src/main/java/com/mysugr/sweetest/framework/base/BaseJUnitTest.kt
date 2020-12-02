@@ -1,8 +1,9 @@
 package com.mysugr.sweetest.framework.base
 
+import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.build.TestBuilder
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
-import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
 import org.junit.After
@@ -23,11 +24,11 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
 
     @Before
     fun junitBefore() {
-        proceedWorkflow(testContext.workflow)
+        proceedWorkflow(testContext[WorkflowTestContext])
     }
 
     @After
     fun junitAfter() {
-        finishWorkflow(testContext.workflow)
+        finishWorkflow(testContext[WorkflowTestContext])
     }
 }

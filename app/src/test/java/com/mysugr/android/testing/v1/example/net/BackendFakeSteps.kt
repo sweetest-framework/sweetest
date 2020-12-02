@@ -5,7 +5,7 @@ import com.mysugr.android.testing.example.net.BackendGateway
 import com.mysugr.android.testing.example.net.UsernameOrPasswordWrongException
 import com.mysugr.android.testing.example.user.User
 import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.TestContext
 import cucumber.api.java.Before
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then

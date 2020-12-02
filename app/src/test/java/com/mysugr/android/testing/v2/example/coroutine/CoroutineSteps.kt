@@ -1,8 +1,8 @@
 package com.mysugr.android.testing.v2.example.coroutine
 
 import com.mysugr.android.testing.example.coroutine.DispatcherProvider
+import com.mysugr.sweetest.TestContext
 import dev.sweetest.api.v2.Steps
-import dev.sweetest.api.v2.TestContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.TestCoroutineScope

@@ -1,18 +1,21 @@
 package com.mysugr.sweetest.framework.build
 
-import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
-import com.mysugr.sweetest.usecases.configureDependencyMock
-import com.mysugr.sweetest.usecases.configureDependencyProvision
-import com.mysugr.sweetest.usecases.configureDependencyReal
-import com.mysugr.sweetest.usecases.configureDependencySpy
-import com.mysugr.sweetest.usecases.notifyStepsRequired
+import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
-import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.framework.context.DependenciesTestContext
+import com.mysugr.sweetest.framework.context.StepsTestContext
+import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.asCoreDependencyProvider
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
+import com.mysugr.sweetest.usecases.configureDependencyMock
+import com.mysugr.sweetest.usecases.configureDependencyProvision
+import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
+import com.mysugr.sweetest.usecases.configureDependencyReal
+import com.mysugr.sweetest.usecases.configureDependencySpy
+import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.reflect.KClass
 
@@ -122,7 +125,7 @@ abstract class BaseBuilder<TSelf>(
     internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) {
         checkNotYetFrozen()
         configureDependencyProvision(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             provider = provider.asCoreDependencyProvider()
         )
@@ -132,7 +135,7 @@ abstract class BaseBuilder<TSelf>(
     internal fun <T : Any> provideInternal(type: KClass<T>) {
         checkNotYetFrozen()
         configureDependencyProvisionAutomatic(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type
         )
     }
@@ -140,7 +143,7 @@ abstract class BaseBuilder<TSelf>(
     @PublishedApi
     internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
         checkNotYetFrozen()
-        notifyStepsRequired(testContext.steps, stepsType)
+        notifyStepsRequired(testContext[StepsTestContext], stepsType)
     }
 
     // --- region: Internal API – LEGACY!
@@ -150,7 +153,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("requireReal")
         configureDependencyReal(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             forceMode = true
         )
@@ -161,7 +164,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerReal")
         configureDependencyReal(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             offerProvider = provider.asCoreDependencyProvider()
         )
@@ -172,7 +175,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerRealRequired")
         configureDependencyReal(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             forceMode = true,
             offerProvider = provider.asCoreDependencyProvider()
@@ -184,7 +187,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("requireMock")
         configureDependencyMock(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             forceMode = true
         )
@@ -195,7 +198,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerMock")
         configureDependencyMock(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             offerProvider = provider.asCoreDependencyProvider()
         )
@@ -206,7 +209,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("offerMockRequired")
         configureDependencyMock(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             forceMode = true,
             offerProvider = provider.asCoreDependencyProvider()
@@ -218,7 +221,7 @@ abstract class BaseBuilder<TSelf>(
         checkNotYetFrozen()
         checkInvalidLegacyFunctionCall("requireSpy")
         configureDependencySpy(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type
         )
     }
@@ -236,31 +239,31 @@ abstract class BaseBuilder<TSelf>(
 
     fun onInitializeDependencies(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.INITIALIZE_DEPENDENCIES, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.BEFORE_SET_UP, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.SET_UP, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_SET_UP, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.TEAR_DOWN, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) = apply {
         checkNotYetFrozen()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_TEAR_DOWN, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_TEAR_DOWN, run)
     }
 }

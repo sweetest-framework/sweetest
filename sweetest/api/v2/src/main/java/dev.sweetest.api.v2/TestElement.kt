@@ -1,12 +1,16 @@
 package dev.sweetest.api.v2
 
+import com.mysugr.sweetest.TestContext
+import com.mysugr.sweetest.framework.context.DependenciesTestContext
+import com.mysugr.sweetest.framework.context.StepsTestContext
+import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
 import com.mysugr.sweetest.usecases.configureDependencyProvision
 import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
 import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
+import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
 import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
 import dev.sweetest.api.v2.internal.DependencyProvider
@@ -57,32 +61,32 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
 
     fun onInitializeDependencies(run: () -> Unit) {
         checkConfigurePossible()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.INITIALIZE_DEPENDENCIES, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.INITIALIZE_DEPENDENCIES, run)
     }
 
     fun onBeforeSetUp(run: () -> Unit) {
         checkConfigurePossible()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.BEFORE_SET_UP, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.BEFORE_SET_UP, run)
     }
 
     fun onSetUp(run: () -> Unit) {
         checkConfigurePossible()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.SET_UP, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.SET_UP, run)
     }
 
     fun onAfterSetUp(run: () -> Unit) {
         checkConfigurePossible()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_SET_UP, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_SET_UP, run)
     }
 
     fun onTearDown(run: () -> Unit) {
         checkConfigurePossible()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.TEAR_DOWN, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.TEAR_DOWN, run)
     }
 
     fun onAfterTearDown(run: () -> Unit) {
         checkConfigurePossible()
-        subscribeWorkflow(testContext.workflow, WorkflowStep.AFTER_TEAR_DOWN, run)
+        subscribeWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_TEAR_DOWN, run)
     }
 
     // --- region: Public consumption API
@@ -99,7 +103,7 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
     internal fun <T : Any> provideInternal(type: KClass<T>, provider: DependencyProvider<T>) {
         checkConfigurePossible()
         configureDependencyProvision(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type,
             provider = provider.asCoreDependencyProvider()
         )
@@ -109,7 +113,7 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
     internal fun <T : Any> provideInternal(type: KClass<T>) {
         checkConfigurePossible()
         configureDependencyProvisionAutomatic(
-            testContext.dependencies,
+            testContext[DependenciesTestContext],
             dependencyType = type
         )
     }
@@ -117,7 +121,7 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
     @PublishedApi
     internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
         checkConfigurePossible()
-        notifyStepsRequired(testContext.steps, stepsType)
+        notifyStepsRequired(testContext[StepsTestContext], stepsType)
     }
 
     @PublishedApi
@@ -125,17 +129,17 @@ abstract class TestElement(protected val testContext: TestContext) : com.mysugr.
         scope: TestElement,
         type: KClass<T>
     ): ReadOnlyProperty<TestElement, T> =
-        getDependencyDelegate(scope.testContext.dependencies, type)
+        getDependencyDelegate(scope.testContext[DependenciesTestContext], type)
 
     @PublishedApi
     internal fun <T : dev.sweetest.api.v2.Steps> stepsInternal(
         scope: TestElement,
         type: KClass<T>
     ): ReadOnlyProperty<TestElement, T> =
-        getStepsDelegate(scope.testContext.steps, type)
+        getStepsDelegate(scope.testContext[StepsTestContext], type)
 
     protected fun checkConfigurePossible() {
-        check(!hasWorkflowAlreadyStarted(testContext.workflow)) {
+        check(!hasWorkflowAlreadyStarted(testContext[WorkflowTestContext])) {
             "Can't perform configuration tasks, workflow has already started!"
         }
     }

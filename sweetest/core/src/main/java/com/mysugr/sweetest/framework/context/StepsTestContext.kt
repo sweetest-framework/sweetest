@@ -5,6 +5,7 @@ import com.mysugr.sweetest.TestContextElement
 import com.mysugr.sweetest.internal.Steps
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.starProjectedType
 
 class StepsTestContext(private val testContext: TestContext) : TestContextElement {
 
@@ -92,7 +93,7 @@ class StepsTestContext(private val testContext: TestContext) : TestContextElemen
             if (constructor.parameters.size != 1) {
                 error("Wrong number of constructor parameters")
             }
-            if (constructor.parameters.first().type != TestContext::class) {
+            if (constructor.parameters.first().type != TestContext::class.starProjectedType) {
                 error("Wrong constructor parameter type")
             }
         } catch (exception: Exception) {

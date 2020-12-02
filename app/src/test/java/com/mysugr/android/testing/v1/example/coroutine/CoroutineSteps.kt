@@ -2,7 +2,7 @@ package com.mysugr.android.testing.v1.example.coroutine
 
 import com.mysugr.android.testing.example.coroutine.DispatcherProvider
 import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.TestContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.test.TestCoroutineScope

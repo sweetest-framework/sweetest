@@ -5,7 +5,7 @@ import com.mysugr.android.testing.example.view.LoginViewModel
 import com.mysugr.android.testing.v1.example.coroutine.CoroutineSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.context.TestContext
+import com.mysugr.sweetest.TestContext
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.TestCoroutineScope

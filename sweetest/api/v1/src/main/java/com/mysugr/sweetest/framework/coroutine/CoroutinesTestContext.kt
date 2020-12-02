@@ -2,8 +2,6 @@ package com.mysugr.sweetest.framework.coroutine
 
 import com.mysugr.sweetest.TestContext
 import com.mysugr.sweetest.TestContextElement
-import com.mysugr.sweetest.framework.context.StepsTestContext
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
