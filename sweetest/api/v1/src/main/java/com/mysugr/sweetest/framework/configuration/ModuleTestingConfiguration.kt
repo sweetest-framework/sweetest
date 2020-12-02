@@ -17,7 +17,7 @@ private const val DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE = "Dependency in
     "class level instead."
 
 @Deprecated(
-    "${MODULE_CONFIG_DEPRECATION_MESSAGE} If really necessary because migration " +
+    "$MODULE_CONFIG_DEPRECATION_MESSAGE If really necessary because migration " +
         "of test code is not reasonable, only add dependencies with `dependency any of<T>`."
 )
 fun moduleTestingConfiguration(

@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
 class LoginViewModelSteps : Steps() {
 
     init {
-        requireSteps<CoroutineSteps>()
+        steps<CoroutineSteps>()
         provide<LoginViewModel>()
     }
 

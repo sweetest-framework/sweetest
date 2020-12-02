@@ -14,7 +14,7 @@ import dev.sweetest.api.v2.Steps
 class LoginSteps : Steps() {
 
     init {
-        requireSteps<AuthManagerSteps>()
+        steps<AuthManagerSteps>()
         onSetUp {
             loginViewModel.whenInitialized()
         }

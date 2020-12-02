@@ -12,7 +12,6 @@ import com.mysugr.sweetest.usecases.getCurrentTestContext
 import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
 import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
-import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
@@ -52,10 +51,6 @@ abstract class TestElement : com.mysugr.sweetest.internal.TestElement {
      */
     inline fun <reified T : Any> provide() {
         provideInternal(T::class)
-    }
-
-    inline fun <reified T : Steps> requireSteps() {
-        requireStepsInternal(T::class)
     }
 
     fun onInitializeDependencies(run: () -> Unit) {
@@ -115,12 +110,6 @@ abstract class TestElement : com.mysugr.sweetest.internal.TestElement {
             testContext[DependenciesTestContext],
             dependencyType = type
         )
-    }
-
-    @PublishedApi
-    internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
-        checkConfigurePossible()
-        notifyStepsRequired(testContext[StepsTestContext], stepsType)
     }
 
     @PublishedApi
