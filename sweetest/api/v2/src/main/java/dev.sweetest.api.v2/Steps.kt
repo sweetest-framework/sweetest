@@ -10,5 +10,3 @@ abstract class Steps : TestElement(), InternalSteps {
         registerStepsInstance(testContext[StepsTestContext], this)
     }
 }
-
-operator fun <T : Steps> T.invoke(run: T.() -> Unit) = run(this)

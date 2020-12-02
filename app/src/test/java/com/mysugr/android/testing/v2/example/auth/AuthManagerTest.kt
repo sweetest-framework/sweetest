@@ -3,7 +3,6 @@ package com.mysugr.android.testing.v2.example.auth
 import com.mysugr.android.testing.v2.example.net.BackendFakeSteps
 import com.mysugr.android.testing.v2.example.net.BackendFakeUser.Companion.TEST_USER
 import com.mysugr.android.testing.v2.example.state.SessionStoreSteps
-import com.mysugr.sweetest.framework.base.invoke
 import dev.sweetest.api.v2.framework.base.JUnit4Test
 import org.junit.Test
 

@@ -91,6 +91,8 @@ abstract class TestElement : com.mysugr.sweetest.internal.TestElement {
     inline fun <reified T : Steps> steps(): ReadOnlyProperty<TestElement, T> =
         stepsInternal(this, T::class)
 
+    operator fun <T : Steps> T.invoke(run: T.() -> Unit) = run(this)
+
     // --- region: Internals
 
     @PublishedApi
