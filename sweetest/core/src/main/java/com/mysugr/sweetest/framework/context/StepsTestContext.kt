@@ -137,9 +137,9 @@ class StepsTestContext(private val testContext: TestContext) :
     }
 
     // Necessary for defining a TestContextElement:
-    override val key = Key
+    override val definition = Companion
 
-    companion object Key : TestContextElement.Key<StepsTestContext> {
+    companion object : TestContextElement.Definition<StepsTestContext> {
         override fun createInstance(testContext: TestContext) = StepsTestContext(testContext)
     }
 }

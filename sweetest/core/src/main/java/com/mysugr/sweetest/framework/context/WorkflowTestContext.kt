@@ -5,8 +5,7 @@ import dev.sweetest.internal.TestContextElement
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.usecases.resetEnvironment
 
-class WorkflowTestContext(private val stepsTestContext: StepsTestContext) :
-    TestContextElement {
+class WorkflowTestContext(private val stepsTestContext: StepsTestContext) : TestContextElement {
 
     internal var currentStep: WorkflowStep = WorkflowStep.INITIALIZE_FRAMEWORK
 
@@ -78,8 +77,8 @@ class WorkflowTestContext(private val stepsTestContext: StepsTestContext) :
     }
 
     // Necessary for defining a TestContextElement:
-    override val key = Key
-    companion object Key : TestContextElement.Key<WorkflowTestContext> {
+    override val definition = Companion
+    companion object : TestContextElement.Definition<WorkflowTestContext> {
         override fun createInstance(testContext: TestContext) = WorkflowTestContext(testContext[StepsTestContext])
     }
 }

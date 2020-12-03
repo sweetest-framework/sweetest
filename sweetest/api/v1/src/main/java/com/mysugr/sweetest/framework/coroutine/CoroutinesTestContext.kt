@@ -10,7 +10,7 @@ import kotlin.coroutines.CoroutineContext
 @Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
 internal class CoroutinesTestContext : TestContextElement {
 
-    private val name = CoroutineName("testCoroutine${InstanceCounter.instanceCounter++}")
+    private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
 
     @Suppress("DEPRECATION")
@@ -21,13 +21,10 @@ internal class CoroutinesTestContext : TestContextElement {
         supervisorJob.cancelAndJoin()
     }
 
-    private object InstanceCounter {
-        var instanceCounter = 0
-    }
-
     // Necessary for defining a TestContextElement:
-    override val key = Key
-    companion object Key : TestContextElement.Key<CoroutinesTestContext> {
+    override val definition = Companion
+    companion object : TestContextElement.Definition<CoroutinesTestContext> {
+        private var instanceCounter = 0
         override fun createInstance(testContext: TestContext) = CoroutinesTestContext()
     }
 }

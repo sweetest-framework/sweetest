@@ -16,11 +16,11 @@ package dev.sweetest.internal
  */
 class TestContext {
 
-    private val elements = mutableMapOf<TestContextElement.Key<*>, TestContextElement>()
+    private val elements = mutableMapOf<TestContextElement.Definition<*>, TestContextElement>()
 
-    operator fun <T : TestContextElement> get(key: TestContextElement.Key<T>): T {
+    operator fun <T : TestContextElement> get(definition: TestContextElement.Definition<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return elements.getOrPut(key) { key.createInstance(this) } as T
+        return elements.getOrPut(definition) { definition.createInstance(this) } as T
     }
 }
 
@@ -30,17 +30,16 @@ class TestContext {
 interface TestContextElement {
 
     /**
-     * Needs to return the companion object. For that sake the companion
-     * object can be named `Key` and returned by this property.
+     * Needs to return `Companion` that implements [Definition].
      */
-    val key: Key<*>
+    val definition: Definition<*>
 
     /**
      * Needs to be implemented by the companion object of the [TestContextElement] and create an implementation
      * instance of the [TestContextElement] subclass. The [elementProvider] can be used to get other instances of
      * [TestContextElement], so this emulates a simple kind of dependency management for [TestContextElement]s.
      */
-    interface Key<T> {
+    interface Definition<T> {
         fun createInstance(testContext: TestContext): T
     }
 }

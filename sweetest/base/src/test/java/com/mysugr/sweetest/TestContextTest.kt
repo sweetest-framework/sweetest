@@ -24,7 +24,7 @@ class TestContextTest {
 
         val element2 = testContext[SomeTestContextElement2]
         assert(element2 is SomeTestContextElement2)
-        assert(element2.key === SomeTestContextElement2)
+        assert(element2.definition === SomeTestContextElement2)
 
         val element1From2 = element2.element1
         assert(element1From2 is SomeTestContextElement1)
@@ -32,11 +32,11 @@ class TestContextTest {
         val element1 = testContext[SomeTestContextElement1]
         assert(element1 === element1From2)
         assert(element1 is SomeTestContextElement1)
-        assert(element1.key === SomeTestContextElement1)
+        assert(element1.definition === SomeTestContextElement1)
 
         val element3 = testContext[SomeTestContextElement3]
         assert(element3 is SomeTestContextElement3)
-        assert(element3.key === SomeTestContextElement3)
+        assert(element3.definition === SomeTestContextElement3)
 
         val element1From3 = element3.element1
         assert(element1From3 === element1)
@@ -47,9 +47,9 @@ class TestContextTest {
 
     private class SomeTestContextElement1 : TestContextElement {
 
-        override val key: TestContextElement.Key<*> = Key
+        override val definition: TestContextElement.Definition<*> = Definition
 
-        companion object Key : TestContextElement.Key<SomeTestContextElement1> {
+        companion object Definition : TestContextElement.Definition<SomeTestContextElement1> {
             override fun createInstance(testContext: TestContext): SomeTestContextElement1 {
                 return SomeTestContextElement1()
             }
@@ -59,9 +59,9 @@ class TestContextTest {
     private class SomeTestContextElement2(val element1: SomeTestContextElement1) :
         TestContextElement {
 
-        override val key: TestContextElement.Key<*> = Key
+        override val definition: TestContextElement.Definition<*> = Definition
 
-        companion object Key : TestContextElement.Key<SomeTestContextElement2> {
+        companion object Definition : TestContextElement.Definition<SomeTestContextElement2> {
             override fun createInstance(testContext: TestContext): SomeTestContextElement2 {
                 return SomeTestContextElement2(testContext[SomeTestContextElement1])
             }
@@ -73,9 +73,9 @@ class TestContextTest {
         val element2: SomeTestContextElement2
     ) : TestContextElement {
 
-        override val key: TestContextElement.Key<*> = Key
+        override val definition: TestContextElement.Definition<*> = Definition
 
-        companion object Key : TestContextElement.Key<SomeTestContextElement3> {
+        companion object Definition : TestContextElement.Definition<SomeTestContextElement3> {
             override fun createInstance(testContext: TestContext): SomeTestContextElement3 {
                 return SomeTestContextElement3(
                     testContext[SomeTestContextElement1],
