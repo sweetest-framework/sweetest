@@ -16,6 +16,10 @@ apply from: '../../publishing.gradle'
 setCustomArtifactName('sweetest-compat-v1')
 
 dependencies {
+    // The API v1 compatibility module includes JUnit 4 and Cucumber 2 because that used to be the default for v1
+    api project(':sweetest:api:v2:junit4')
+    api project(':sweetest:api:v2:cucumber2')
+
     api project(':sweetest:base')
     implementation project(':sweetest:core')
 
