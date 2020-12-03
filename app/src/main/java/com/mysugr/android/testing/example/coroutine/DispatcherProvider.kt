@@ -12,7 +12,7 @@ interface DispatcherProvider {
 
 class DefaultDispatcherProvider : DispatcherProvider {
     override val default = Dispatchers.Default
-    override val io = Dispatchers.Default
-    override val main = Dispatchers.Default
-    override val unconfined = Dispatchers.Default
+    override val io = Dispatchers.IO
+    override val main = Dispatchers.Main
+    override val unconfined = Dispatchers.Unconfined
 }

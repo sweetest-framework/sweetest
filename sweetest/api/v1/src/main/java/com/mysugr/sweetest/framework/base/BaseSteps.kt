@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest.framework.base
 
 import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE
@@ -19,12 +21,10 @@ private const val REPLACE_WITH = "BaseSteps()"
 @Deprecated(BASE_CLASS_DEPRECATION_MESSAGE)
 abstract class BaseSteps
 @Deprecated("$MODULE_CONFIG_DEPRECATION_MESSAGE.", ReplaceWith("BaseSteps(testContext)"))
-constructor(
-    private val moduleTestingConfiguration: ModuleTestingConfiguration? = null
-) : CommonBase(), Steps, CoroutineScope {
+constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) :
+    CommonBase(), Steps, CoroutineScope {
 
     // Use this constructor!
-    @Suppress("DEPRECATION")
     constructor() : this(null)
 
     @Deprecated(
@@ -32,16 +32,17 @@ constructor(
         ReplaceWith(REPLACE_WITH)
     )
     constructor(
-        testContext: TestContext,
+        @Suppress("UNUSED_PARAMETER") testContext: TestContext, // not used anymore, just part of legacy constructor signature
         moduleTestingConfiguration: ModuleTestingConfiguration? = null
     ) : this(moduleTestingConfiguration)
 
-    @Suppress("DEPRECATION")
     @Deprecated(
         "As $TEST_CONTEXT_DEPRECATION_MESSAGE",
         ReplaceWith(REPLACE_WITH)
     )
-    constructor(testContext: TestContext) : this(getCurrentTestContext(), null)
+    constructor(
+        @Suppress("UNUSED_PARAMETER") testContext: TestContext // not used anymore, just part of legacy constructor signature
+    ) : this(getCurrentTestContext(), null)
 
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 

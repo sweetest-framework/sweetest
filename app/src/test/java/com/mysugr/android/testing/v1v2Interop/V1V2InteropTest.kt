@@ -20,7 +20,7 @@ class V1V2InteropTest {
         override fun configure() = super.configure()
             .provide<A> { aInstance!! }
 
-        fun doDomethingA() {}
+        fun doSomethingA() {}
     }
 
     class BStepsV2 : Steps() {
@@ -28,7 +28,7 @@ class V1V2InteropTest {
             provide<B> { bInstance!! }
         }
 
-        fun doDomethingB() {}
+        fun doSomethingB() {}
     }
 
     @Before
@@ -57,8 +57,8 @@ class V1V2InteropTest {
             junitBefore()
 
             // Steps objects from both versions can be retrieved
-            aSteps.doDomethingA()
-            bSteps.doDomethingB()
+            aSteps.doSomethingA()
+            bSteps.doSomethingB()
 
             // Dependency configurations from both versions apply
             assert(a === aInstance)
@@ -81,8 +81,8 @@ class V1V2InteropTest {
             junitBefore()
 
             // Steps objects from both versions can be retrieved
-            aSteps.doDomethingA()
-            bSteps.doDomethingB()
+            aSteps.doSomethingA()
+            bSteps.doSomethingB()
 
             // Dependency configurations from both versions apply
             assert(a === aInstance)

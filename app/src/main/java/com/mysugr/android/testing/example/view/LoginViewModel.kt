@@ -16,12 +16,9 @@ class LoginViewModel(
 ) : ViewModel() {
 
     val state: Flow<State>
+        get() = stateChannel.asFlow()
 
     private val stateChannel = ConflatedBroadcastChannel<State>()
-
-    init {
-        state = stateChannel.asFlow()
-    }
 
     fun loginOrRegister(email: String, password: String) {
         if (!validateEmail(email)) {

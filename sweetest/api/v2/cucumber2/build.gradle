@@ -22,8 +22,5 @@ dependencies {
     implementation "io.cucumber:cucumber-junit:$versions.cucumber"
     implementation "io.cucumber:cucumber-java:$versions.cucumber"
     implementation "junit:junit:$versions.junit"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
-
 }

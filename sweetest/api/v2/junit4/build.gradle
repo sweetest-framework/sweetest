@@ -20,7 +20,5 @@ dependencies {
     implementation project(':sweetest:core')
 
     implementation "junit:junit:$versions.junit"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
 }

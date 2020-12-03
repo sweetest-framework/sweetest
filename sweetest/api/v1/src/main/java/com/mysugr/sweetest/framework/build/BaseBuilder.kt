@@ -15,7 +15,6 @@ import com.mysugr.sweetest.usecases.configureDependencyReal
 import com.mysugr.sweetest.usecases.configureDependencySpy
 import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
-import dev.sweetest.internal.CustomizableSweetestApi
 import dev.sweetest.internal.TestContext
 import kotlin.reflect.KClass
 
