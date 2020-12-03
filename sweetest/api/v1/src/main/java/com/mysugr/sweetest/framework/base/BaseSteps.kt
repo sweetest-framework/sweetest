@@ -2,7 +2,7 @@ package com.mysugr.sweetest.framework.base
 
 import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.build.StepsBuilder
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.coroutine.CoroutinesTestContext

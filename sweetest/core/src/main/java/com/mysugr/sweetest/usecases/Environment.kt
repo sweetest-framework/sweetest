@@ -7,7 +7,7 @@ package com.mysugr.sweetest.usecases
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
 
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 
 private var currentTestContext: TestContext? = null

@@ -2,7 +2,7 @@ package com.mysugr.android.testing.v1.coroutine
 
 import com.mysugr.android.testing.example.coroutine.TriggerAwaiter
 import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.coroutine.throwExceptionIfFailed
 import com.mysugr.sweetest.framework.coroutine.verifyOrder
 import kotlinx.coroutines.async

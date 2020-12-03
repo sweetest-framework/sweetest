@@ -1,11 +1,12 @@
 package com.mysugr.sweetest.framework.context
 
-import com.mysugr.sweetest.TestContext
-import com.mysugr.sweetest.TestContextElement
+import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.TestContextElement
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.usecases.resetEnvironment
 
-class WorkflowTestContext(private val stepsTestContext: StepsTestContext) : TestContextElement {
+class WorkflowTestContext(private val stepsTestContext: StepsTestContext) :
+    TestContextElement {
 
     internal var currentStep: WorkflowStep = WorkflowStep.INITIALIZE_FRAMEWORK
 

@@ -1,9 +1,18 @@
-package com.mysugr.sweetest
+package dev.sweetest.internal
 
 /**
+ * Although `TestContext` is an internal data structure it is not in the internal package because it was used publicly
+ * in the v1 API. From v2 on `TestContext` is only used internally.
+ *
+ * API v1 doesn't require the use of `TestContext` directly, so it is now considered _internal_.
+ *
  * TestContext can hold an arbitrary number of [TestContextElement]s. It creates an instance if it has not already.
  * There can only be one instance per type. [TestContextElement.Key] is here for type-safe, reflection-free
  * instantiation of a specific subtype of [TestContextElement].
+ */
+
+/**
+ * Holds the utilities and state of a test. Is not meant to be used publicly from sweetest v2 on!
  */
 class TestContext {
 
@@ -15,6 +24,9 @@ class TestContext {
     }
 }
 
+/**
+ * Each element stored in [TestContext] needs to implement this interface.
+ */
 interface TestContextElement {
 
     /**

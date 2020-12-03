@@ -3,7 +3,7 @@ package com.mysugr.android.testing.v1.example.auth
 import com.mysugr.android.testing.example.auth.AuthManager
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 
 class AuthManagerSteps(testContext: TestContext) : BaseSteps(testContext) {
 

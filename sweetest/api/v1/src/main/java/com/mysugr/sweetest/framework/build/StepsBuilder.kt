@@ -2,7 +2,7 @@ package com.mysugr.sweetest.framework.build
 
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.usecases.registerStepsInstance
 

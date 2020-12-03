@@ -6,7 +6,7 @@ import com.mysugr.android.testing.util.nonNullable
 import com.mysugr.android.testing.util.nonNullableAny
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.mock

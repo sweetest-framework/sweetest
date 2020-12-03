@@ -1,7 +1,7 @@
 package com.mysugr.sweetest.framework.build
 
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
-import com.mysugr.sweetest.TestContext
+import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep.INITIALIZE_STEPS
 import com.mysugr.sweetest.usecases.subscribeWorkflow

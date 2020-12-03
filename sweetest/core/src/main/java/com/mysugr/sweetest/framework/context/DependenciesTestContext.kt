@@ -1,7 +1,7 @@
 package com.mysugr.sweetest.framework.context
 
-import com.mysugr.sweetest.TestContext
-import com.mysugr.sweetest.TestContextElement
+import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.TestContextElement
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencyState

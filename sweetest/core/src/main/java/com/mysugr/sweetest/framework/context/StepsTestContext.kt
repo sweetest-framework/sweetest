@@ -1,14 +1,15 @@
 package com.mysugr.sweetest.framework.context
 
-import com.mysugr.sweetest.TestContext
-import com.mysugr.sweetest.TestContextElement
+import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.TestContextElement
 import com.mysugr.sweetest.internal.Steps
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.starProjectedType
 
-class StepsTestContext(private val testContext: TestContext) : TestContextElement {
+class StepsTestContext(private val testContext: TestContext) :
+    TestContextElement {
 
     private val required = mutableListOf<Class<Steps>>()
     private val map = mutableMapOf<Class<*>, Steps>()

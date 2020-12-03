@@ -1,5 +1,7 @@
 package com.mysugr.sweetest
 
+import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.TestContextElement
 import org.junit.Test
 
 class TestContextTest {
@@ -54,7 +56,8 @@ class TestContextTest {
         }
     }
 
-    private class SomeTestContextElement2(val element1: SomeTestContextElement1) : TestContextElement {
+    private class SomeTestContextElement2(val element1: SomeTestContextElement1) :
+        TestContextElement {
 
         override val key: TestContextElement.Key<*> = Key
 
