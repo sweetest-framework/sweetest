@@ -8,7 +8,7 @@ buildscript {
             appcompat   : '1.2.0',
             material    : '1.2.1',
             cucumber    : '2.1.0',
-            mockito     : '2.19.0'
+            mockito     : '2.25.1'
     ]
     repositories {
         google()
