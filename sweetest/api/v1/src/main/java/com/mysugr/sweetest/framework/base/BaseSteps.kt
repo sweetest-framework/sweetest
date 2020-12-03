@@ -19,7 +19,7 @@ private const val REPLACE_WITH = "BaseSteps()"
 @Deprecated(BASE_CLASS_DEPRECATION_MESSAGE)
 abstract class BaseSteps
 @Deprecated("$MODULE_CONFIG_DEPRECATION_MESSAGE.", ReplaceWith("BaseSteps(testContext)"))
-private constructor(
+constructor(
     private val moduleTestingConfiguration: ModuleTestingConfiguration? = null
 ) : CommonBase(), Steps, CoroutineScope {
 
