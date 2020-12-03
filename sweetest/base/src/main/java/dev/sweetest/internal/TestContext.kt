@@ -18,6 +18,7 @@ class TestContext {
 
     private val elements = mutableMapOf<TestContextElement.Definition<*>, TestContextElement>()
 
+    @InternalSweetestApi
     operator fun <T : TestContextElement> get(definition: TestContextElement.Definition<T>): T {
         @Suppress("UNCHECKED_CAST")
         return elements.getOrPut(definition) { definition.createInstance(this) } as T
@@ -27,6 +28,7 @@ class TestContext {
 /**
  * Each element stored in [TestContext] needs to implement this interface.
  */
+@InternalSweetestApi
 interface TestContextElement {
 
     /**
@@ -39,6 +41,7 @@ interface TestContextElement {
      * instance of the [TestContextElement] subclass. The [elementProvider] can be used to get other instances of
      * [TestContextElement], so this emulates a simple kind of dependency management for [TestContextElement]s.
      */
+    @InternalSweetestApi
     interface Definition<T> {
         fun createInstance(testContext: TestContext): T
     }

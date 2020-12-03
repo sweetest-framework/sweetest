@@ -2,8 +2,8 @@ package com.mysugr.sweetest.framework.configuration
 
 import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyMode
+import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencySetup
 import com.mysugr.sweetest.usecases.ensureEnvironmentInitialized
 import kotlin.reflect.KClass
@@ -48,9 +48,9 @@ class DslScope internal constructor() {
 
     // Dependency configuration
 
-    class LeftOperand
+    class LeftOperand internal constructor()
 
-    data class RightOperand(
+    data class RightOperand internal constructor(
         internal val addFunction: (dependencyMode: DependencyMode?, only: Boolean) -> Unit
     )
 

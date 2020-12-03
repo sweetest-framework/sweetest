@@ -10,6 +10,7 @@ import java.util.concurrent.Executors
 @Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
 object SweetestCoroutineSupport {
 
+    @Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
     val coroutineDispatcher: CoroutineDispatcher by lazy {
         Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     }

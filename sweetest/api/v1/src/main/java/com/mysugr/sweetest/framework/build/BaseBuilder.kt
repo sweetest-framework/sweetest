@@ -1,6 +1,5 @@
 package com.mysugr.sweetest.framework.build
 
-import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
@@ -16,6 +15,8 @@ import com.mysugr.sweetest.usecases.configureDependencyReal
 import com.mysugr.sweetest.usecases.configureDependencySpy
 import com.mysugr.sweetest.usecases.notifyStepsRequired
 import com.mysugr.sweetest.usecases.subscribeWorkflow
+import dev.sweetest.internal.CustomizableSweetestApi
+import dev.sweetest.internal.TestContext
 import kotlin.reflect.KClass
 
 private const val DEPENDENCY_MODE_DEPRECATION_MESSAGE = "Dependency modes like \"REAL\" or \"MOCK\" " +

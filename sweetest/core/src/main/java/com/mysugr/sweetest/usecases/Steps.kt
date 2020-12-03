@@ -11,18 +11,22 @@ import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.internal.TestElement
 import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.InternalSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
+@InternalSweetestApi
 fun registerStepsInstance(stepsTestContext: StepsTestContext, instance: Steps) {
     stepsTestContext.setUpInstance(instance)
 }
 
+@InternalSweetestApi
 fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, stepsType: KClass<T>) {
     stepsTestContext.setUpAsRequired(stepsType as KClass<Steps>)
 }
 
+@InternalSweetestApi
 fun <T : Steps> getStepsDelegate(
     stepsTestContext: StepsTestContext,
     stepsType: KClass<T>

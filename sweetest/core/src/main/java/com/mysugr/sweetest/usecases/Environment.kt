@@ -9,14 +9,17 @@ package com.mysugr.sweetest.usecases
 
 import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.environment.TestEnvironment
+import dev.sweetest.internal.InternalSweetestApi
 
 private var currentTestContext: TestContext? = null
 
 // Temporary means of initializing the environment as long as TestEnvironment is still here
+@InternalSweetestApi
 fun ensureEnvironmentInitialized() {
     TestEnvironment
 }
 
+@InternalSweetestApi
 fun getCurrentTestContext(): TestContext {
     return currentTestContext ?: TestContext().also {
         currentTestContext = it
@@ -24,6 +27,7 @@ fun getCurrentTestContext(): TestContext {
 }
 
 // Temporary means of resetting the state of the environment as long as TestEnvironment is still here
+@InternalSweetestApi
 fun resetEnvironment() {
     TestEnvironment.reset()
     currentTestContext = null
@@ -32,6 +36,7 @@ fun resetEnvironment() {
 /**
  * Resets global, test-independent caches (dependency configuration from module testing configuration)
  */
+@InternalSweetestApi
 fun resetEnvironmentFully() {
     TestEnvironment.fullReset()
     resetEnvironment()

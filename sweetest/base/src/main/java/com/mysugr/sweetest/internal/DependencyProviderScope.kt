@@ -1,8 +1,9 @@
 package com.mysugr.sweetest.internal
 
+import dev.sweetest.internal.InternalSweetestApi
 import kotlin.reflect.KClass
 
-abstract class DependencyProviderScope {
+abstract class DependencyProviderScope @InternalSweetestApi constructor() {
 
     // Public API (the inline function should just be a wrapper over the implementation function!)
 

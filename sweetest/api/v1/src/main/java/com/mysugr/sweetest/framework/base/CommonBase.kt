@@ -6,9 +6,11 @@ import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.getCurrentTestContext
 import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
+import dev.sweetest.internal.CustomizableSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
+@CustomizableSweetestApi
 abstract class CommonBase : com.mysugr.sweetest.internal.TestElement {
     internal val testContext = getCurrentTestContext()
 }

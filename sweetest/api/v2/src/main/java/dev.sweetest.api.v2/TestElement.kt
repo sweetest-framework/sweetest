@@ -13,9 +13,11 @@ import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
 import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
 import com.mysugr.sweetest.usecases.subscribeWorkflow
+import dev.sweetest.internal.CustomizableSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
+@CustomizableSweetestApi
 abstract class TestElement : com.mysugr.sweetest.internal.TestElement {
 
     protected val testContext = getCurrentTestContext()

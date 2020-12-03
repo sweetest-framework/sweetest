@@ -17,6 +17,7 @@ import com.mysugr.sweetest.framework.dependency.DependencyProvider
 import com.mysugr.sweetest.framework.dependency.DependencyState
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.TestElement
+import dev.sweetest.internal.InternalSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
@@ -25,6 +26,7 @@ private const val DEPRECATION_MESSAGE = "Legacy dependency modes"
 
 // --- region: Configuration
 
+@InternalSweetestApi
 fun <T : Any> configureDependencyProvision(
     dependenciesTestContext: DependenciesTestContext,
     dependencyType: KClass<T>,
@@ -37,6 +39,7 @@ fun <T : Any> configureDependencyProvision(
     }
 }
 
+@InternalSweetestApi
 fun <T : Any> configureDependencyProvisionAutomatic(
     dependenciesTestContext: DependenciesTestContext,
     dependencyType: KClass<T>
@@ -47,6 +50,7 @@ fun <T : Any> configureDependencyProvisionAutomatic(
     }
 }
 
+@InternalSweetestApi
 @Deprecated(DEPRECATION_MESSAGE)
 fun configureDependencyReal(
     dependenciesTestContext: DependenciesTestContext,
@@ -62,6 +66,7 @@ fun configureDependencyReal(
     }
 }
 
+@InternalSweetestApi
 @Deprecated(DEPRECATION_MESSAGE)
 fun configureDependencyMock(
     dependenciesTestContext: DependenciesTestContext,
@@ -77,6 +82,7 @@ fun configureDependencyMock(
     }
 }
 
+@InternalSweetestApi
 @Deprecated(DEPRECATION_MESSAGE)
 fun configureDependencySpy(dependenciesTestContext: DependenciesTestContext, dependencyType: KClass<*>) =
     dependenciesTestContext.editLegacyDependencyState(dependencyType) {
@@ -85,10 +91,12 @@ fun configureDependencySpy(dependenciesTestContext: DependenciesTestContext, dep
 
 // --- region: Consumption
 
+@InternalSweetestApi
 fun <T : Any> getDependencyInstance(dependenciesTestContext: DependenciesTestContext, dependencyType: KClass<T>): T {
     return TestEnvironment.dependencies.getDependencyState(dependencyType).instance
 }
 
+@InternalSweetestApi
 fun <T : Any> getDependencyDelegate(
     dependenciesTestContext: DependenciesTestContext,
     type: KClass<T>

@@ -10,6 +10,8 @@ plugins {
     id 'kotlin'
 }
 
+apply from: '../../common.gradle'
+
 apply from: '../../publishing.gradle'
 setCustomArtifactName('sweetest-compat-v1')
 
