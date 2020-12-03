@@ -10,7 +10,7 @@ buildscript {
             support     : '27.1.1',
             cucumber    : '2.1.0',
             espresso    : '3.0.2',
-            mockito     : '2.19.0'
+            mockito     : '2.25.1'
     ]
     repositories {
         google()
