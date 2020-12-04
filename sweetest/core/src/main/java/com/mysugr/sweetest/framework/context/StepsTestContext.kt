@@ -1,5 +1,6 @@
 package com.mysugr.sweetest.framework.context
 
+import com.mysugr.sweetest.BDD_INCLUSION_MESSAGE
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
 import com.mysugr.sweetest.internal.Steps
@@ -19,9 +20,7 @@ class StepsTestContext(private val testContext: TestContext) :
         check(setUpDone) {
             "You are trying to access steps class \"$clazz\" before all initialization steps had finished. " +
                 "Probably you are\n 1) retrieving the steps class outside an appropriate setup code block (e.g. " +
-                "`onSetUp { ... }`).\n2) Cucumber hasn't correctly been set up (make sure you are using the " +
-                "appropriate `sweetest-cucumber*` dependency and `dev.sweetest.api.v2.cucumber` is in the list of " +
-                "glue code packages)."
+                "`onSetUp { ... }`).\n2) Cucumber hasn't correctly been set up ($BDD_INCLUSION_MESSAGE)."
         }
     }
 

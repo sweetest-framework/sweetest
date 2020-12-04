@@ -44,6 +44,8 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
         @Suppress("UNUSED_PARAMETER") testContext: TestContext // not used anymore, just part of legacy constructor signature
     ) : this(getCurrentTestContext(), null)
 
+    override val testContext = getCurrentTestContext()
+
     open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
 
     init {

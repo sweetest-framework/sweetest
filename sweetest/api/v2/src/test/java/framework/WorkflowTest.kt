@@ -4,7 +4,7 @@ import dev.sweetest.api.v2.BaseTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class WorkflowTest {
+class WorkflowTest : AutoWipeTest() {
 
     @Test
     fun `Normal test workflow`() {

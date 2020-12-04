@@ -7,37 +7,64 @@ package com.mysugr.sweetest.usecases
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
 
-import dev.sweetest.internal.TestContext
+import com.mysugr.sweetest.BDD_INCLUSION_MESSAGE
+import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.environment.TestEnvironment
 import dev.sweetest.internal.InternalSweetestApi
+import dev.sweetest.internal.TestContext
+
+private const val ENVIRONMENT_STATE_ERROR_MESSAGE =
+    "Make sure you aren't running tests in parallel " +
+        "within the same process! If you are using Cucumber, $BDD_INCLUSION_MESSAGE."
 
 private var currentTestContext: TestContext? = null
 
-// Temporary means of initializing the environment as long as TestEnvironment is still here
 @InternalSweetestApi
 fun ensureEnvironmentInitialized() {
     TestEnvironment
 }
 
 @InternalSweetestApi
-fun getCurrentTestContext(): TestContext {
-    return currentTestContext ?: TestContext().also {
+fun startEnvironment(): TestContext {
+    if (currentTestContext != null) throw SweetestException(
+        "Can't start test environment: It has already been started! $ENVIRONMENT_STATE_ERROR_MESSAGE"
+    )
+    return TestContext().also {
         currentTestContext = it
     }
 }
 
-// Temporary means of resetting the state of the environment as long as TestEnvironment is still here
+@InternalSweetestApi
+fun getCurrentTestContext(): TestContext {
+    return currentTestContext ?: throw SweetestException(
+        "Can't retrieve state from test environment: It has not yet been started! $ENVIRONMENT_STATE_ERROR_MESSAGE"
+    )
+}
+
 @InternalSweetestApi
 fun resetEnvironment() {
+    if (currentTestContext == null) {
+        throw SweetestException(
+            "Can't stop test environment: It has not previously been started! $ENVIRONMENT_STATE_ERROR_MESSAGE"
+        )
+    }
+    ensureEnvironmentReset()
+}
+
+/**
+ * Same as [resetEnvironment] but without checking the previous state
+ */
+fun ensureEnvironmentReset() {
     TestEnvironment.reset()
     currentTestContext = null
 }
 
 /**
- * Resets global, test-independent caches (dependency configuration from module testing configuration)
+ * Same as [ensureEnvironmentReset] but also resets global, test-independent caches
+ * (dependency configuration from module testing configuration).
  */
 @InternalSweetestApi
 fun resetEnvironmentFully() {
     TestEnvironment.fullReset()
-    resetEnvironment()
+    ensureEnvironmentReset()
 }

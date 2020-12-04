@@ -3,8 +3,8 @@ package dev.sweetest.api.v2.cucumber
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.usecases.finishWorkflow
-import com.mysugr.sweetest.usecases.getCurrentTestContext
 import com.mysugr.sweetest.usecases.proceedWorkflow
+import com.mysugr.sweetest.usecases.startEnvironment
 import cucumber.api.java.After
 import cucumber.api.java.Before
 
@@ -14,50 +14,51 @@ import cucumber.api.java.Before
  */
 class HookSteps {
 
-    private val testContext = getCurrentTestContext()
+    private lateinit var workflowTestContext: WorkflowTestContext
 
     @Before(order = HookOrder.INITIALIZE_FRAMEWORK)
     fun initializeFramework() {
-        // nothing to do
+        val testContext = startEnvironment()
+        workflowTestContext = testContext[WorkflowTestContext]
     }
 
     @Before(order = HookOrder.INITIALIZE_STEPS)
     fun initializeSteps() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.INITIALIZE_STEPS)
+        proceedWorkflow(workflowTestContext, WorkflowStep.INITIALIZE_STEPS)
     }
 
     @Before(order = HookOrder.INITIALIZE_DEPENDENCIES)
     fun initializeDependencies() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.INITIALIZE_DEPENDENCIES)
+        proceedWorkflow(workflowTestContext, WorkflowStep.INITIALIZE_DEPENDENCIES)
     }
 
     @Before(order = HookOrder.BEFORE_SET_UP)
     fun beforeSetUp() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.BEFORE_SET_UP)
+        proceedWorkflow(workflowTestContext, WorkflowStep.BEFORE_SET_UP)
     }
 
     @Before(order = HookOrder.SET_UP)
     fun setUp() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.SET_UP)
+        proceedWorkflow(workflowTestContext, WorkflowStep.SET_UP)
     }
 
     @Before(order = HookOrder.AFTER_SET_UP)
     fun afterSetUp() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_SET_UP)
+        proceedWorkflow(workflowTestContext, WorkflowStep.AFTER_SET_UP)
     }
 
     @After(order = HookOrder.TEAR_DOWN)
     fun tearDown() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.TEAR_DOWN)
+        proceedWorkflow(workflowTestContext, WorkflowStep.TEAR_DOWN)
     }
 
     @After(order = HookOrder.AFTER_TEAR_DOWN)
     fun afterTearDown() {
-        proceedWorkflow(testContext[WorkflowTestContext], WorkflowStep.AFTER_TEAR_DOWN)
+        proceedWorkflow(workflowTestContext, WorkflowStep.AFTER_TEAR_DOWN)
     }
 
     @After(order = HookOrder.DONE)
     fun done() {
-        finishWorkflow(testContext[WorkflowTestContext])
+        finishWorkflow(workflowTestContext)
     }
 }

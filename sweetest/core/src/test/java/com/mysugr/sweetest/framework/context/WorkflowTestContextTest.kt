@@ -1,11 +1,15 @@
 package com.mysugr.sweetest.framework.context
 
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
+import com.mysugr.sweetest.usecases.ensureEnvironmentReset
 import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
+import com.mysugr.sweetest.usecases.startEnvironment
 import com.mysugr.sweetest.usecases.subscribeWorkflow
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -15,6 +19,16 @@ class WorkflowTestContextTest {
     private val stepsContext = Mockito.mock(StepsTestContext::class.java)
     private val sut = WorkflowTestContext(stepsContext)
     private val trackedEvents = mutableListOf<String>()
+
+    @Before
+    fun before() {
+        startEnvironment()
+    }
+
+    @After
+    fun after() {
+        ensureEnvironmentReset()
+    }
 
     @Test
     fun `Runs through all steps`() {

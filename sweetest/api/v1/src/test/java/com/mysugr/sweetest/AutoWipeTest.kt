@@ -6,7 +6,7 @@ import org.junit.After
 open class AutoWipeTest {
 
     @After
-    open fun after() {
+    fun after() {
         resetEnvironmentFully()
     }
 }

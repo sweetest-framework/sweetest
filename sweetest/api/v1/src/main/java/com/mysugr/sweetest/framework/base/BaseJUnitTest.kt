@@ -7,6 +7,8 @@ import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
+import com.mysugr.sweetest.usecases.startEnvironment
+import dev.sweetest.internal.TestContext
 import org.junit.After
 import org.junit.Before
 
@@ -16,6 +18,8 @@ abstract class BaseJUnitTest
 constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) : CommonBase() {
 
     constructor() : this(moduleTestingConfiguration = null)
+
+    override val testContext: TestContext = startEnvironment()
 
     open fun configure() = TestBuilder(testContext, moduleTestingConfiguration)
 
