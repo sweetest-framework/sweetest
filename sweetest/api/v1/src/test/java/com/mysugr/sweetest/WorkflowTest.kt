@@ -2,7 +2,7 @@
 
 package com.mysugr.sweetest
 
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
+import dev.sweetest.v1.BaseJUnitTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

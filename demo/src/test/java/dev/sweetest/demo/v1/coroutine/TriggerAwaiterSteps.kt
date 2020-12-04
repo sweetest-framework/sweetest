@@ -1,10 +1,10 @@
 package dev.sweetest.demo.v1.coroutine
 
 import dev.sweetest.demo.coroutine.TriggerAwaiter
-import com.mysugr.sweetest.framework.base.BaseSteps
+import dev.sweetest.v1.BaseSteps
 import dev.sweetest.internal.TestContext
-import com.mysugr.sweetest.framework.coroutine.throwExceptionIfFailed
-import com.mysugr.sweetest.framework.coroutine.verifyOrder
+import dev.sweetest.v1.coroutines.throwExceptionIfFailed
+import dev.sweetest.v1.coroutines.verifyOrder
 import kotlinx.coroutines.async
 import kotlinx.coroutines.yield
 import org.junit.Assert.assertFalse

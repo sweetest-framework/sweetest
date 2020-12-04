@@ -1,4 +1,4 @@
-package com.mysugr.sweetest.framework.cucumber
+package dev.sweetest.v1.cucumber
 
 object HookOrder {
 

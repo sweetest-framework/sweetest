@@ -1,15 +1,17 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest.framework.coroutine
+package dev.sweetest.v1.internal.coroutines
 
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
+import dev.sweetest.v1.COROUTINES_TEST_UTILS_DEPRECATION_MESSAGE
+import dev.sweetest.v1.coroutines.SweetestCoroutineSupport
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
 import kotlin.coroutines.CoroutineContext
 
-@Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
+@Deprecated(COROUTINES_TEST_UTILS_DEPRECATION_MESSAGE)
 internal class CoroutinesTestContext : TestContextElement {
 
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
@@ -28,6 +30,7 @@ internal class CoroutinesTestContext : TestContextElement {
 
     companion object : TestContextElement.Definition<CoroutinesTestContext> {
         private var instanceCounter = 0
-        override fun createInstance(testContext: TestContext) = CoroutinesTestContext()
+        override fun createInstance(testContext: TestContext) =
+            CoroutinesTestContext()
     }
 }

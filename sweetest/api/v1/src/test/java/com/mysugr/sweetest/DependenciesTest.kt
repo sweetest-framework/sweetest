@@ -2,15 +2,15 @@
 
 package com.mysugr.sweetest
 
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
-import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.util.isMock
 import dev.sweetest.internal.TestContext
+import dev.sweetest.v1.BaseJUnitTest
+import dev.sweetest.v1.BaseSteps
+import dev.sweetest.v1.ModuleTestingConfiguration
+import dev.sweetest.v1.dependency
+import dev.sweetest.v1.mockito.isMock
+import dev.sweetest.v1.moduleTestingConfiguration
+import dev.sweetest.v1.steps
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -176,17 +176,12 @@ class DependenciesTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `No module configuration, changing MOCK to REAL throws exception`() {
-        var actualInstance: AService? = null
-
         val testInstance = object : BaseJUnitTest() {
             val instance by dependency<AService>()
 
             override fun configure() = super.configure()
                 .requireMock<AService>()
                 .requireReal<AService>()
-                .onSetUp {
-                    actualInstance = instance
-                }
         }
 
         testInstance.junitBefore()
@@ -263,23 +258,26 @@ class DependenciesTest : AutoWipeTest() {
     }
 
     private fun givenAMockBReal() {
-        moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly of<AService>()
-            dependency realOnly of<BViewModel>()
-        }
+        moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency mockOnly of<AService>()
+                dependency realOnly of<BViewModel>()
+            }
     }
 
     private fun givenAInitializedMockBReal() {
-        moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly initializer { AService().also { providedAInstance = it } }
-            dependency realOnly of<BViewModel>()
-        }
+        moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency mockOnly initializer { AService().also { providedAInstance = it } }
+                dependency realOnly of<BViewModel>()
+            }
     }
 
     private fun givenAllAny() {
-        moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<AService>()
-            dependency any of<BViewModel>()
-        }
+        moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency any of<AService>()
+                dependency any of<BViewModel>()
+            }
     }
 }

@@ -11,7 +11,7 @@ import org.junit.runner.RunWith
     glue = [
         "dev.sweetest.demo.v1.cucumberInterop",
         "dev.sweetest.demo.v1.example",
-        "com.mysugr.sweetest.framework.cucumber" // has always to be included for sweetest
+        "dev.sweetest.v1.cucumber" // has always to be included for sweetest
     ]
 )
 class CucumberLoginTest

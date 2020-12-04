@@ -2,9 +2,9 @@
 
 package com.mysugr.sweetest
 
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
+import dev.sweetest.v1.BaseJUnitTest
+import dev.sweetest.v1.dependency
+import dev.sweetest.v1.moduleTestingConfiguration
 import org.junit.Test
 
 class LegacyPolymorphismTest : AutoWipeTest() {

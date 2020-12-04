@@ -1,9 +1,9 @@
 #set( $PROD_NAME = $NAME.replace("IntegrationSteps", "").replace("Steps", "").replace("Mock", "").replace("Fake", "").replace("Stub", "").replace("Test", "") )
 package ${PACKAGE_NAME}
 
-import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.base.steps
+import dev.sweetest.v1.BaseSteps
+import dev.sweetest.v1.dependency
+import dev.sweetest.v1.steps
 
 class ${NAME} : BaseSteps() {
 

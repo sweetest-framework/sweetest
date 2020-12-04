@@ -1,7 +1,8 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest.framework.coroutine
+package dev.sweetest.v1.coroutines
 
+import dev.sweetest.v1.COROUTINES_EAGER_EXECUTION_DEPRECATION_MESSAGE
 import org.junit.Assert.fail
 
 /**
@@ -32,7 +33,7 @@ import org.junit.Assert.fail
  * }
  * ```
  */
-@Deprecated(EAGER_EXECUTION_DEPRECATION_MESSAGE)
+@Deprecated(COROUTINES_EAGER_EXECUTION_DEPRECATION_MESSAGE)
 suspend fun verifyOrder(block: suspend OrderVerifier.() -> Unit) {
     block(OrderVerifier())
 }
@@ -40,7 +41,7 @@ suspend fun verifyOrder(block: suspend OrderVerifier.() -> Unit) {
 /**
  * Helper class for [verifyOrder].
  */
-@Deprecated(EAGER_EXECUTION_DEPRECATION_MESSAGE)
+@Deprecated(COROUTINES_EAGER_EXECUTION_DEPRECATION_MESSAGE)
 class OrderVerifier {
     private var currentOrderIndex = 0
 

@@ -1,4 +1,4 @@
-package com.mysugr.sweetest.framework.cucumber
+package dev.sweetest.v1.cucumber
 
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep
@@ -9,7 +9,7 @@ import cucumber.api.java.After
 import cucumber.api.java.Before
 
 /**
- * Use this steps class to wire Cucumber with sweetest by adding `com.mysugr.sweetest.framework.cucumber` to the list
+ * Use this steps class to wire Cucumber with sweetest by adding `dev.sweetest.v1.cucumber` to the list
  * of glue code packages.
  */
 class HookSteps {

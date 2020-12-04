@@ -1,9 +1,9 @@
 package dev.sweetest.demo.v1v2Interop
 
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.base.steps
+import dev.sweetest.v1.BaseJUnitTest
+import dev.sweetest.v1.BaseSteps
+import dev.sweetest.v1.internal.dependency
+import dev.sweetest.v1.internal.steps
 import dev.sweetest.api.v2.Steps
 import dev.sweetest.api.v2.framework.base.JUnit4Test
 import org.junit.After

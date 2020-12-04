@@ -2,12 +2,12 @@
 
 package com.mysugr.sweetest
 
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.base.dependency
-import com.mysugr.sweetest.framework.configuration.moduleTestingConfiguration
-import com.mysugr.sweetest.util.isMock
-import com.mysugr.sweetest.util.mock
+import dev.sweetest.v1.BaseJUnitTest
+import dev.sweetest.v1.dependency
+import dev.sweetest.v1.mockito.isMock
+import dev.sweetest.v1.mockito.mock
+import dev.sweetest.v1.moduleTestingConfiguration
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -23,10 +23,11 @@ class ProvideTest : AutoWipeTest() {
 
     @Test
     fun `provide can be used when dependency is configured with any`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestUserService>()
-            dependency any of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency any of<TestUserService>()
+                dependency any of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -51,10 +52,11 @@ class ProvideTest : AutoWipeTest() {
      */
     @Test
     fun `provide can be used when dependency is configured with mockOnly or realOnly`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency realOnly of<TestUserService>()
-            dependency mockOnly of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency realOnly of<TestUserService>()
+                dependency mockOnly of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -77,10 +79,11 @@ class ProvideTest : AutoWipeTest() {
 
     @Test
     fun `provide works together with mockOnly and requireMock`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly of<TestUserService>()
-            dependency any of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency mockOnly of<TestUserService>()
+                dependency any of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -115,9 +118,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (once with, once without lambda)`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency any of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -132,9 +136,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (once without, once with lambda)`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency any of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -149,9 +154,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (with lambda)`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency any of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -166,9 +172,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (without lambda)`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency any of<TestViewModel>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency any of<TestViewModel>()
+            }
 
         class TestClass : BaseJUnitTest(moduleTestingConfiguration) {
             override fun configure() = super.configure()
@@ -183,9 +190,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test
     fun `provide without lambda overrides global mockOnly configuration`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly of<FakeTestUserService>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency mockOnly of<FakeTestUserService>()
+            }
 
         val test = object : BaseJUnitTest(moduleTestingConfiguration) {
             val testUserService by dependency<FakeTestUserService>()
@@ -202,9 +210,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test
     fun `provide with lambda overrides global mockOnly configuration`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly of<FakeTestUserService>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency mockOnly of<FakeTestUserService>()
+            }
 
         val test = object : BaseJUnitTest(moduleTestingConfiguration) {
             val testUserService by dependency<FakeTestUserService>()
@@ -221,9 +230,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test
     fun `provide without lambda goes hand in hand with global realOnly configuration`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency realOnly of<FakeTestUserService>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency realOnly of<FakeTestUserService>()
+            }
 
         val test = object : BaseJUnitTest(moduleTestingConfiguration) {
             val testUserService by dependency<FakeTestUserService>()
@@ -240,9 +250,10 @@ class ProvideTest : AutoWipeTest() {
 
     @Test
     fun `provide with lambda overrides global realOnly configuration`() {
-        val moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency realOnly of<FakeTestUserService>()
-        }
+        val moduleTestingConfiguration =
+            moduleTestingConfiguration {
+                dependency realOnly of<FakeTestUserService>()
+            }
 
         val test = object : BaseJUnitTest(moduleTestingConfiguration) {
             val testUserService by dependency<FakeTestUserService>()

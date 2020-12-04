@@ -1,9 +1,9 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest.framework.build
+package dev.sweetest.v1.internal.builder
 
-import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
-import com.mysugr.sweetest.framework.base.BaseSteps
+import dev.sweetest.v1.ModuleTestingConfiguration
+import dev.sweetest.v1.BaseSteps
 import dev.sweetest.internal.TestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.usecases.registerStepsInstance

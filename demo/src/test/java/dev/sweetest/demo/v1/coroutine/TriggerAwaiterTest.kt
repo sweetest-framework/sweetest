@@ -1,10 +1,10 @@
 package dev.sweetest.demo.v1.coroutine
 
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.framework.coroutine.invoke
-import com.mysugr.sweetest.framework.coroutine.testCoroutine
-import com.mysugr.sweetest.util.expectException
+import dev.sweetest.v1.BaseJUnitTest
+import dev.sweetest.v1.coroutines.invoke
+import dev.sweetest.v1.coroutines.testCoroutine
+import dev.sweetest.v1.steps
+import dev.sweetest.v1.util.expectException
 import org.junit.Test
 
 class TriggerAwaiterTest : BaseJUnitTest() {

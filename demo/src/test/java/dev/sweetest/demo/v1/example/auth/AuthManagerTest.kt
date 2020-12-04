@@ -3,9 +3,9 @@ package dev.sweetest.demo.v1.example.auth
 import dev.sweetest.demo.v1.example.net.BackendFakeSteps
 import dev.sweetest.demo.v1.example.net.BackendFakeUser.Companion.TEST_USER
 import dev.sweetest.demo.v1.example.state.SessionStoreSteps
-import com.mysugr.sweetest.framework.base.BaseJUnitTest
-import com.mysugr.sweetest.framework.base.invoke
-import com.mysugr.sweetest.framework.base.steps
+import dev.sweetest.v1.BaseJUnitTest
+import dev.sweetest.v1.invoke
+import dev.sweetest.v1.steps
 import org.junit.Test
 
 class AuthManagerTest : BaseJUnitTest() {

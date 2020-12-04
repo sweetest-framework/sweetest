@@ -1,15 +1,13 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest.framework.base
+package dev.sweetest.v1
 
-import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE
-import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
 import dev.sweetest.internal.TestContext
-import com.mysugr.sweetest.framework.build.StepsBuilder
-import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
-import com.mysugr.sweetest.framework.coroutine.CoroutinesTestContext
+import dev.sweetest.v1.internal.builder.StepsBuilder
+import dev.sweetest.v1.internal.coroutines.CoroutinesTestContext
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.getCurrentTestContext
+import dev.sweetest.v1.internal.CommonBase
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -52,7 +50,8 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
 
     override val testContext = getCurrentTestContext()
 
-    open fun configure() = StepsBuilder(this, testContext, moduleTestingConfiguration)
+    open fun configure() =
+        StepsBuilder(this, testContext, moduleTestingConfiguration)
 
     init {
         @Suppress("LeakingThis")

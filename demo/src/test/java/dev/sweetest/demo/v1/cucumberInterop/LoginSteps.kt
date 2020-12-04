@@ -1,7 +1,6 @@
 package dev.sweetest.demo.v1.cucumberInterop
 
-import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.base.steps
+import dev.sweetest.v1.BaseSteps
 import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
@@ -11,6 +10,7 @@ import dev.sweetest.demo.v1.example.net.BackendFakeSteps
 import dev.sweetest.demo.v1.example.state.SessionStoreSteps
 import dev.sweetest.demo.v1.example.view.LoginViewModelSteps
 import dev.sweetest.demo.view.LoginViewModel
+import dev.sweetest.v1.steps
 
 class LoginSteps : BaseSteps() {
 

@@ -4,7 +4,7 @@ import dev.sweetest.demo.net.AuthToken
 import dev.sweetest.demo.net.BackendGateway
 import dev.sweetest.demo.net.UsernameOrPasswordWrongException
 import dev.sweetest.demo.user.User
-import com.mysugr.sweetest.framework.base.BaseSteps
+import dev.sweetest.v1.BaseSteps
 import cucumber.api.java.Before
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then

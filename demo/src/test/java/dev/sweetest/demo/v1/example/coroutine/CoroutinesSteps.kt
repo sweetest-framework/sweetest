@@ -2,7 +2,7 @@ package dev.sweetest.demo.v1.example.coroutine
 
 import dev.sweetest.demo.common.TestDispatcherProvider
 import dev.sweetest.demo.coroutine.DispatcherProvider
-import com.mysugr.sweetest.framework.base.BaseSteps
+import dev.sweetest.v1.BaseSteps
 import dev.sweetest.internal.TestContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

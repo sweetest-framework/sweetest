@@ -1,11 +1,11 @@
 package dev.sweetest.demo.v1.example.view
 
 import dev.sweetest.demo.R
-import dev.sweetest.demo.view.LoginViewModel
 import dev.sweetest.demo.v1.example.coroutine.CoroutinesSteps
-import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.base.dependency
+import dev.sweetest.demo.view.LoginViewModel
 import dev.sweetest.internal.TestContext
+import dev.sweetest.v1.BaseSteps
+import dev.sweetest.v1.dependency
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.TestCoroutineScope

@@ -1,15 +1,13 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest.framework.base
+package dev.sweetest.v1
 
-import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE
-import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
-import com.mysugr.sweetest.framework.build.TestBuilder
-import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration
+import dev.sweetest.v1.internal.builder.TestBuilder
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
 import com.mysugr.sweetest.usecases.startEnvironment
+import dev.sweetest.v1.internal.CommonBase
 import dev.sweetest.internal.TestContext
 import org.junit.After
 import org.junit.Before
@@ -23,7 +21,8 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
 
     override val testContext: TestContext = startEnvironment()
 
-    open fun configure() = TestBuilder(testContext, moduleTestingConfiguration)
+    open fun configure() =
+        TestBuilder(testContext, moduleTestingConfiguration)
 
     init {
         @Suppress("LeakingThis")

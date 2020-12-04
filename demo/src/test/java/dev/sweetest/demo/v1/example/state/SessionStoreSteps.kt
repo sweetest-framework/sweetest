@@ -4,9 +4,9 @@ import dev.sweetest.demo.state.SessionStore
 import dev.sweetest.demo.user.User
 import dev.sweetest.demo.util.nonNullable
 import dev.sweetest.demo.util.nonNullableAny
-import com.mysugr.sweetest.framework.base.BaseSteps
-import com.mysugr.sweetest.framework.base.dependency
+import dev.sweetest.v1.BaseSteps
 import dev.sweetest.internal.TestContext
+import dev.sweetest.v1.dependency
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.mock

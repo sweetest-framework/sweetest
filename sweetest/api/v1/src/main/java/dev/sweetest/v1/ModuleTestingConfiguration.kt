@@ -1,6 +1,5 @@
-package com.mysugr.sweetest.framework.configuration
+package dev.sweetest.v1
 
-import com.mysugr.sweetest.MODULE_CONFIG_DEPRECATION_MESSAGE
 import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
 import com.mysugr.sweetest.framework.dependency.DependencyMode
 import com.mysugr.sweetest.framework.dependency.DependencyProvider
