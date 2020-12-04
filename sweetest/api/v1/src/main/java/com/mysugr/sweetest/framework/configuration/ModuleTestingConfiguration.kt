@@ -17,11 +17,12 @@ private const val DEPENDENCY_INITIALIZATION_DEPRECATION_MESSAGE = "Dependency in
     "class level instead."
 
 @Deprecated(
-    "$MODULE_CONFIG_DEPRECATION_MESSAGE If really necessary because migration " +
+    "$MODULE_CONFIG_DEPRECATION_MESSAGE. If really necessary because migration " +
         "of test code is not reasonable, only add dependencies with `dependency any of<T>`."
 )
 fun moduleTestingConfiguration(
-    vararg baseModuleTestingConfigurations: ModuleTestingConfiguration,
+    @Suppress("UNUSED_PARAMETER")
+    vararg baseModuleTestingConfigurations: ModuleTestingConfiguration, // just a placeholder for making sure necessary base configurations are mentioned
     run: (DslScope.() -> Unit)? = null
 ): ModuleTestingConfiguration {
 
@@ -88,22 +89,38 @@ class DslScope internal constructor() {
     // Internal API
 
     @PublishedApi
-    internal fun <T : Any> anyInternal(leftOperand: LeftOperand, type: KClass<T>) {
+    internal fun <T : Any> anyInternal(
+        @Suppress("UNUSED_PARAMETER")
+        leftOperand: LeftOperand, // placeholder for potential future use
+        type: KClass<T>
+    ) {
         dependencies.add(DependencyConfiguration(type, null, null))
     }
 
     @PublishedApi
-    internal fun anyInternal(leftOperand: LeftOperand, rightOperand: RightOperand) {
+    internal fun anyInternal(
+        @Suppress("UNUSED_PARAMETER")
+        leftOperand: LeftOperand,  // placeholder for potential future use
+        rightOperand: RightOperand
+    ) {
         rightOperand.addFunction(null, false)
     }
 
     @PublishedApi
-    internal fun mockOnlyInternal(leftOperand: LeftOperand, rightOperand: RightOperand) {
+    internal fun mockOnlyInternal(
+        @Suppress("UNUSED_PARAMETER")
+        leftOperand: LeftOperand,  // placeholder for potential future use
+        rightOperand: RightOperand
+    ) {
         rightOperand.addFunction(DependencyMode.MOCK, true)
     }
 
     @PublishedApi
-    internal fun realOnlyInternal(leftOperand: LeftOperand, rightOperand: RightOperand) {
+    internal fun realOnlyInternal(
+        @Suppress("UNUSED_PARAMETER")
+        leftOperand: LeftOperand,  // placeholder for potential future use
+        rightOperand: RightOperand
+    ) {
         rightOperand.addFunction(DependencyMode.REAL, true)
     }
 

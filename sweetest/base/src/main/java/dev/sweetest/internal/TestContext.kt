@@ -1,5 +1,3 @@
-package dev.sweetest.internal
-
 /**
  * Although `TestContext` is an internal data structure it is not in the internal package because it was used publicly
  * in the v1 API. From v2 on `TestContext` is only used internally.
@@ -11,6 +9,8 @@ package dev.sweetest.internal
  * There can only be one instance per type. [TestContextElement.Key] is here for type-safe, reflection-free
  * instantiation of a specific subtype of [TestContextElement].
  */
+
+package dev.sweetest.internal
 
 /**
  * Holds the utilities and state of a test.

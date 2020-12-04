@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest.framework.base
 
 import com.mysugr.sweetest.BASE_CLASS_DEPRECATION_MESSAGE

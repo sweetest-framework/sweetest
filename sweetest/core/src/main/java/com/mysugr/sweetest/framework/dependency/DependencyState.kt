@@ -19,6 +19,7 @@ internal class DependencyState<T : Any>(
     var provider: DependencyProvider<T>? = null
     var providerUnknown: DependencyProvider<*>?
         set(value) {
+            @Suppress("UNCHECKED_CAST")
             provider = value as? DependencyProvider<T>
         }
         get() = provider
@@ -27,6 +28,7 @@ internal class DependencyState<T : Any>(
 
     var realProviderUnknown: DependencyProvider<*>?
         set(value) {
+            @Suppress("UNCHECKED_CAST")
             realProvider = value as? DependencyProvider<T>
         }
         get() = realProvider
@@ -35,6 +37,7 @@ internal class DependencyState<T : Any>(
 
     var mockProviderUnknown: DependencyProvider<*>?
         set(value) {
+            @Suppress("UNCHECKED_CAST")
             mockProvider = value as? DependencyProvider<T>
         }
         get() = mockProvider

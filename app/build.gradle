@@ -20,6 +20,13 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+    }
+}
+
 dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"

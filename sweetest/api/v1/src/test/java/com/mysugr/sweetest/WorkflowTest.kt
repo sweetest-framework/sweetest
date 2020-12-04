@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest
 
 import com.mysugr.sweetest.framework.base.BaseJUnitTest

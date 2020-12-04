@@ -48,6 +48,7 @@ internal class DependencyStates(private val dependencyProviderScope: DependencyP
         val result = mutableListOf<DependencyState<T>>()
         TestEnvironment.dependencies.configurations.all.forEach {
             if (clazz.java.isAssignableFrom(it.clazz.java)) {
+                @Suppress("UNCHECKED_CAST")
                 result.add(get(it) as DependencyState<T>)
             }
         }
@@ -61,6 +62,7 @@ internal class DependencyStates(private val dependencyProviderScope: DependencyP
         return if (found == null) {
             create(configuration)
         } else {
+            @Suppress("UNCHECKED_CAST")
             found as DependencyState<T>
         }
     }
@@ -78,6 +80,7 @@ internal class DependencyStates(private val dependencyProviderScope: DependencyP
 
     override fun <T : Any> getOrNull(clazz: KClass<T>): DependencyState<T>? {
         val key = statesMap.keys.find { it.clazz == clazz }
+        @Suppress("UNCHECKED_CAST")
         return statesMap[key] as? DependencyState<T>
     }
 

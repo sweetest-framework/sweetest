@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest.framework.build
 
 import com.mysugr.sweetest.framework.configuration.ModuleTestingConfiguration

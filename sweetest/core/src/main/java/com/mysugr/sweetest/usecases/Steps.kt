@@ -1,11 +1,11 @@
-package com.mysugr.sweetest.usecases
-
 /**
  * Use cases for steps.
  *
  * - achieves internal API stability for calls towards the core while the core can freely be refactored
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
+
+package com.mysugr.sweetest.usecases
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.StepsTestContext
@@ -23,6 +23,7 @@ fun registerStepsInstance(stepsTestContext: StepsTestContext, instance: Steps) {
 
 @InternalSweetestApi
 fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, stepsType: KClass<T>) {
+    @Suppress("UNCHECKED_CAST")
     stepsTestContext.setUpAsRequired(stepsType as KClass<Steps>)
 }
 

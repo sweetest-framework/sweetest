@@ -36,7 +36,8 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
         ReplaceWith(REPLACE_WITH)
     )
     constructor(
-        @Suppress("UNUSED_PARAMETER") testContext: TestContext, // not used anymore, just part of legacy constructor signature
+        @Suppress("UNUSED_PARAMETER")
+        testContext: TestContext, // not used anymore, just part of legacy constructor signature
         moduleTestingConfiguration: ModuleTestingConfiguration? = null
     ) : this(moduleTestingConfiguration)
 
@@ -45,7 +46,8 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
         ReplaceWith(REPLACE_WITH)
     )
     constructor(
-        @Suppress("UNUSED_PARAMETER") testContext: TestContext // not used anymore, just part of legacy constructor signature
+        @Suppress("UNUSED_PARAMETER")
+        testContext: TestContext // not used anymore, just part of legacy constructor signature
     ) : this(getCurrentTestContext(), null)
 
     override val testContext = getCurrentTestContext()

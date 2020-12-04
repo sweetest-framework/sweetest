@@ -4,6 +4,7 @@ import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
 import org.junit.Test
 
+@Suppress("USELESS_IS_CHECK")
 class TestContextTest {
 
     /**

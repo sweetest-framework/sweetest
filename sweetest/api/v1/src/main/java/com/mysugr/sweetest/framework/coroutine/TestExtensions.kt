@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest.framework.coroutine
 
 import com.mysugr.sweetest.OUT_OF_SCOPE_DEPRECATION_MESSAGE

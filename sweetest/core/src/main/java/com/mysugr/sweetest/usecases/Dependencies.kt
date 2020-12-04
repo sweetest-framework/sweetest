@@ -1,5 +1,3 @@
-package com.mysugr.sweetest.usecases
-
 /**
  * Use cases for dependencies.
  *
@@ -9,6 +7,8 @@ package com.mysugr.sweetest.usecases
  * Note: DependenciesTestContext is mentioned in some function signatures while it's not used in the function itself.
  * This is to prepare for the upcoming removal of the global state (TestEnvironment).
  */
+
+package com.mysugr.sweetest.usecases
 
 import com.mysugr.sweetest.framework.base.SweetestException
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
@@ -22,7 +22,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-private const val DEPRECATION_MESSAGE = "Legacy dependency modes"
+private const val DEPRECATION_MESSAGE = "Legacy dependency modes."
 
 // --- region: Configuration
 
@@ -92,13 +92,18 @@ fun configureDependencySpy(dependenciesTestContext: DependenciesTestContext, dep
 // --- region: Consumption
 
 @InternalSweetestApi
-fun <T : Any> getDependencyInstance(dependenciesTestContext: DependenciesTestContext, dependencyType: KClass<T>): T {
+fun <T : Any> getDependencyInstance(
+    @Suppress("UNUSED_PARAMETER")
+    dependenciesTestContext: DependenciesTestContext, // reserved for API stability
+    dependencyType: KClass<T>
+): T {
     return TestEnvironment.dependencies.getDependencyState(dependencyType).instance
 }
 
 @InternalSweetestApi
 fun <T : Any> getDependencyDelegate(
-    dependenciesTestContext: DependenciesTestContext,
+    @Suppress("UNUSED_PARAMETER")
+    dependenciesTestContext: DependenciesTestContext, // reserved for API stability
     type: KClass<T>
 ): ReadOnlyProperty<TestElement, T> {
     try {

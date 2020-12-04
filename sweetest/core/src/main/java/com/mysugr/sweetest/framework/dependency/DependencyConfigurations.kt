@@ -47,6 +47,7 @@ internal class DependencyConfigurations : DependencyConfigurationConsumer, Depen
     }
 
     override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>? {
+        @Suppress("UNCHECKED_CAST")
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }
             as DependencyConfiguration<T>?
     }

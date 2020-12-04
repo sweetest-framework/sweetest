@@ -1,11 +1,11 @@
-package com.mysugr.sweetest.usecases
-
 /**
  * Use cases for workflow.
  *
  * - achieves internal API stability for calls towards the core while the core can freely be refactored
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
+
+package com.mysugr.sweetest.usecases
 
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep

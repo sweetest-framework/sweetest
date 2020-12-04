@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.mysugr.sweetest.framework.coroutine
 
 import dev.sweetest.internal.TestContext
@@ -13,7 +15,6 @@ internal class CoroutinesTestContext : TestContextElement {
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
 
-    @Suppress("DEPRECATION")
     val coroutineContext: CoroutineContext
         get() = SweetestCoroutineSupport.coroutineDispatcher + supervisorJob + name
 
