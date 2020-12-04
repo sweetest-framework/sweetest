@@ -67,11 +67,12 @@ class StepsTestContext(private val testContext: TestContext) :
             checkType(kClass)
             checkConstructorExists(kClass)
 
-            val constructor = getConstructorWithArgument(kClass)
-                ?: getConstructorWithoutArgument(kClass)
+            // As the TestContext constructor argument is ignored since sweetest v2, pick the constructor without arguments first
+            val constructor = getConstructorWithoutArgument(kClass)
+                ?: getConstructorWithArgument(kClass)
                 ?: error(
-                    "Can't use \"${kClass.simpleName}\" as steps class. A steps class needs to have a suitable " +
-                        "constructor, which is either one with no parameters or with a TestContext as parameter."
+                    "Can't use \"${kClass.simpleName}\" as steps class. " +
+                        "A steps class needs to have a constructor with no parameters."
                 )
 
             val arguments = if (constructor.parameters.isEmpty()) {
@@ -136,6 +137,7 @@ class StepsTestContext(private val testContext: TestContext) :
     }
 
     // Necessary for defining a TestContextElement:
+
     override val definition = Companion
 
     companion object : TestContextElement.Definition<StepsTestContext> {

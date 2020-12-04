@@ -2,7 +2,7 @@ package com.mysugr.android.testing.v1.example.view
 
 import com.mysugr.android.testing.example.app.R
 import com.mysugr.android.testing.example.view.LoginViewModel
-import com.mysugr.android.testing.v1.example.coroutine.CoroutineSteps
+import com.mysugr.android.testing.v1.example.coroutine.CoroutinesSteps
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
 import dev.sweetest.internal.TestContext
@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 class LoginViewModelSteps(testContext: TestContext) : BaseSteps(testContext) {
 
     override fun configure() = super.configure()
-        .requireSteps<CoroutineSteps>()
+        .requireSteps<CoroutinesSteps>()
         .provide<LoginViewModel>()
 
     private val testCoroutineScope by dependency<TestCoroutineScope>()

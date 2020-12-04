@@ -4,9 +4,8 @@ package ${PACKAGE_NAME}
 import com.mysugr.sweetest.framework.base.BaseSteps
 import com.mysugr.sweetest.framework.base.dependency
 import com.mysugr.sweetest.framework.base.steps
-import com.mysugr.sweetest.TestContext
 
-class ${NAME}(testContext: TestContext) : BaseSteps(testContext, ) {
+class ${NAME} : BaseSteps() {
 
     val steps by steps<>()
     

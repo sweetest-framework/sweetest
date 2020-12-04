@@ -22,7 +22,9 @@ internal class CoroutinesTestContext : TestContextElement {
     }
 
     // Necessary for defining a TestContextElement:
+
     override val definition = Companion
+
     companion object : TestContextElement.Definition<CoroutinesTestContext> {
         private var instanceCounter = 0
         override fun createInstance(testContext: TestContext) = CoroutinesTestContext()

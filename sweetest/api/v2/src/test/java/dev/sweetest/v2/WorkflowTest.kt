@@ -1,4 +1,4 @@
-package framework
+package dev.sweetest.v2
 
 import dev.sweetest.api.v2.BaseTest
 import org.junit.Assert.assertEquals

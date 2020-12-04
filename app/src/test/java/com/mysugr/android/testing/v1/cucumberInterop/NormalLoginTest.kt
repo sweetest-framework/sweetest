@@ -6,7 +6,7 @@ import com.mysugr.sweetest.framework.base.invoke
 import com.mysugr.sweetest.framework.base.steps
 import org.junit.Test
 
-// This is to show that the same steps class can be operated either by Cucumber or via JUnit
+// This is to show that the same steps class can be utilized with Cucumber as well as with JUnit
 class NormalLoginTest : BaseJUnitTest() {
 
     private val sut by steps<LoginSteps>()

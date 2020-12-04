@@ -13,6 +13,10 @@ import com.mysugr.sweetest.usecases.getCurrentTestContext
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
+private const val COROUTINE_SCOPE_DEPRECATION_MESSAGE =
+    "Please don't use steps classes as CoroutineScope! " +
+        "This feature is deprecated and will be removed in the next API version!"
+
 private const val TEST_CONTEXT_DEPRECATION_MESSAGE =
     "of version 2.0.0 TestContext isn't needed and is in fact IGNORED."
 
@@ -53,16 +57,12 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
         configure().freeze()
     }
 
-    @Deprecated(
-        "Please don't use steps classes as CoroutineScope! " +
-            "This feature is deprecated and will be removed in the next API version!"
-    )
+    @Deprecated(COROUTINE_SCOPE_DEPRECATION_MESSAGE)
     override val coroutineContext: CoroutineContext
         get() {
-            // Unfortunately there is no way to mark the use of BaseSteps as CoroutineScope as deprecated for the IDE so we need to print the message
+            // Unfortunately there is no way to mark the use of BaseSteps as CoroutineScope as deprecated in the IDE so we need to print the message
             println(
-                "\u001B[31mWARNING:\u001B[0m Please don't use steps classes as CoroutineScope! " +
-                    "This feature is deprecated and will be removed in the next API version!"
+                "\u001B[31mWARNING:\u001B[0m $COROUTINE_SCOPE_DEPRECATION_MESSAGE"
             )
             return testContext[CoroutinesTestContext].coroutineContext
         }

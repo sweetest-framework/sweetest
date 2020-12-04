@@ -4,7 +4,8 @@ package dev.sweetest.internal
  * Although `TestContext` is an internal data structure it is not in the internal package because it was used publicly
  * in the v1 API. From v2 on `TestContext` is only used internally.
  *
- * API v1 doesn't require the use of `TestContext` directly, so it is now considered _internal_.
+ * API v1 doesn't require the use of `TestContext` directly, so it is considered _internal_ since then. Nonetheless it's
+ * not annotated with [InternalSweetestApi] because v1 tests still depend on it.
  *
  * TestContext can hold an arbitrary number of [TestContextElement]s. It creates an instance if it has not already.
  * There can only be one instance per type. [TestContextElement.Key] is here for type-safe, reflection-free
@@ -12,7 +13,13 @@ package dev.sweetest.internal
  */
 
 /**
- * Holds the utilities and state of a test. Is not meant to be used publicly from sweetest v2 on!
+ * Holds the utilities and state of a test.
+ *
+ * **Caution:** get rid of all mentions of [TestContext] in your test code!
+ *
+ * - Its direct use in test code is just possible for backwards compatibility reasons.
+ * - Is not meant to be used publicly from sweetest v2 on!
+ * - Even if used as a constructor argument for steps classes in v1 – it's ignored!
  */
 class TestContext {
 

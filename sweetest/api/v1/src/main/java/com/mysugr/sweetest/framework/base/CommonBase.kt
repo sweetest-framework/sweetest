@@ -5,12 +5,12 @@ import com.mysugr.sweetest.framework.context.StepsTestContext
 import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.usecases.getDependencyDelegate
 import com.mysugr.sweetest.usecases.getStepsDelegate
-import dev.sweetest.internal.CustomizableSweetestApi
+import dev.sweetest.internal.SweetestIntegrationsApi
 import dev.sweetest.internal.TestContext
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
-@CustomizableSweetestApi
+@SweetestIntegrationsApi
 abstract class CommonBase : com.mysugr.sweetest.internal.TestElement {
     internal abstract val testContext: TestContext
 }

@@ -54,6 +54,7 @@ fun resetEnvironment() {
 /**
  * Same as [resetEnvironment] but without checking the previous state
  */
+@InternalSweetestApi
 fun ensureEnvironmentReset() {
     TestEnvironment.reset()
     currentTestContext = null

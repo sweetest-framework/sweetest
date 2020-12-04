@@ -38,7 +38,9 @@ class DependenciesTestContext : TestContextElement {
     }
 
     // Necessary for defining a TestContextElement:
+
     override val definition = Companion
+
     companion object : TestContextElement.Definition<DependenciesTestContext> {
         override fun createInstance(testContext: TestContext) = DependenciesTestContext()
     }

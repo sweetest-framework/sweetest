@@ -4,7 +4,7 @@ import com.mysugr.android.testing.v2.example.net.BackendFakeUser.Companion.TEST_
 import dev.sweetest.api.v2.framework.base.JUnit4Test
 import org.junit.Test
 
-// This is to show that the same steps class can be operated either by Cucumber or via JUnit
+// This is to show that the same steps class can be utilized with Cucumber as well as with JUnit
 class NormalLoginTest : JUnit4Test() {
 
     private val sut by steps<LoginSteps>()

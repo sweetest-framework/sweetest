@@ -16,12 +16,6 @@ internal class DependencyManager(
     private var _states: DependencyStates? = null
     private val configurationsField = DependencyConfigurations()
 
-    private val dependencyProviderScope = object : DependencyProviderScope() {
-        override fun <T : Any> instanceOf(dependencyType: KClass<T>): T {
-            return TestEnvironment.dependencies.getDependencyState(dependencyType).instance
-        }
-    }
-
     init {
         setupHandlerReceiver(configurationsField)
     }
@@ -120,11 +114,17 @@ internal class DependencyManager(
 
     override val states: DependencyStatesConsumer
         get() = if (_states == null) {
-            _states = DependencyStates(dependencyProviderScope)
+            _states = DependencyStates(DependencyProviderScopeInstance)
             _states!!
         } else {
             _states!!
         }
+
+    private object DependencyProviderScopeInstance : DependencyProviderScope() {
+        override fun <T : Any> instanceOf(dependencyType: KClass<T>): T {
+            return TestEnvironment.dependencies.getDependencyState(dependencyType).instance
+        }
+    }
 
     class Controller(private val parent: DependencyManager) {
         fun resetState() {
