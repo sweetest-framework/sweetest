@@ -11,9 +11,17 @@ import kotlin.reflect.KClass
 
 // --- region: Public API (the following inline functions should just be wrappers over implementation functions!)
 
+/**
+ * Lets you consume an instance from sweetest's dependency management. These dependencies are managed as singletons,
+ * which means that all calls to [dependency] across steps and test classes all return the same instance.
+ */
 inline fun <reified T : Any> ApiTestElement.dependency(): ReadOnlyProperty<ApiTestElement, T> =
     dependencyInternal(this, T::class)
 
+/**
+ * Lets you consume an instance of a sweetest steps class. These are managed as singletons, which means that all
+ * calls to [dependency] across steps and test classes all return the same instance.
+ */
 inline fun <reified T : InternalBaseSteps> ApiTestElement.steps(): ReadOnlyProperty<ApiTestElement, T> =
     stepsInternal(this, T::class)
 

@@ -27,6 +27,27 @@ fun BaseJUnitTest.testCoroutine(
     }
 }
 
+/**
+ * Convenience function to allow DSL-like calls on steps class instances, e.g.:
+ *
+ * ```kotlin
+ * val steps by steps<MyStepsClass>()
+ *
+ * @Test
+ * fun test() {
+ *     steps {
+ *         callSomethingInTheStepsClass()
+ *     }
+ *
+ *     // does the same
+ *     steps.callSomethingInTheStepsClass()
+ * }
+ * ```
+ */
+@Deprecated(
+    "You can now use the standard extension which works for both conventional and suspending functions",
+    replaceWith = ReplaceWith("invoke", imports = ["dev.sweetest.v1.invoke"])
+)
 suspend operator fun <T : InternalBaseSteps> T.invoke(run: suspend T.() -> Unit) = run(this)
 
 @Deprecated(OUT_OF_SCOPE_DEPRECATION_MESSAGE)

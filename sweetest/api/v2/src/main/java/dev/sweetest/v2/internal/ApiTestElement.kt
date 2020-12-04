@@ -88,12 +88,37 @@ abstract class ApiTestElement : InternalBaseTestElement {
 
     // --- region: Public consumption API
 
+    /**
+     * Lets you consume an instance from sweetest's dependency management. These dependencies are managed as singletons,
+     * which means that all calls to [dependency] across steps and test classes all return the same instance.
+     */
     inline fun <reified T : Any> dependency(): ReadOnlyProperty<ApiTestElement, T> =
         dependencyInternal(this, T::class)
 
+    /**
+     * Lets you consume an instance of a sweetest steps class. These are managed as singletons, which means that all
+     * calls to [dependency] across steps and test classes all return the same instance.
+     */
     inline fun <reified T : InternalBaseSteps> steps(): ReadOnlyProperty<ApiTestElement, T> =
         stepsInternal(this, T::class)
 
+    /**
+     * Convenience function to allow DSL-like calls on steps class instances, e.g.:
+     *
+     * ```kotlin
+     * val steps by steps<MyStepsClass>()
+     *
+     * @Test
+     * fun test() {
+     *     steps {
+     *         callSomethingInTheStepsClass()
+     *     }
+     *
+     *     // does the same
+     *     steps.callSomethingInTheStepsClass()
+     * }
+     * ```
+     */
     inline operator fun <T : InternalBaseSteps> T.invoke(run: T.() -> Unit) = run(this)
 
     // --- region: Internals

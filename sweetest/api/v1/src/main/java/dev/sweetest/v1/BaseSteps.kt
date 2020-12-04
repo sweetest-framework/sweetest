@@ -69,4 +69,21 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
         }
 }
 
-operator fun <T : InternalBaseSteps> T.invoke(run: T.() -> Unit) = run(this)
+/**
+ * Convenience function to allow DSL-like calls on steps class instances, e.g.:
+ *
+ * ```kotlin
+ * val steps by steps<MyStepsClass>()
+ *
+ * @Test
+ * fun test() {
+ *     steps {
+ *         callSomethingInTheStepsClass()
+ *     }
+ *
+ *     // does the same
+ *     steps.callSomethingInTheStepsClass()
+ * }
+ * ```
+ */
+inline operator fun <T : InternalBaseSteps> T.invoke(run: T.() -> Unit) = run(this)
