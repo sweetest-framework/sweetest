@@ -1,4 +1,4 @@
-package dev.sweetest.api.v2
+package dev.sweetest.v2
 
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.framework.workflow.WorkflowStep

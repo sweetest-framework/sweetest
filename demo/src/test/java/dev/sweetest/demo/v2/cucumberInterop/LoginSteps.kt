@@ -9,7 +9,7 @@ import dev.sweetest.demo.v2.example.view.LoginViewModelSteps
 import cucumber.api.java.Before
 import cucumber.api.java.en.Then
 import cucumber.api.java.en.When
-import dev.sweetest.api.v2.Steps
+import dev.sweetest.v2.Steps
 
 class LoginSteps : Steps() {
 

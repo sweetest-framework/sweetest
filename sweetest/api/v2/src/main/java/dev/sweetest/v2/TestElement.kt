@@ -1,4 +1,4 @@
-package dev.sweetest.api.v2
+package dev.sweetest.v2
 
 import com.mysugr.sweetest.framework.context.DependenciesTestContext
 import com.mysugr.sweetest.framework.context.StepsTestContext

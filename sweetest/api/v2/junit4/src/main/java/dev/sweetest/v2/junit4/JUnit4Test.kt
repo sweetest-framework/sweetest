@@ -1,9 +1,9 @@
-package dev.sweetest.api.v2.framework.base
+package dev.sweetest.v2.junit4
 
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
 import com.mysugr.sweetest.usecases.finishWorkflow
 import com.mysugr.sweetest.usecases.proceedWorkflow
-import dev.sweetest.api.v2.BaseTest
+import dev.sweetest.v2.BaseTest
 import org.junit.After
 import org.junit.Before
 

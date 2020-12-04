@@ -3,7 +3,7 @@ package dev.sweetest.demo.v2.example.view
 import dev.sweetest.demo.view.LoginViewModel
 import dev.sweetest.demo.v2.example.auth.AuthManagerMockSteps
 import dev.sweetest.demo.v2.example.net.BackendFakeUser
-import dev.sweetest.api.v2.framework.base.JUnit4Test
+import dev.sweetest.v2.junit4.JUnit4Test
 import org.junit.Test
 
 class LoginViewModelTest : JUnit4Test() {

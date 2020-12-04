@@ -7,7 +7,7 @@ import dev.sweetest.demo.user.User
 import cucumber.api.java.Before
 import cucumber.api.java.en.Given
 import cucumber.api.java.en.Then
-import dev.sweetest.api.v2.Steps
+import dev.sweetest.v2.Steps
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.verify
 

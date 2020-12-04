@@ -4,7 +4,7 @@ import dev.sweetest.demo.state.SessionStore
 import dev.sweetest.demo.user.User
 import dev.sweetest.demo.util.nonNullable
 import dev.sweetest.demo.util.nonNullableAny
-import dev.sweetest.api.v2.Steps
+import dev.sweetest.v2.Steps
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito.mock

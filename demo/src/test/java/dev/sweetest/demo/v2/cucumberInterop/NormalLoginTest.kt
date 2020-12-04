@@ -1,7 +1,7 @@
 package dev.sweetest.demo.v2.cucumberInterop
 
 import dev.sweetest.demo.v2.example.net.BackendFakeUser.Companion.TEST_USER
-import dev.sweetest.api.v2.framework.base.JUnit4Test
+import dev.sweetest.v2.junit4.JUnit4Test
 import org.junit.Test
 
 // This is to show that the same steps class can be utilized with Cucumber as well as with JUnit

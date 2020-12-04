@@ -3,7 +3,7 @@ package dev.sweetest.demo.v2.example.view
 import dev.sweetest.demo.R
 import dev.sweetest.demo.view.LoginViewModel
 import dev.sweetest.demo.v2.example.coroutine.CoroutinesSteps
-import dev.sweetest.api.v2.Steps
+import dev.sweetest.v2.Steps
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.TestCoroutineScope

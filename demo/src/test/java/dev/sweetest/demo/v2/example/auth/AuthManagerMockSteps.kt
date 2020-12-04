@@ -3,7 +3,7 @@ package dev.sweetest.demo.v2.example.auth
 import dev.sweetest.demo.auth.AuthManager
 import dev.sweetest.demo.auth.AuthManager.LoginOrRegisterResult
 import dev.sweetest.demo.util.nonNullableAny
-import dev.sweetest.api.v2.Steps
+import dev.sweetest.v2.Steps
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.anyString
 import org.mockito.Mockito.mock

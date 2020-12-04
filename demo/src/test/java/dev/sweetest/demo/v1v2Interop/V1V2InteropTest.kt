@@ -1,11 +1,11 @@
 package dev.sweetest.demo.v1v2Interop
 
+import dev.sweetest.v2.junit4.JUnit4Test
 import dev.sweetest.v1.BaseJUnitTest
 import dev.sweetest.v1.BaseSteps
-import dev.sweetest.v1.internal.dependency
-import dev.sweetest.v1.internal.steps
-import dev.sweetest.api.v2.Steps
-import dev.sweetest.api.v2.framework.base.JUnit4Test
+import dev.sweetest.v1.dependency
+import dev.sweetest.v1.steps
+import dev.sweetest.v2.Steps
 import org.junit.After
 import org.junit.Before
 import org.junit.Test

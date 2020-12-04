@@ -1,4 +1,4 @@
-package dev.sweetest.api.v2.cucumber
+package dev.sweetest.v2.cucumber2
 
 object HookOrder {
 
