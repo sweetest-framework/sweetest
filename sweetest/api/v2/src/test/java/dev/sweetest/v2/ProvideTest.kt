@@ -1,6 +1,7 @@
 package dev.sweetest.v2
 
 import dev.sweetest.internal.SweetestException
+import dev.sweetest.v2.internal.ApiTest
 import org.junit.Test
 
 class ProvideTest : AutoWipeTest() {
@@ -15,7 +16,7 @@ class ProvideTest : AutoWipeTest() {
     fun `Simple provide usage`() {
         val testInstance = FakeTestUserService()
 
-        class TestClass : BaseTest() {
+        class TestClass : ApiTest() {
             init {
                 provide { testInstance }
             }
@@ -35,7 +36,7 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (once with, once without lambda)`() {
-        class TestClass : BaseTest() {
+        class TestClass : ApiTest() {
             init {
                 provide {
                     TestViewModel(object :
@@ -50,7 +51,7 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (once without, once with lambda)`() {
-        class TestClass : BaseTest() {
+        class TestClass : ApiTest() {
             init {
                 provide<TestViewModel>()
                 provide {
@@ -65,7 +66,7 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (with lambda)`() {
-        class TestClass : BaseTest() {
+        class TestClass : ApiTest() {
             init {
                 provide {
                     TestViewModel(object :
@@ -83,7 +84,7 @@ class ProvideTest : AutoWipeTest() {
 
     @Test(expected = SweetestException::class)
     fun `provide cannot be used twice for the same type (without lambda)`() {
-        class TestClass : BaseTest() {
+        class TestClass : ApiTest() {
             init {
                 provide<TestViewModel>()
                 provide<TestViewModel>()
