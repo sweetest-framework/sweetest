@@ -1,4 +1,4 @@
-package dev.sweetest.v2
+package dev.sweetest.v2.internal
 
 import dev.sweetest.internal.SweetestIntegrationsApi
 import dev.sweetest.internal.TestContext
@@ -6,10 +6,9 @@ import dev.sweetest.internal.environment.startEnvironment
 import dev.sweetest.internal.workflow.WorkflowStep
 import dev.sweetest.internal.workflow.WorkflowTestContext
 import dev.sweetest.internal.workflow.subscribeWorkflow
-import dev.sweetest.v2.internal.ApiTestElement
 
 @SweetestIntegrationsApi
-open class BaseTest : ApiTestElement() {
+open class ApiTest : ApiTestElement() {
 
     override val testContext: TestContext = startEnvironment()
 
