@@ -7,7 +7,7 @@ import dev.sweetest.internal.environment.startEnvironment
 import dev.sweetest.internal.workflow.WorkflowTestContext
 import dev.sweetest.internal.workflow.finishWorkflow
 import dev.sweetest.internal.workflow.proceedWorkflow
-import dev.sweetest.v1.internal.CommonBase
+import dev.sweetest.v1.internal.ApiTestElement
 import dev.sweetest.v1.internal.builder.TestBuilder
 import org.junit.After
 import org.junit.Before
@@ -15,7 +15,7 @@ import org.junit.Before
 @Deprecated(BASE_CLASS_DEPRECATION_MESSAGE)
 abstract class BaseJUnitTest
 @Deprecated("$MODULE_CONFIG_DEPRECATION_MESSAGE.", ReplaceWith("BaseJUnitTest()"))
-constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) : CommonBase() {
+constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) : ApiTestElement() {
 
     constructor() : this(moduleTestingConfiguration = null)
 

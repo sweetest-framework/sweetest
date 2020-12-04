@@ -3,7 +3,7 @@
 package dev.sweetest.v1.internal.builder
 
 import dev.sweetest.internal.SweetestException
-import dev.sweetest.internal.Steps
+import dev.sweetest.internal.InternalBaseSteps
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.dependency.DependenciesTestContext
 import dev.sweetest.internal.dependency.DependencyProvider
@@ -82,7 +82,7 @@ abstract class BaseBuilder<TSelf>(
 
     // --- region: Public API – LEGACY! (the following inline functions should just be wrappers over implementation functions!)
 
-    inline fun <reified T : Steps> requireSteps() = apply {
+    inline fun <reified T : InternalBaseSteps> requireSteps() = apply {
         requireStepsInternal(T::class)
     }
 
@@ -143,7 +143,7 @@ abstract class BaseBuilder<TSelf>(
     }
 
     @PublishedApi
-    internal fun <T : Steps> requireStepsInternal(stepsType: KClass<T>) {
+    internal fun <T : InternalBaseSteps> requireStepsInternal(stepsType: KClass<T>) {
         checkNotYetFrozen()
         notifyStepsRequired(testContext[StepsTestContext], stepsType)
     }

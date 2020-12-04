@@ -1,6 +1,6 @@
 package dev.sweetest.internal.steps
 
-import dev.sweetest.internal.Steps
+import dev.sweetest.internal.InternalBaseSteps
 import dev.sweetest.internal.BDD_INCLUSION_MESSAGE
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
@@ -12,8 +12,8 @@ import kotlin.reflect.full.starProjectedType
 class StepsTestContext(private val testContext: TestContext) :
     TestContextElement {
 
-    private val required = mutableListOf<Class<Steps>>()
-    private val map = mutableMapOf<Class<*>, Steps>()
+    private val required = mutableListOf<Class<InternalBaseSteps>>()
+    private val map = mutableMapOf<Class<*>, InternalBaseSteps>()
     private var setUpDone = false
 
     private fun checkSetUp(clazz: KClass<*>) {
@@ -44,17 +44,17 @@ class StepsTestContext(private val testContext: TestContext) :
         }
     }
 
-    private fun <T : Steps> forceInitializationOf(clazz: Class<T>) {
+    private fun <T : InternalBaseSteps> forceInitializationOf(clazz: Class<T>) {
         map[clazz] ?: create(clazz)
     }
 
-    internal fun <T : Steps> get(clazz: KClass<T>): T {
+    internal fun <T : InternalBaseSteps> get(clazz: KClass<T>): T {
         checkSetUp(clazz)
         @Suppress("UNCHECKED_CAST")
         return map[clazz.java] as? T ?: create(clazz.java)
     }
 
-    private fun <T : Steps> create(clazz: Class<T>): T {
+    private fun <T : InternalBaseSteps> create(clazz: Class<T>): T {
         val kClass = clazz.kotlin
         return try {
             if (!required.contains<Class<*>>(clazz)) {
@@ -95,7 +95,7 @@ class StepsTestContext(private val testContext: TestContext) :
     }
 
     private fun checkType(clazz: KClass<*>) {
-        if (!clazz.isSubclassOf(Steps::class)) {
+        if (!clazz.isSubclassOf(InternalBaseSteps::class)) {
             throw RuntimeException("\"$clazz\", as all steps classes, should derive from \"BaseNewSteps\"")
         }
     }
@@ -114,7 +114,7 @@ class StepsTestContext(private val testContext: TestContext) :
         if (clazz.constructors.isEmpty()) error("Steps class must have at least one constructor")
     }
 
-    internal fun setUpInstance(instance: Steps) {
+    internal fun setUpInstance(instance: InternalBaseSteps) {
         checkNotYetSetUp(instance::class)
         checkType(instance::class)
         val clazz = instance::class.java
@@ -128,7 +128,7 @@ class StepsTestContext(private val testContext: TestContext) :
         map[clazz] = instance
     }
 
-    internal fun setUpAsRequired(kClass: KClass<Steps>) {
+    internal fun setUpAsRequired(kClass: KClass<InternalBaseSteps>) {
         checkNotYetSetUp(kClass)
         val clazz = kClass.java
         if (!required.contains(clazz)) {

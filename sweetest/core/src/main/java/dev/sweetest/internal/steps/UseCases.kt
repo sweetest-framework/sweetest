@@ -8,33 +8,33 @@
 package dev.sweetest.internal.steps
 
 import dev.sweetest.internal.SweetestException
-import dev.sweetest.internal.Steps
-import dev.sweetest.internal.TestElement
+import dev.sweetest.internal.InternalBaseSteps
+import dev.sweetest.internal.InternalBaseTestElement
 import dev.sweetest.internal.InternalSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 @InternalSweetestApi
-fun registerStepsInstance(stepsTestContext: StepsTestContext, instance: Steps) {
+fun registerStepsInstance(stepsTestContext: StepsTestContext, instance: InternalBaseSteps) {
     stepsTestContext.setUpInstance(instance)
 }
 
 @InternalSweetestApi
-fun <T : Steps> notifyStepsRequired(stepsTestContext: StepsTestContext, stepsType: KClass<T>) {
+fun <T : InternalBaseSteps> notifyStepsRequired(stepsTestContext: StepsTestContext, stepsType: KClass<T>) {
     @Suppress("UNCHECKED_CAST")
-    stepsTestContext.setUpAsRequired(stepsType as KClass<Steps>)
+    stepsTestContext.setUpAsRequired(stepsType as KClass<InternalBaseSteps>)
 }
 
 @InternalSweetestApi
-fun <T : Steps> getStepsDelegate(
+fun <T : InternalBaseSteps> getStepsDelegate(
     stepsTestContext: StepsTestContext,
     stepsType: KClass<T>
-): ReadOnlyProperty<TestElement, T> {
+): ReadOnlyProperty<InternalBaseTestElement, T> {
     try {
         notifyStepsRequired(stepsTestContext, stepsType = stepsType)
-        return object : ReadOnlyProperty<TestElement, T> {
-            override fun getValue(thisRef: TestElement, property: KProperty<*>): T {
+        return object : ReadOnlyProperty<InternalBaseTestElement, T> {
+            override fun getValue(thisRef: InternalBaseTestElement, property: KProperty<*>): T {
                 return try {
                     stepsTestContext.get(stepsType)
                 } catch (throwable: Throwable) {

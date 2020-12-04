@@ -11,7 +11,7 @@
 package dev.sweetest.internal.dependency
 
 import dev.sweetest.internal.SweetestException
-import dev.sweetest.internal.TestElement
+import dev.sweetest.internal.InternalBaseTestElement
 import dev.sweetest.internal.InternalSweetestApi
 import dev.sweetest.internal.environment.TestEnvironment
 import kotlin.properties.ReadOnlyProperty
@@ -101,11 +101,11 @@ fun <T : Any> getDependencyDelegate(
     @Suppress("UNUSED_PARAMETER")
     dependenciesTestContext: DependenciesTestContext, // reserved for API stability
     type: KClass<T>
-): ReadOnlyProperty<TestElement, T> {
+): ReadOnlyProperty<InternalBaseTestElement, T> {
     try {
         var cachedDependencyState: DependencyState<T>? = null
-        return object : ReadOnlyProperty<TestElement, T> {
-            override fun getValue(thisRef: TestElement, property: KProperty<*>): T {
+        return object : ReadOnlyProperty<InternalBaseTestElement, T> {
+            override fun getValue(thisRef: InternalBaseTestElement, property: KProperty<*>): T {
                 return try {
                     if (cachedDependencyState == null) {
                         cachedDependencyState = TestEnvironment.dependencies.getDependencyState(type)

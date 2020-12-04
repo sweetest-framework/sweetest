@@ -4,7 +4,7 @@ package dev.sweetest.v1.coroutines
 
 import dev.sweetest.v1.OUT_OF_SCOPE_DEPRECATION_MESSAGE
 import dev.sweetest.v1.BaseJUnitTest
-import dev.sweetest.internal.Steps
+import dev.sweetest.internal.InternalBaseSteps
 import dev.sweetest.v1.internal.coroutines.CoroutinesTestContext
 import dev.sweetest.v1.COROUTINES_TEST_UTILS_DEPRECATION_MESSAGE
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +27,7 @@ fun BaseJUnitTest.testCoroutine(
     }
 }
 
-suspend operator fun <T : Steps> T.invoke(run: suspend T.() -> Unit) = run(this)
+suspend operator fun <T : InternalBaseSteps> T.invoke(run: suspend T.() -> Unit) = run(this)
 
 @Deprecated(OUT_OF_SCOPE_DEPRECATION_MESSAGE)
 suspend fun Deferred<*>.throwExceptionIfFailed() {

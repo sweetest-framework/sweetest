@@ -2,7 +2,7 @@ package dev.sweetest.internal.dependency
 
 import dev.sweetest.internal.SweetestException
 import dev.sweetest.internal.DependencyProviderScope
-import dev.sweetest.internal.Steps
+import dev.sweetest.internal.InternalBaseSteps
 import dev.sweetest.internal.environment.DependencyAccessor
 import dev.sweetest.internal.environment.DependencySetupHandler
 import dev.sweetest.internal.environment.TestEnvironment
@@ -27,7 +27,7 @@ internal class DependencyManager(
      * Returns the dependency state for _consumption_ (e.g. `val instance by dependency<T>()`).
      */
     override fun <T : Any> getDependencyState(clazz: KClass<T>): DependencyState<T> {
-        if (clazz.isSubclassOf(Steps::class)) {
+        if (clazz.isSubclassOf(InternalBaseSteps::class)) {
             throw RuntimeException(
                 "Steps classes can't be accessed via `dependency<T>`, please " +
                     "use `steps<T>` to access steps classes!"

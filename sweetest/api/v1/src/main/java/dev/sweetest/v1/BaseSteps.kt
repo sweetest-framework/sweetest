@@ -2,10 +2,10 @@
 
 package dev.sweetest.v1
 
-import dev.sweetest.internal.Steps
+import dev.sweetest.internal.InternalBaseSteps
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.environment.getCurrentTestContext
-import dev.sweetest.v1.internal.CommonBase
+import dev.sweetest.v1.internal.ApiTestElement
 import dev.sweetest.v1.internal.builder.StepsBuilder
 import dev.sweetest.v1.internal.coroutines.CoroutinesTestContext
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +24,7 @@ private const val REPLACE_WITH = "BaseSteps()"
 abstract class BaseSteps
 @Deprecated("$MODULE_CONFIG_DEPRECATION_MESSAGE.", ReplaceWith("BaseSteps(testContext)"))
 constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? = null) :
-    CommonBase(), Steps, CoroutineScope {
+    ApiTestElement(), InternalBaseSteps, CoroutineScope {
 
     // Use this constructor!
     constructor() : this(null)
@@ -69,4 +69,4 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
         }
 }
 
-operator fun <T : Steps> T.invoke(run: T.() -> Unit) = run(this)
+operator fun <T : InternalBaseSteps> T.invoke(run: T.() -> Unit) = run(this)

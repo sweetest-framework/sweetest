@@ -1,6 +1,7 @@
-package dev.sweetest.v2
+package dev.sweetest.v2.internal
 
-import dev.sweetest.internal.Steps
+import dev.sweetest.internal.InternalBaseSteps
+import dev.sweetest.internal.InternalBaseTestElement
 import dev.sweetest.internal.SweetestIntegrationsApi
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.dependency.DependenciesTestContext
@@ -18,7 +19,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
 @SweetestIntegrationsApi
-abstract class TestElement : dev.sweetest.internal.TestElement {
+abstract class ApiTestElement : InternalBaseTestElement {
 
     protected abstract val testContext: TestContext
 
@@ -87,13 +88,13 @@ abstract class TestElement : dev.sweetest.internal.TestElement {
 
     // --- region: Public consumption API
 
-    inline fun <reified T : Any> dependency(): ReadOnlyProperty<TestElement, T> =
+    inline fun <reified T : Any> dependency(): ReadOnlyProperty<ApiTestElement, T> =
         dependencyInternal(this, T::class)
 
-    inline fun <reified T : Steps> steps(): ReadOnlyProperty<TestElement, T> =
+    inline fun <reified T : InternalBaseSteps> steps(): ReadOnlyProperty<ApiTestElement, T> =
         stepsInternal(this, T::class)
 
-    inline operator fun <T : Steps> T.invoke(run: T.() -> Unit) = run(this)
+    inline operator fun <T : InternalBaseSteps> T.invoke(run: T.() -> Unit) = run(this)
 
     // --- region: Internals
 
@@ -118,16 +119,16 @@ abstract class TestElement : dev.sweetest.internal.TestElement {
 
     @PublishedApi
     internal fun <T : Any> dependencyInternal(
-        scope: TestElement,
+        scope: ApiTestElement,
         type: KClass<T>
-    ): ReadOnlyProperty<TestElement, T> =
+    ): ReadOnlyProperty<ApiTestElement, T> =
         getDependencyDelegate(scope.testContext[DependenciesTestContext], type)
 
     @PublishedApi
-    internal fun <T : Steps> stepsInternal(
-        scope: TestElement,
+    internal fun <T : InternalBaseSteps> stepsInternal(
+        scope: ApiTestElement,
         type: KClass<T>
-    ): ReadOnlyProperty<TestElement, T> =
+    ): ReadOnlyProperty<ApiTestElement, T> =
         getStepsDelegate(scope.testContext[StepsTestContext], type)
 
     protected fun checkConfigurePossible() {
