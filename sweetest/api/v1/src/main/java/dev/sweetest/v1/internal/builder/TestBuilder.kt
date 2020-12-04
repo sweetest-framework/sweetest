@@ -1,10 +1,10 @@
 package dev.sweetest.v1.internal.builder
 
-import dev.sweetest.v1.ModuleTestingConfiguration
 import dev.sweetest.internal.TestContext
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.workflow.WorkflowStep.INITIALIZE_STEPS
-import com.mysugr.sweetest.usecases.subscribeWorkflow
+import dev.sweetest.internal.workflow.WorkflowStep.INITIALIZE_STEPS
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.subscribeWorkflow
+import dev.sweetest.v1.ModuleTestingConfiguration
 
 class TestBuilder(testContext: TestContext, moduleTestingConfiguration: ModuleTestingConfiguration?) :
     BaseBuilder<TestBuilder>(testContext, moduleTestingConfiguration) {

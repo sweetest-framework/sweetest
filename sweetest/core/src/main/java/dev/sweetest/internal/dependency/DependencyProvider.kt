@@ -1,4 +1,4 @@
-package com.mysugr.sweetest.framework.dependency
+package dev.sweetest.internal.dependency
 
 import com.mysugr.sweetest.internal.DependencyProviderScope
 

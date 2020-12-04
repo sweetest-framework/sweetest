@@ -1,9 +1,9 @@
 package dev.sweetest.v2
 
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.usecases.finishWorkflow
-import com.mysugr.sweetest.usecases.getCurrentTestContext
-import com.mysugr.sweetest.usecases.proceedWorkflow
+import dev.sweetest.internal.environment.getCurrentTestContext
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.finishWorkflow
+import dev.sweetest.internal.workflow.proceedWorkflow
 
 fun BaseTest.startWorkflow() {
     proceedWorkflow(getCurrentTestContext()[WorkflowTestContext])

@@ -1,19 +1,19 @@
 package dev.sweetest.v2
 
-import com.mysugr.sweetest.framework.context.DependenciesTestContext
-import com.mysugr.sweetest.framework.context.StepsTestContext
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.usecases.configureDependencyProvision
-import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
-import com.mysugr.sweetest.usecases.getDependencyDelegate
-import com.mysugr.sweetest.usecases.getStepsDelegate
-import com.mysugr.sweetest.usecases.hasWorkflowAlreadyStarted
-import com.mysugr.sweetest.usecases.subscribeWorkflow
 import dev.sweetest.internal.SweetestIntegrationsApi
 import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.dependency.DependenciesTestContext
+import dev.sweetest.internal.dependency.DependencyProvider
+import dev.sweetest.internal.dependency.configureDependencyProvision
+import dev.sweetest.internal.dependency.configureDependencyProvisionAutomatic
+import dev.sweetest.internal.dependency.getDependencyDelegate
+import dev.sweetest.internal.steps.StepsTestContext
+import dev.sweetest.internal.steps.getStepsDelegate
+import dev.sweetest.internal.workflow.WorkflowStep
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.hasWorkflowAlreadyStarted
+import dev.sweetest.internal.workflow.subscribeWorkflow
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 

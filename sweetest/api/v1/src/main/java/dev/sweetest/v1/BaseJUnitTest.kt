@@ -2,13 +2,13 @@
 
 package dev.sweetest.v1
 
-import dev.sweetest.v1.internal.builder.TestBuilder
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.usecases.finishWorkflow
-import com.mysugr.sweetest.usecases.proceedWorkflow
-import com.mysugr.sweetest.usecases.startEnvironment
-import dev.sweetest.v1.internal.CommonBase
 import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.environment.startEnvironment
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.finishWorkflow
+import dev.sweetest.internal.workflow.proceedWorkflow
+import dev.sweetest.v1.internal.CommonBase
+import dev.sweetest.v1.internal.builder.TestBuilder
 import org.junit.After
 import org.junit.Before
 

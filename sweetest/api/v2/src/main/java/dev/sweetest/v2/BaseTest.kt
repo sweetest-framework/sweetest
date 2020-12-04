@@ -1,11 +1,11 @@
 package dev.sweetest.v2
 
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
-import com.mysugr.sweetest.usecases.startEnvironment
-import com.mysugr.sweetest.usecases.subscribeWorkflow
 import dev.sweetest.internal.SweetestIntegrationsApi
 import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.environment.startEnvironment
+import dev.sweetest.internal.workflow.WorkflowStep
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.subscribeWorkflow
 
 @SweetestIntegrationsApi
 open class BaseTest : TestElement() {

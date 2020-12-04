@@ -1,13 +1,13 @@
-package com.mysugr.sweetest.framework.environment
+package dev.sweetest.internal.environment
 
-import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
-import com.mysugr.sweetest.framework.dependency.DependencyConfigurationConsumer
-import com.mysugr.sweetest.framework.dependency.DependencyManager
-import com.mysugr.sweetest.framework.dependency.DependencyMode
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.dependency.DependencySetup
-import com.mysugr.sweetest.framework.dependency.DependencyState
-import com.mysugr.sweetest.framework.dependency.DependencyStatesConsumer
+import dev.sweetest.internal.dependency.DependencyConfiguration
+import dev.sweetest.internal.dependency.DependencyConfigurationConsumer
+import dev.sweetest.internal.dependency.DependencyManager
+import dev.sweetest.internal.dependency.DependencyMode
+import dev.sweetest.internal.dependency.DependencyProvider
+import dev.sweetest.internal.dependency.DependencySetup
+import dev.sweetest.internal.dependency.DependencyState
+import dev.sweetest.internal.dependency.DependencyStatesConsumer
 import kotlin.reflect.KClass
 
 internal object TestEnvironment {

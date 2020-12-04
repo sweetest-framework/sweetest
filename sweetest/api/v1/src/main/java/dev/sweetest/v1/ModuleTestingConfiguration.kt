@@ -1,10 +1,10 @@
 package dev.sweetest.v1
 
-import com.mysugr.sweetest.framework.dependency.DependencyConfiguration
-import com.mysugr.sweetest.framework.dependency.DependencyMode
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.dependency.DependencySetup
-import com.mysugr.sweetest.usecases.ensureEnvironmentInitialized
+import dev.sweetest.internal.dependency.DependencyConfiguration
+import dev.sweetest.internal.dependency.DependencyMode
+import dev.sweetest.internal.dependency.DependencyProvider
+import dev.sweetest.internal.dependency.DependencySetup
+import dev.sweetest.internal.environment.ensureEnvironmentInitialized
 import kotlin.reflect.KClass
 
 private const val DEPENDENCY_MODE_DEPRECATION_MESSAGE = "Dependency mode constraints " +
@@ -99,7 +99,7 @@ class DslScope internal constructor() {
     @PublishedApi
     internal fun anyInternal(
         @Suppress("UNUSED_PARAMETER")
-        leftOperand: LeftOperand,  // placeholder for potential future use
+        leftOperand: LeftOperand, // placeholder for potential future use
         rightOperand: RightOperand
     ) {
         rightOperand.addFunction(null, false)
@@ -108,7 +108,7 @@ class DslScope internal constructor() {
     @PublishedApi
     internal fun mockOnlyInternal(
         @Suppress("UNUSED_PARAMETER")
-        leftOperand: LeftOperand,  // placeholder for potential future use
+        leftOperand: LeftOperand, // placeholder for potential future use
         rightOperand: RightOperand
     ) {
         rightOperand.addFunction(DependencyMode.MOCK, true)
@@ -117,7 +117,7 @@ class DslScope internal constructor() {
     @PublishedApi
     internal fun realOnlyInternal(
         @Suppress("UNUSED_PARAMETER")
-        leftOperand: LeftOperand,  // placeholder for potential future use
+        leftOperand: LeftOperand, // placeholder for potential future use
         rightOperand: RightOperand
     ) {
         rightOperand.addFunction(DependencyMode.REAL, true)

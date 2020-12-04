@@ -5,11 +5,10 @@
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
 
-package com.mysugr.sweetest.usecases
+package dev.sweetest.internal.environment
 
-import com.mysugr.sweetest.BDD_INCLUSION_MESSAGE
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.environment.TestEnvironment
+import dev.sweetest.internal.BDD_INCLUSION_MESSAGE
 import dev.sweetest.internal.InternalSweetestApi
 import dev.sweetest.internal.TestContext
 

@@ -5,12 +5,11 @@
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
 
-package com.mysugr.sweetest.usecases
+package dev.sweetest.internal.steps
 
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.context.StepsTestContext
-import com.mysugr.sweetest.internal.TestElement
 import com.mysugr.sweetest.internal.Steps
+import com.mysugr.sweetest.internal.TestElement
 import dev.sweetest.internal.InternalSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass

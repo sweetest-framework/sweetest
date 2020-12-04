@@ -1,4 +1,4 @@
-package com.mysugr.sweetest.framework.workflow
+package dev.sweetest.internal.workflow
 
 enum class WorkflowStep {
 

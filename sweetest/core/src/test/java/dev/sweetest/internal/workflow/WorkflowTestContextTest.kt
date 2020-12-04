@@ -1,11 +1,8 @@
-package com.mysugr.sweetest.framework.context
+package dev.sweetest.internal.workflow
 
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
-import com.mysugr.sweetest.usecases.ensureEnvironmentReset
-import com.mysugr.sweetest.usecases.finishWorkflow
-import com.mysugr.sweetest.usecases.proceedWorkflow
-import com.mysugr.sweetest.usecases.startEnvironment
-import com.mysugr.sweetest.usecases.subscribeWorkflow
+import dev.sweetest.internal.environment.ensureEnvironmentReset
+import dev.sweetest.internal.environment.startEnvironment
+import dev.sweetest.internal.steps.StepsTestContext
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

@@ -1,12 +1,12 @@
 package dev.sweetest.v2.cucumber2
 
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
-import com.mysugr.sweetest.usecases.finishWorkflow
-import com.mysugr.sweetest.usecases.proceedWorkflow
-import com.mysugr.sweetest.usecases.startEnvironment
 import cucumber.api.java.After
 import cucumber.api.java.Before
+import dev.sweetest.internal.environment.startEnvironment
+import dev.sweetest.internal.workflow.WorkflowStep
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.finishWorkflow
+import dev.sweetest.internal.workflow.proceedWorkflow
 
 /**
  * Use this steps class to wire Cucumber with sweetest by adding `dev.sweetest.v2.cucumber2` to the list

@@ -1,11 +1,9 @@
-package com.mysugr.sweetest.framework.context
+package dev.sweetest.internal.dependency
 
+import com.mysugr.sweetest.framework.base.SweetestException
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
-import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.dependency.DependencyMode
-import com.mysugr.sweetest.framework.dependency.DependencyState
-import com.mysugr.sweetest.framework.environment.TestEnvironment
+import dev.sweetest.internal.environment.TestEnvironment
 import kotlin.reflect.KClass
 
 class DependenciesTestContext : TestContextElement {

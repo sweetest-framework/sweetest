@@ -1,4 +1,4 @@
-package com.mysugr.sweetest
+package dev.sweetest.internal
 
 internal const val BDD_INCLUSION_MESSAGE =
     "make sure you are using the appropriate `sweetest-cucumber*` dependency and " +

@@ -1,9 +1,9 @@
-package com.mysugr.sweetest.framework.context
+package dev.sweetest.internal.steps
 
-import com.mysugr.sweetest.BDD_INCLUSION_MESSAGE
+import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.BDD_INCLUSION_MESSAGE
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
-import com.mysugr.sweetest.internal.Steps
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.isSubclassOf

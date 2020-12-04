@@ -1,9 +1,9 @@
-package com.mysugr.sweetest.framework.context
+package dev.sweetest.internal.workflow
 
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
-import com.mysugr.sweetest.usecases.resetEnvironment
+import dev.sweetest.internal.environment.resetEnvironment
+import dev.sweetest.internal.steps.StepsTestContext
 
 class WorkflowTestContext(private val stepsTestContext: StepsTestContext) : TestContextElement {
 
@@ -82,6 +82,7 @@ class WorkflowTestContext(private val stepsTestContext: StepsTestContext) : Test
     override val definition = Companion
 
     companion object : TestContextElement.Definition<WorkflowTestContext> {
-        override fun createInstance(testContext: TestContext) = WorkflowTestContext(testContext[StepsTestContext])
+        override fun createInstance(testContext: TestContext) =
+            WorkflowTestContext(testContext[StepsTestContext])
     }
 }

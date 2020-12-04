@@ -3,21 +3,21 @@
 package dev.sweetest.v1.internal.builder
 
 import com.mysugr.sweetest.framework.base.SweetestException
-import dev.sweetest.v1.ModuleTestingConfiguration
-import com.mysugr.sweetest.framework.context.DependenciesTestContext
-import com.mysugr.sweetest.framework.context.StepsTestContext
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.usecases.configureDependencyMock
-import com.mysugr.sweetest.usecases.configureDependencyProvision
-import com.mysugr.sweetest.usecases.configureDependencyProvisionAutomatic
-import com.mysugr.sweetest.usecases.configureDependencyReal
-import com.mysugr.sweetest.usecases.configureDependencySpy
-import com.mysugr.sweetest.usecases.notifyStepsRequired
-import com.mysugr.sweetest.usecases.subscribeWorkflow
 import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.dependency.DependenciesTestContext
+import dev.sweetest.internal.dependency.DependencyProvider
+import dev.sweetest.internal.dependency.configureDependencyMock
+import dev.sweetest.internal.dependency.configureDependencyProvision
+import dev.sweetest.internal.dependency.configureDependencyProvisionAutomatic
+import dev.sweetest.internal.dependency.configureDependencyReal
+import dev.sweetest.internal.dependency.configureDependencySpy
+import dev.sweetest.internal.steps.StepsTestContext
+import dev.sweetest.internal.steps.notifyStepsRequired
+import dev.sweetest.internal.workflow.WorkflowStep
+import dev.sweetest.internal.workflow.WorkflowTestContext
+import dev.sweetest.internal.workflow.subscribeWorkflow
+import dev.sweetest.v1.ModuleTestingConfiguration
 import kotlin.reflect.KClass
 
 private const val DEPENDENCY_MODE_DEPRECATION_MESSAGE = "Dependency modes like \"REAL\" or \"MOCK\" " +

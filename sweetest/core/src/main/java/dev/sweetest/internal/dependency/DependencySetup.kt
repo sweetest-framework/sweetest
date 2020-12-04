@@ -1,6 +1,6 @@
-package com.mysugr.sweetest.framework.dependency
+package dev.sweetest.internal.dependency
 
-import com.mysugr.sweetest.framework.environment.DependencySetupHandler
+import dev.sweetest.internal.environment.DependencySetupHandler
 
 object DependencySetup {
 

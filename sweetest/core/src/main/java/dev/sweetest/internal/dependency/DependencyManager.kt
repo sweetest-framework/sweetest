@@ -1,11 +1,11 @@
-package com.mysugr.sweetest.framework.dependency
+package dev.sweetest.internal.dependency
 
-import com.mysugr.sweetest.internal.Steps
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.environment.DependencyAccessor
-import com.mysugr.sweetest.framework.environment.DependencySetupHandler
-import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.DependencyProviderScope
+import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.environment.DependencyAccessor
+import dev.sweetest.internal.environment.DependencySetupHandler
+import dev.sweetest.internal.environment.TestEnvironment
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 

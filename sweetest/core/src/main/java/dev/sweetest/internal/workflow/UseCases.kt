@@ -5,10 +5,8 @@
  * - adds user-facing exceptions that are shared among different versions of public APIs
  */
 
-package com.mysugr.sweetest.usecases
+package dev.sweetest.internal.workflow
 
-import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.workflow.WorkflowStep
 import dev.sweetest.internal.InternalSweetestApi
 
 @InternalSweetestApi

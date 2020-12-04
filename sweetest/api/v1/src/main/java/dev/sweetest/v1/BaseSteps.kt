@@ -2,12 +2,12 @@
 
 package dev.sweetest.v1
 
+import com.mysugr.sweetest.internal.Steps
 import dev.sweetest.internal.TestContext
+import dev.sweetest.internal.environment.getCurrentTestContext
+import dev.sweetest.v1.internal.CommonBase
 import dev.sweetest.v1.internal.builder.StepsBuilder
 import dev.sweetest.v1.internal.coroutines.CoroutinesTestContext
-import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.usecases.getCurrentTestContext
-import dev.sweetest.v1.internal.CommonBase
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 

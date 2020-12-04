@@ -1,7 +1,7 @@
-package com.mysugr.sweetest.framework.dependency
+package dev.sweetest.internal.dependency
 
-import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.DependencyProviderScope
+import dev.sweetest.internal.environment.TestEnvironment
 import kotlin.reflect.KClass
 
 internal interface DependencyStatesConsumer {

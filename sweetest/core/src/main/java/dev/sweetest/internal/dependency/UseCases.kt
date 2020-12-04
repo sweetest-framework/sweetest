@@ -8,16 +8,12 @@
  * This is to prepare for the upcoming removal of the global state (TestEnvironment).
  */
 
-package com.mysugr.sweetest.usecases
+package dev.sweetest.internal.dependency
 
 import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.framework.context.DependenciesTestContext
-import com.mysugr.sweetest.framework.dependency.DependencyMode
-import com.mysugr.sweetest.framework.dependency.DependencyProvider
-import com.mysugr.sweetest.framework.dependency.DependencyState
-import com.mysugr.sweetest.framework.environment.TestEnvironment
 import com.mysugr.sweetest.internal.TestElement
 import dev.sweetest.internal.InternalSweetestApi
+import dev.sweetest.internal.environment.TestEnvironment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
