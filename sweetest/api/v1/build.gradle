@@ -1,0 +1,33 @@
+buildscript {
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
+    }
+}
+
+plugins {
+    id 'java-library'
+    id 'kotlin'
+}
+
+apply from: '../../common.gradle'
+
+apply from: '../../publishing.gradle'
+setCustomArtifactName('sweetest-compat-v1')
+
+dependencies {
+    // The API v1 compatibility module includes JUnit 4 and Cucumber 2 because that used to be the default for v1
+    api project(':sweetest:api:v2:junit4')
+    api project(':sweetest:api:v2:cucumber2')
+
+    api project(':sweetest:base')
+    implementation project(':sweetest:core')
+
+    implementation "io.cucumber:cucumber-junit:$versions.cucumber"
+    implementation "io.cucumber:cucumber-java:$versions.cucumber"
+    implementation "junit:junit:$versions.junit"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation "org.mockito:mockito-core:$versions.mockito"
+}

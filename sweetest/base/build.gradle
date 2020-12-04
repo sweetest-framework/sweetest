@@ -1,0 +1,23 @@
+buildscript {
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
+
+    }
+}
+
+plugins {
+    id 'java-library'
+    id 'kotlin'
+}
+
+apply from: '../common.gradle'
+
+apply from: '../publishing.gradle'
+setCustomArtifactName('sweetest-base')
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+
+    testImplementation "junit:junit:$versions.junit"
+}

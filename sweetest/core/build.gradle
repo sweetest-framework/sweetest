@@ -1,0 +1,28 @@
+buildscript {
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
+
+    }
+}
+
+plugins {
+    id 'java-library'
+    id 'kotlin'
+}
+
+apply from: '../common.gradle'
+
+apply from: '../publishing.gradle'
+setCustomArtifactName('sweetest-core')
+
+dependencies {
+    implementation project(':sweetest:base')
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation "org.mockito:mockito-core:$versions.mockito"
+
+    testImplementation "junit:junit:$versions.junit"
+}

@@ -20,16 +20,27 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+        freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+    }
+}
+
 dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$versions.lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.lifecycle"
     implementation "com.google.android.material:material:$versions.material"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
 
-    testImplementation project(path: ':sweetest:sweetest-api')
+    testImplementation project(':sweetest:api:v1')
+    testImplementation project(':sweetest:api:v2:cucumber2')
+    testImplementation project(':sweetest:api:v2:junit4')
     testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
-    testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
-    testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
+    testImplementation "io.cucumber:cucumber-java:$versions.cucumber"
     testImplementation "junit:junit:$versions.junit"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutines"
     testImplementation "org.mockito:mockito-core:$versions.mockito"
 }

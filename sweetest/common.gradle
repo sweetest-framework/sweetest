@@ -1,0 +1,16 @@
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-Xopt-in=dev.sweetest.internal.InternalSweetestApi"
+        freeCompilerArgs += "-Xopt-in=dev.sweetest.internal.SweetestIntegrationsApi"
+    }
+}
+
+compileTestKotlin {
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        freeCompilerArgs += "-Xopt-in=dev.sweetest.internal.InternalSweetestApi"
+        freeCompilerArgs += "-Xopt-in=dev.sweetest.internal.SweetestIntegrationsApi"
+    }
+}
