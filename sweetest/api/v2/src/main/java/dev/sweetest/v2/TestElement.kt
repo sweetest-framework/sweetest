@@ -1,6 +1,6 @@
 package dev.sweetest.v2
 
-import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.Steps
 import dev.sweetest.internal.SweetestIntegrationsApi
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.dependency.DependenciesTestContext
@@ -18,7 +18,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 
 @SweetestIntegrationsApi
-abstract class TestElement : com.mysugr.sweetest.internal.TestElement {
+abstract class TestElement : dev.sweetest.internal.TestElement {
 
     protected abstract val testContext: TestContext
 

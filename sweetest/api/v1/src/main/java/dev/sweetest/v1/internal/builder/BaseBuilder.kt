@@ -2,8 +2,8 @@
 
 package dev.sweetest.v1.internal.builder
 
-import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.SweetestException
+import dev.sweetest.internal.Steps
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.dependency.DependenciesTestContext
 import dev.sweetest.internal.dependency.DependencyProvider

@@ -7,7 +7,7 @@
 
 package dev.sweetest.internal.environment
 
-import com.mysugr.sweetest.framework.base.SweetestException
+import dev.sweetest.internal.SweetestException
 import dev.sweetest.internal.BDD_INCLUSION_MESSAGE
 import dev.sweetest.internal.InternalSweetestApi
 import dev.sweetest.internal.TestContext

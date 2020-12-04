@@ -2,7 +2,7 @@
 
 package com.mysugr.sweetest
 
-import com.mysugr.sweetest.framework.base.SweetestException
+import dev.sweetest.internal.SweetestException
 import dev.sweetest.internal.TestContext
 import dev.sweetest.v1.BaseJUnitTest
 import dev.sweetest.v1.BaseSteps

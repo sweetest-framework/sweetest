@@ -7,9 +7,9 @@
 
 package dev.sweetest.internal.steps
 
-import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.internal.Steps
-import com.mysugr.sweetest.internal.TestElement
+import dev.sweetest.internal.SweetestException
+import dev.sweetest.internal.Steps
+import dev.sweetest.internal.TestElement
 import dev.sweetest.internal.InternalSweetestApi
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass

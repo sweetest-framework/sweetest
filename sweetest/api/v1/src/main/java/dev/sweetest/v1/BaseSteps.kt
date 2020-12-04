@@ -2,7 +2,7 @@
 
 package dev.sweetest.v1
 
-import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.Steps
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.environment.getCurrentTestContext
 import dev.sweetest.v1.internal.CommonBase

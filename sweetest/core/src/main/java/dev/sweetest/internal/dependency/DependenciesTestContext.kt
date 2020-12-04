@@ -1,6 +1,6 @@
 package dev.sweetest.internal.dependency
 
-import com.mysugr.sweetest.framework.base.SweetestException
+import dev.sweetest.internal.SweetestException
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
 import dev.sweetest.internal.environment.TestEnvironment

@@ -1,6 +1,6 @@
 package dev.sweetest.v2
 
-import com.mysugr.sweetest.framework.base.SweetestException
+import dev.sweetest.internal.SweetestException
 import org.junit.Test
 
 class ProvideTest : AutoWipeTest() {

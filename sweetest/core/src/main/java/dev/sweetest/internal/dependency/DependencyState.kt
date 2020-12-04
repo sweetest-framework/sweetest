@@ -1,7 +1,7 @@
 package dev.sweetest.internal.dependency
 
-import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.internal.DependencyProviderScope
+import dev.sweetest.internal.SweetestException
+import dev.sweetest.internal.DependencyProviderScope
 import dev.sweetest.internal.environment.TestEnvironment
 import org.mockito.Mockito
 import org.mockito.exceptions.base.MockitoException

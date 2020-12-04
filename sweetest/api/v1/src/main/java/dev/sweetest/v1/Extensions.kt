@@ -1,6 +1,6 @@
 package dev.sweetest.v1
 
-import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.Steps
 import dev.sweetest.internal.dependency.DependenciesTestContext
 import dev.sweetest.internal.dependency.getDependencyDelegate
 import dev.sweetest.internal.steps.StepsTestContext

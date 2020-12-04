@@ -1,7 +1,5 @@
-package com.mysugr.sweetest
+package dev.sweetest.internal
 
-import dev.sweetest.internal.TestContext
-import dev.sweetest.internal.TestContextElement
 import org.junit.Test
 
 @Suppress("USELESS_IS_CHECK")
@@ -48,7 +46,8 @@ class TestContextTest {
 
     private class SomeTestContextElement1 : TestContextElement {
 
-        override val definition: TestContextElement.Definition<*> = Definition
+        override val definition: TestContextElement.Definition<*> =
+            Definition
 
         companion object Definition : TestContextElement.Definition<SomeTestContextElement1> {
             override fun createInstance(testContext: TestContext): SomeTestContextElement1 {
@@ -60,7 +59,8 @@ class TestContextTest {
     private class SomeTestContextElement2(val element1: SomeTestContextElement1) :
         TestContextElement {
 
-        override val definition: TestContextElement.Definition<*> = Definition
+        override val definition: TestContextElement.Definition<*> =
+            Definition
 
         companion object Definition : TestContextElement.Definition<SomeTestContextElement2> {
             override fun createInstance(testContext: TestContext): SomeTestContextElement2 {
@@ -74,7 +74,8 @@ class TestContextTest {
         val element2: SomeTestContextElement2
     ) : TestContextElement {
 
-        override val definition: TestContextElement.Definition<*> = Definition
+        override val definition: TestContextElement.Definition<*> =
+            Definition
 
         companion object Definition : TestContextElement.Definition<SomeTestContextElement3> {
             override fun createInstance(testContext: TestContext): SomeTestContextElement3 {

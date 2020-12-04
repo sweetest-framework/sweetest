@@ -1,6 +1,5 @@
-package com.mysugr.sweetest.internal
+package dev.sweetest.internal
 
-import dev.sweetest.internal.InternalSweetestApi
 import kotlin.reflect.KClass
 
 abstract class DependencyProviderScope @InternalSweetestApi constructor() {

@@ -10,8 +10,8 @@
 
 package dev.sweetest.internal.dependency
 
-import com.mysugr.sweetest.framework.base.SweetestException
-import com.mysugr.sweetest.internal.TestElement
+import dev.sweetest.internal.SweetestException
+import dev.sweetest.internal.TestElement
 import dev.sweetest.internal.InternalSweetestApi
 import dev.sweetest.internal.environment.TestEnvironment
 import kotlin.properties.ReadOnlyProperty

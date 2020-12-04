@@ -1,6 +1,6 @@
 package dev.sweetest.internal.steps
 
-import com.mysugr.sweetest.internal.Steps
+import dev.sweetest.internal.Steps
 import dev.sweetest.internal.BDD_INCLUSION_MESSAGE
 import dev.sweetest.internal.TestContext
 import dev.sweetest.internal.TestContextElement
