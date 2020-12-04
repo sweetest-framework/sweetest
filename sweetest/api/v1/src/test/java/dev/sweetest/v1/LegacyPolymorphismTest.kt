@@ -1,10 +1,7 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest
+package dev.sweetest.v1
 
-import dev.sweetest.v1.BaseJUnitTest
-import dev.sweetest.v1.dependency
-import dev.sweetest.v1.moduleTestingConfiguration
 import org.junit.Test
 
 class LegacyPolymorphismTest : AutoWipeTest() {

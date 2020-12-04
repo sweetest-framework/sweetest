@@ -1,4 +1,4 @@
-package com.mysugr.sweetest
+package dev.sweetest.v1
 
 import dev.sweetest.internal.environment.resetEnvironmentFully
 import org.junit.After

@@ -1,12 +1,9 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest
+package dev.sweetest.v1
 
 import dev.sweetest.internal.SweetestException
-import dev.sweetest.v1.BaseJUnitTest
-import dev.sweetest.v1.dependency
 import dev.sweetest.v1.mockito.mock
-import dev.sweetest.v1.moduleTestingConfiguration
 import dev.sweetest.v1.util.expectException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals

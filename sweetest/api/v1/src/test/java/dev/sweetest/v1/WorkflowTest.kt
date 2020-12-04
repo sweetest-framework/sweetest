@@ -1,8 +1,7 @@
 @file:Suppress("DEPRECATION")
 
-package com.mysugr.sweetest
+package dev.sweetest.v1
 
-import dev.sweetest.v1.BaseJUnitTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
