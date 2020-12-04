@@ -97,7 +97,7 @@ class StepsTestContext(private val testContext: TestContext) {
             }
         } catch (exception: Exception) {
             throw RuntimeException(
-                "\"$clazz\", as all steps classes which you want to auto-instanciate, should " +
+                "\"$clazz\", as all steps classes which you want to auto-instantiate, should " +
                     "have exactly one constructor receiving a TestContext object!",
                 exception
             )

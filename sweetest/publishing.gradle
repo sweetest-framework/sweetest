@@ -1,7 +1,3 @@
-Properties properties = new Properties()
-if (rootProject.file('local.properties').exists()) {
-    properties.load(rootProject.file('local.properties').newDataInputStream())
-}
 
 def publishingInfo = [
         org    : 'sweetest',
@@ -29,6 +25,11 @@ ext.setCustomArtifactName = { name ->
     jar.baseName name
     publishing.publications.mavenJava.artifactId name
     bintray.pkg.name = name
+}
+
+Properties properties = new Properties()
+if (rootProject.file('local.properties').exists()) {
+    properties.load(rootProject.file('local.properties').newDataInputStream())
 }
 
 // --- MAVEN

@@ -75,7 +75,7 @@ class PolymorphismTest : BaseTest() {
     /**
      * When using no configuration users should also use `provide` instead of old config. Reason:
      * The global configuration outlines the user's intention of which type is needed and how it
-     * should be initialized. The old local configuration functions (`requireX...`) don't add
+     * should be provided. The old local configuration functions (`requireX...`) don't add
      * configuration, so there's nothing to base the configuration change on. `provide` in contrast
      * is indeed _creating_ configuration.
      */

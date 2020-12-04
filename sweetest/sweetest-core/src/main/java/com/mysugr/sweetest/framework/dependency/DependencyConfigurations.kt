@@ -25,18 +25,15 @@ internal class DependencyConfigurations : DependencyConfigurationConsumer, Depen
     @Deprecated("Use addConfiguration(config)")
     override fun <T : Any> addConfiguration(
         clazz: KClass<T>,
-        realInitializer: DependencyProvider<T>?,
-        mockInitializer: DependencyProvider<T>?,
+        realProvider: DependencyProvider<T>?,
+        mockProvider: DependencyProvider<T>?,
         dependencyMode: DependencyMode?,
         alias: KClass<*>?
     ): DependencyConfiguration<T> {
 
         val found = configurations[clazz]
         return if (found == null) {
-            val newDependency = DependencyConfiguration(
-                clazz, realInitializer, mockInitializer,
-                dependencyMode
-            )
+            val newDependency = DependencyConfiguration(clazz, realProvider, mockProvider, dependencyMode)
             configurations[clazz] = newDependency
             if (alias != null) {
                 configurations[alias] = newDependency
@@ -53,17 +50,5 @@ internal class DependencyConfigurations : DependencyConfigurationConsumer, Depen
     override fun <T : Any> getAssignableTo(clazz: KClass<T>): DependencyConfiguration<T>? {
         return configurations.values.find { clazz.java.isAssignableFrom(it.clazz.java) }
             as DependencyConfiguration<T>?
-    }
-
-    class NotFoundException(val clazz: KClass<*>, message: String? = null) :
-        Exception(transformMessage(clazz, message)) {
-
-        companion object {
-            private fun transformMessage(clazz: KClass<*>, message: String?): String {
-                val firstPart = message ?: "No dependency configuration for class \"${clazz.simpleName}\" found."
-                return firstPart + " Possible solution: Add the dependency to the module configuration. " +
-                    "Make sure you add it at the correct MODULE depending on where it is implemented!"
-            }
-        }
     }
 }

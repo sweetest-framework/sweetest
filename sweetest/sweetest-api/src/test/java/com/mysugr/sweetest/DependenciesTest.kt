@@ -20,7 +20,7 @@ class DependenciesTest : BaseTest() {
 
     companion object {
         lateinit var moduleTestingConfiguration: ModuleTestingConfiguration
-        lateinit var initializedAInstance: AService
+        lateinit var providedAInstance: AService
     }
 
     class AService
@@ -71,15 +71,6 @@ class DependenciesTest : BaseTest() {
 
         override fun configure() = super.configure()
             .provide<BViewModel>()
-    }
-
-    class TestClassMixedConfig : BaseJUnitTest() {
-        val a by steps<ASteps>()
-        val c by steps<CSteps>()
-
-        override fun configure() = super.configure()
-            .requireReal<BViewModel>()
-            .requireMock<AService>()
     }
 
     @Test
@@ -138,9 +129,9 @@ class DependenciesTest : BaseTest() {
         givenAInitializedMockBReal()
         TestClass().run {
             junitBefore()
-            a.instance // needs to be accessed in order to initialize the dependency
-            assertNotNull(initializedAInstance)
-            assertEquals(initializedAInstance, a.instance)
+            a.instance // needs to be accessed in order to create the dependency instance
+            assertNotNull(providedAInstance)
+            assertEquals(providedAInstance, a.instance)
         }
     }
 
@@ -269,16 +260,6 @@ class DependenciesTest : BaseTest() {
         test.junitBefore()
     }
 
-    private fun givenNothingConfigured() {
-        moduleTestingConfiguration = moduleTestingConfiguration { }
-    }
-
-    private fun givenAMock() {
-        moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly of<AService>()
-        }
-    }
-
     private fun givenAMockBReal() {
         moduleTestingConfiguration = moduleTestingConfiguration {
             dependency mockOnly of<AService>()
@@ -288,7 +269,7 @@ class DependenciesTest : BaseTest() {
 
     private fun givenAInitializedMockBReal() {
         moduleTestingConfiguration = moduleTestingConfiguration {
-            dependency mockOnly initializer { AService().also { initializedAInstance = it } }
+            dependency mockOnly initializer { AService().also { providedAInstance = it } }
             dependency realOnly of<BViewModel>()
         }
     }

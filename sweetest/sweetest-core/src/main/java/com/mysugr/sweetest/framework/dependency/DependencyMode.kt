@@ -14,7 +14,7 @@ enum class DependencyMode {
     // configured from new `provide` or old `requireReal` or `realOnly`
 
     /**
-     * Dependency that is provided with a custom initializer with BaseBuilder.provide.
+     * Dependency that is provided with a custom provider by means of `BaseBuilder.provide`.
      *
      * This mode is distinct from the other modes like [REAL], [MOCK] because [PROVIDED] instances
      * are not classified as either [REAL], [MOCK] or [SPY].
@@ -22,7 +22,7 @@ enum class DependencyMode {
     PROVIDED,
 
     /**
-     * Dependency that is configured with `BaseBuilder.provide` to be auto-provided.
+     * Dependency that is configured by means of `BaseBuilder.provide` to be auto-provided.
      *
      * This mode is distinct from the other modes like [REAL], [MOCK] because [PROVIDED] instances
      * are not classified as either [REAL], [MOCK] or [SPY].

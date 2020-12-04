@@ -30,7 +30,7 @@ val appModuleTestingConfiguration = moduleTestingConfiguration {
     /**
      * [LoginViewModel] can only be used as real instance in tests, as there is no other dependency
      * that uses it as a mock. Here we tell the framework explicitly how the dependency is
-     * initialized.
+     * provided (or initialized).
      */
     dependency realOnly initializer { LoginViewModel(instanceOf()) }
 }

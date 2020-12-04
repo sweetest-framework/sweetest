@@ -5,14 +5,13 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelAndJoin
 import kotlin.coroutines.CoroutineContext
 
-/**
- * Experimental
- */
+@Deprecated(TEST_UTILS_DEPRECATION_MESSAGE)
 internal class CoroutinesTestContext {
 
     private val name = CoroutineName("testCoroutine${instanceCounter++}")
     private val supervisorJob = SupervisorJob()
 
+    @Suppress("DEPRECATION")
     val coroutineContext: CoroutineContext
         get() = SweetestCoroutineSupport.coroutineDispatcher + supervisorJob + name
 

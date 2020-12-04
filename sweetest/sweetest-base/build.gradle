@@ -7,7 +7,6 @@ buildscript {
 }
 
 plugins {
-    id 'maven-publish'
     id 'java-library'
     id 'kotlin'
 }
@@ -15,6 +14,5 @@ plugins {
 apply from: '../publishing.gradle'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
 }

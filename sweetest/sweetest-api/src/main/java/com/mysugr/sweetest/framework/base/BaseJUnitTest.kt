@@ -17,6 +17,7 @@ constructor(private val moduleTestingConfiguration: ModuleTestingConfiguration? 
     open fun configure() = TestBuilder(testContext, moduleTestingConfiguration)
 
     init {
+        @Suppress("LeakingThis")
         configure().freeze()
     }
 

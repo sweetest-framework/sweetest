@@ -67,7 +67,7 @@ internal class DependencyStates(private val dependencyProviderArgumentProvider: 
     }
 
     override fun <T : Any> get(clazz: KClass<T>): DependencyState<T> {
-        val dummyConfiguration = DependencyConfiguration(clazz, defaultMockInitializer = null)
+        val dummyConfiguration = DependencyConfiguration(clazz, defaultMockProvider = null)
         return getOrNull(clazz) ?: create(dummyConfiguration)
     }
 

@@ -8,21 +8,21 @@ package com.mysugr.sweetest.usecases
  */
 
 import com.mysugr.sweetest.framework.context.WorkflowTestContext
-import com.mysugr.sweetest.framework.flow.InitializationStep
+import com.mysugr.sweetest.framework.workflow.WorkflowStep
 
 fun subscribeWorkflow(
     workflowTestContext: WorkflowTestContext,
-    initializationStep: InitializationStep,
+    workflowStep: WorkflowStep,
     handler: () -> Unit
 ) {
-    workflowTestContext.subscribe(initializationStep, handler)
+    workflowTestContext.subscribe(workflowStep, handler)
 }
 
 fun proceedWorkflow(
     workflowTestContext: WorkflowTestContext,
-    toInitializationStep: InitializationStep = InitializationStep.RUNNING
+    toWorkflowStep: WorkflowStep = WorkflowStep.RUNNING
 ) {
-    workflowTestContext.proceedTo(toInitializationStep)
+    workflowTestContext.proceedTo(toWorkflowStep)
 }
 
 fun finishWorkflow(workflowTestContext: WorkflowTestContext) {
