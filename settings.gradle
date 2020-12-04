@@ -1,1 +1,1 @@
-include ':app', ':sweetest'
+include ':app', ':sweetest:sweetest-api', ':sweetest:sweetest-core', ':sweetest:sweetest-base'

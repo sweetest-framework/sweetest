@@ -1,8 +1,8 @@
 package com.mysugr.android.testing.example.app
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import com.mysugr.android.testing.example.dependency.DependencyFramework
 import com.mysugr.android.testing.example.view.LoginViewModel.State
 import kotlinx.android.synthetic.main.activity_login.email
@@ -46,15 +46,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateView(state: State) {
         login_progress.visibility = if (state is State.Busy) View.VISIBLE else View.GONE
-        login_form.visibility = if (state is State.LoggedOut || state is Error) View.VISIBLE else
-            View.GONE
+        login_form.visibility = if (state is State.LoggedOut || state is State.Error) View.VISIBLE else View.GONE
         logout_button.visibility = if (state.loggedIn) View.VISIBLE else View.GONE
         email.error = (state as? State.Error)?.emailError?.let { this.resources.getString(it) }
         password.error = (state as? State.Error)?.passwordError?.let { this.resources.getString(it) }
         if (state is State.LoggedIn) {
             message.setText(
-                if (state.isNewUser) R.string.login_new_user else
-                    R.string.login_existing_user
+                if (state.isNewUser) R.string.login_new_user else R.string.login_existing_user
             )
         } else {
             message.text = ""

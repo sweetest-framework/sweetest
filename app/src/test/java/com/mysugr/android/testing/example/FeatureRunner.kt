@@ -8,6 +8,6 @@ import org.junit.runner.RunWith
 @CucumberOptions(
     plugin = ["pretty"],
     features = ["src/test/resources/features"],
-    glue = ["com.mysugr.android.testing.example.feature"]
+    glue = ["com.mysugr.android.testing.example.feature", "com.mysugr.sweetest.framework.cucumber"]
 )
 class FeatureRunner

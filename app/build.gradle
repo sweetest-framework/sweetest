@@ -4,7 +4,6 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion versions.sdkCompile
-    buildToolsVersion versions.buildTools
     defaultConfig {
         applicationId "com.mysugr.android.testing.example.app"
         minSdkVersion versions.sdkMin
@@ -25,19 +24,14 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
-    implementation "com.android.support:appcompat-v7:$versions.support"
-    implementation "com.android.support:design:$versions.support"
+    implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "com.google.android.material:material:$versions.material"
+    implementation "com.google.android.material:material:$versions.material"
 
-    testImplementation project(path: ':sweetest')
+    testImplementation project(path: ':sweetest:sweetest-api')
     testImplementation "org.mockito:mockito-core:$versions.mockito"
     testImplementation "io.cucumber:cucumber-junit:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-jvm:$versions.cucumber"
     testImplementation "io.cucumber:cucumber-picocontainer:$versions.cucumber"
     testImplementation 'junit:junit:4.12'
-
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:$versions.espresso"
-    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
-    androidTestImplementation "org.mockito:mockito-android:$versions.mockito"
 }

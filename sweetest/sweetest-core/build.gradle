@@ -1,0 +1,30 @@
+buildscript {
+    dependencies {
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4"
+        classpath "com.github.dcendents:android-maven-gradle-plugin:2.1"
+
+    }
+}
+
+plugins {
+    id 'maven-publish'
+    id 'java-library'
+    id 'kotlin'
+}
+
+apply from: '../publishing.gradle'
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlin"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation project(':sweetest:sweetest-base')
+    api "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlin"
+
+    // TODO remove dependency to frameworks in core module
+    api "org.mockito:mockito-core:$versions.mockito"
+    api "io.cucumber:cucumber-junit:$versions.cucumber"
+    api "io.cucumber:cucumber-jvm:$versions.cucumber"
+    api "io.cucumber:cucumber-picocontainer:$versions.cucumber"
+    api "junit:junit:4.12"
+}
