@@ -36,8 +36,7 @@ references:
     persist_to_workspace:
       root: .
       paths:
-        - app/build
-        - sweetest/build
+        - "**/build"
   attach_workspace: &attach_workspace
     attach_workspace:
       at: *workspace
