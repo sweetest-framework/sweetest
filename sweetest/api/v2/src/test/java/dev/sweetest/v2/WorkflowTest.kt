@@ -1,6 +1,6 @@
 package dev.sweetest.v2
 
-import dev.sweetest.api.v2.BaseTest
+import dev.sweetest.v2.internal.ApiTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -11,7 +11,7 @@ class WorkflowTest : AutoWipeTest() {
 
         val trackedEvents = mutableListOf<String>()
 
-        val test = object : BaseTest() {
+        val test = object : ApiTest() {
             init {
                 onInitializeSteps { trackedEvents += "initializeSteps" }
                 onInitializeDependencies { trackedEvents += "initializeDependencies" }

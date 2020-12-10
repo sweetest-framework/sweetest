@@ -1,6 +1,6 @@
 package dev.sweetest.v2
 
-import dev.sweetest.api.v2.BaseTest
+import dev.sweetest.v2.internal.ApiTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
@@ -19,7 +19,7 @@ class PolymorphismTest : AutoWipeTest() {
     @Test
     fun `Polymorphism scenario`() {
 
-        val test = object : BaseTest() {
+        val test = object : ApiTest() {
 
             val animal by dependency<Animal>()
             val cat by dependency<Cat>()
